@@ -1,0 +1,153 @@
+/* =========================
+   기본 설정
+========================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: var(--main-text-color);
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: var(--disabled-tab-color);
+  padding: 40px 0;
+}
+
+/* =========================
+   장바구니 컨테이너
+========================= */
+
+.cart-container {
+  width: 800px;
+  margin: 0 auto;
+  background-color: var(--main-bg-color);
+  padding: 30px;
+  border-radius: 6px;
+}
+
+/* =========================
+   제목
+========================= */
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--main-text-color);
+}
+
+/* =========================
+   빈 장바구니
+========================= */
+
+.cart-empty {
+  text-align: center;
+  padding: 60px 0;
+  color: var(--sub-text-color);
+  line-height: 1.6;
+}
+
+/* =========================
+   장바구니 리스트
+========================= */
+
+.cart-items {
+  list-style: none;
+  margin-bottom: 30px;
+}
+
+/* 개별 상품 */
+.cart-items li {
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--main-border-color);
+}
+
+/* 상품 정보 */
+.item-info {
+  flex: 1;
+}
+
+.item-name {
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: var(--join-text-color);
+}
+
+.item-price {
+  color: var(--sub-text-color);
+}
+
+/* =========================
+   수량 조절
+========================= */
+
+.quantity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quantity button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--main-border-color);
+  background-color: var(--main-bg-color);
+  color: var(--main-text-color);
+  cursor: pointer;
+}
+
+.quantity button:disabled {
+  background-color: var(--disabled-tab-color);
+  color: var(--disabled-btn-color);
+  cursor: not-allowed;
+}
+
+.quantity span {
+  width: 24px;
+  text-align: center;
+}
+
+/* =========================
+   삭제 버튼
+========================= */
+
+.delete-btn {
+  margin-left: 20px;
+  color: var(--negative-text-color);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* =========================
+   합계 영역
+========================= */
+
+.summary {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+/* =========================
+   주문 버튼
+========================= */
+
+.order-btn {
+  width: 100%;
+  padding: 14px 0;
+  background-color: var(--main-btn-color);
+  color: #ffffff;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.order-btn:disabled {
+  background-color: var(--disabled-btn-color);
+  cursor: not-allowed;
+}
