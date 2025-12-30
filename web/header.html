@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>코드한입 - 오픈 마켓</title>
+    <link rel="stylesheet" href="./styles/base/reset.css" />
+    <link rel="stylesheet" href="./styles/base/variables.css" />
+    <link rel="stylesheet" href="./styles/pages/index.css" />
+    <script defer src="js/layout.js"></script>
+  </head>
+
+  <body>
+    <!-- ===== header ===== -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <!-- 로고 -->
+        <a class="brand" href="./index.html" aria-label="홈">
+          <img
+            src="./assets/images/logo-jadu.png"
+            alt="ZADU"
+            class="brand-logo"
+          />
+        </a>
+
+        <!-- 검색 -->
+        <form class="search" role="search">
+          <label class="sr-only" for="q">상품을 검색하세요</label>
+          <input
+            id="q"
+            name="q"
+            class="search-input"
+            type="search"
+            placeholder="상품을 검색해보세요!"
+          />
+          <button class="search-btn" type="submit" aria-label="검색">
+            <img src="./assets/icons/search.svg" alt="" class="icon" />
+          </button>
+        </form>
+
+        <!-- 아이콘 메뉴 -->
+        <nav class="header-actions" aria-label="유틸 메뉴">
+          <a class="action" href="./cart.html">
+            <img
+              src="./assets/icons/icon-shopping-cart.svg"
+              alt=""
+              class="icon"
+            />
+            <span class="action-text">장바구니</span>
+          </a>
+
+          <a class="action" href="./signin.html">
+            <img src="./assets/icons/icon-user.svg" alt="" class="icon" />
+            <span class="action-text">마이페이지</span>
+          </a>
+        </nav>
+      </div>
+    </header>
