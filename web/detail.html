@@ -11,6 +11,7 @@
   </head>
   <body>
     <main class="container">
+      <!-- 상품 정보 영역 -->
       <section class="product-detail">
         <!-- 상품 이미지 -->
         <div class="product-image">
@@ -19,46 +20,57 @@
             alt="딥러닝 개발자 무릎 담요"
           />
         </div>
-
         <!-- 상품 정보 -->
-        <div class="product-info">
+        <div class="product-summary">
+          <span class="product-brand">백엔드글로브</span>
           <h2 class="product-name">딥러닝 개발자 무릎 담요</h2>
-
-          <p class="product-price"><strong>17,500</strong>원</p>
-
-          <!-- 수량 선택 -->
+          <p class="product-price">
+            <strong>17,500</strong>
+            <span class="unit">원</span>
+          </p>
+          <p class="product-delivery">택배배송 / 무료배송</p>
+          <!-- 상품 수량 선택 -->
           <div class="product-quantity">
-            <button type="button">-</button>
+            <button class="minus" type="button">-</button>
             <input type="number" value="1" min="1" />
-            <button type="button">+</button>
+            <!-- <span class="count">1</span> -->
+            <button class="plus" type="button">+</button>
           </div>
-
           <!-- 총 상품 금액 -->
           <div class="total-price">
-            <span>총 상품금액</span>
-            <strong>17,500</strong>원
+            <span class="total-label">총 상품 금액</span>
+            <p class="order-total">
+              총 수량 <strong>1</strong>개
+              <span class="order-price">
+                <strong class="price">17,500</strong>
+                <span class="unit">원</span>
+              </span>
+            </p>
           </div>
-
-          <!-- 버튼 영역 -->
+          <!-- 상품 정보 버튼 영역 -->
           <div class="product-actions">
-            <button class="btn-buy">바로 구매</button>
-            <button class="btn-cart">장바구니</button>
+            <button class="btn btn-buy">바로 구매</button>
+            <button class="btn btn-cart">장바구니</button>
           </div>
         </div>
       </section>
 
-      <!-- 탭 영역 -->
-      <section class="product-tabs">
-        <ul class="tab-menu">
-          <li class="active">상세정보</li>
-          <li>리뷰</li>
-          <li>Q&A</li>
-          <li>반품/교환정보</li>
-        </ul>
+      <!-- 상품 상세 탭 영역 -->
+      <section class="product-content">
+        <nav class="product-tabs">
+          <ul class="tab-menu">
+            <li class="active">상세정보</li>
+            <li>리뷰</li>
+            <li>Q&A</li>
+            <li>반품/교환정보</li>
+          </ul>
+        </nav>
 
-        <div class="tab-content">
-          <!-- 탭 내용 -->
-        </div>
+        <!-- 상세 페이지 내용 영역 -->
+        <section class="product-description"></section>
+        <section class="product-review"></section>
+        <section class="product-qna"></section>
+        <section class="product-policy"></section>
       </section>
     </main>
   </body>
