@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>장바구니</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h2 class="title">장바구니</h2>
+
+    <!-- 빈 장바구니 메시지 -->
+    <div id="empty-cart" class="empty">
+      장바구니에 담긴 상품이 없습니다.<br />
+      원하는 상품을 장바구니에 담아보세요!
+    </div>
+
+    <!-- 장바구니 리스트 -->
+    <div id="cart-list" style="display: none"></div>
+
+    <!-- 결제 요약 -->
+    <div id="summary" class="summary" style="display: none">
+      <div>총 상품금액 <span id="total-price">0</span>원</div>
+      <div>배송비 <span>0</span>원</div>
+      <div>할인 <span>0</span>원</div>
+      <div class="final">결제금액 <span id="final-price">0</span>원</div>
+    </div>
+
+    <button id="order-btn" class="order-btn" style="display: none">
+      주문하기
+    </button>
+
+    <script src="js/cart.js"></script>
+  </body>
+</html>
