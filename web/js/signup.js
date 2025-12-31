@@ -1,4 +1,7 @@
+import { Validation } from "./common/validation.js";
+
 // 탭 전환 (구매회원/판매회원)
+
 const buyerTab = document.getElementById("buyer-tab");
 const sellerTab = document.getElementById("seller-tab");
 
@@ -14,6 +17,13 @@ sellerTab.addEventListener("click", () => {
   sellerFields.style.display = "block";
 });
 
+// 비밀번호 재확인
+
+const passwordInput = document.getElementById("password");
+const passwordConfirm = document.getElementById("passwordConfirm");
+passwordInput.addEventListener("input", validatePassword);
+passwordConfirm.addEventListener("input", validatePassword);
+
 // 아이디(이메일) 중복 확인
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -22,7 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function checkUsername() {
-  const username = document.getElementById("username").value;
+  const usernameInput = document.getElementById("username");
+  const username = usernameInput.value;
   const usernameMessage = document.getElementById("username-message");
 
   if (!username) {
@@ -82,11 +93,17 @@ async function checkUsername() {
 
 // 비밀번호 Validation
 function validatePassword() {
+  const passwordInput = document.getElementById("password");
   const password = passwordInput.value;
+  const passwordConfirmInput = document.getElementById("passwordConfirm");
   const passwordConfirm = passwordConfirmInput.value;
+  const passwordMessage = document.getElementById("passwordMessage");
+  const passwordConfirmMessage = document.getElementById(
+    "passwordConfirmMessage"
+  );
 
   // 비밀번호 길이 체크
-  if (password.length < 8) {
+  if (0 < password.length && password.length < 8) {
     Validation.showMessage(
       passwordInput,
       passwordMessage,
@@ -94,15 +111,23 @@ function validatePassword() {
       "error"
     );
     return false;
+  } else {
+    Validation.clearMessage(passwordInput, passwordMessage);
   }
 
   // 비밀번호 일치 확인
-  if (password !== passwordConfirm) {
+  console.log(passwordConfirm);
+  if (passwordConfirm === "") {
+    Validation.clearMessage(passwordConfirmInput, passwordConfirmMessage);
+    return false;
+  }
+
+  if (password === passwordConfirm) {
     Validation.showMessage(
       passwordConfirmInput,
       passwordConfirmMessage,
-      "비밀번호가 일치하지 않습니다.",
-      "error"
+      "비밀번호가 일치합니다.",
+      "success"
     );
     return false;
   }
@@ -110,8 +135,8 @@ function validatePassword() {
   Validation.showMessage(
     passwordConfirmInput,
     passwordConfirmMessage,
-    "비밀번호가 일치합니다.",
-    "success"
+    "비밀번호가 일치하지 않습니다.",
+    "error"
   );
   return true;
 }
