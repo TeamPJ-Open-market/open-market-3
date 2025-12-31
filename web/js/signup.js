@@ -116,7 +116,6 @@ function validatePassword() {
   }
 
   // 비밀번호 일치 확인
-  console.log(passwordConfirm);
   if (passwordConfirm === "") {
     Validation.clearMessage(passwordConfirmInput, passwordConfirmMessage);
     return false;
