@@ -9,129 +9,6 @@ body {
 }
 
 /* ================================================= */
-/* ==================== Header ===================== */
-/* ================================================= */
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-
-  background: var(--main-bg-color);
-  border-bottom: 1px solid var(--main-bg-color);
-}
-
-.container {
-  width: min(1200px, 92%);
-  margin: 0 auto;
-}
-
-.header-inner {
-  display: grid;
-  grid-template-columns: 70px 100px 30px 300px 550px 46px 26px 56px 70px;
-  align-items: center;
-  padding: 22px 0;
-}
-
-/* 로고 */
-.brand {
-  grid-column: 2;
-  justify-self: start;
-}
-
-.brand-logo {
-  height: 32px;
-  width: auto;
-  display: block;
-}
-
-/* 검색 */
-.search {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  grid-column: 4;
-
-  width: 100%;
-  max-width: 400px;
-  justify-self: center;
-
-  background: var(--main-bg-color);
-  border: 2px solid var(--positive-text-color);
-  border-radius: 999px;
-  padding: 0.01rem 0.5rem;
-}
-
-.search-input {
-  flex: 1;
-  height: 34px;
-  padding: 0 8px;
-  border: 0;
-  background: transparent;
-  outline: none;
-}
-
-.search-input::placeholder {
-  color: var(--sub-text-color);
-}
-
-.search-btn {
-  width: 28px;
-  height: 28px;
-  border: 0;
-  background: transparent;
-  border-radius: 999px;
-  cursor: pointer;
-
-  display: grid;
-  place-items: center;
-}
-
-.search-btn:hover {
-  background: rgba(31, 191, 74, 0.12);
-}
-
-/* 오른쪽 메뉴 */
-.header-actions {
-  display: flex;
-  gap: 26px;
-  justify-self: end;
-  grid-column: 6;
-}
-
-/* 아이콘 */
-.icon {
-  width: 18px;
-  height: 18px;
-  display: block;
-}
-
-.action {
-  display: grid;
-  justify-items: center;
-  gap: 4px;
-  text-decoration: none;
-  color: #222;
-  min-width: 60px;
-}
-
-.action-text {
-  font-size: 12px;
-  color: #444;
-}
-
-/* 접근성 */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-}
-
-/* ================================================= */
 /* ================== Main Banner ================== */
 /* ================================================= */
 .main-banner {
@@ -154,25 +31,14 @@ body {
   position: relative;
 }
 
-@media (max-width: 1440px) {
-  .banner-slide {
-    padding: 60px 120px;
-  }
+.banner-slide {
+  position: absolute;
+  inset: 0;
+  display: none;
 }
 
 .banner-slide.is-active {
   display: block;
-}
-
-.banner-title {
-  font-size: 40px;
-  margin: 0 0 16px;
-}
-
-.banner-desc {
-  font-size: 18px;
-  margin: 0;
-  color: #555;
 }
 
 /* 좌우 버튼 */
@@ -207,7 +73,10 @@ body {
   right: 24px;
 }
 
-/* ===== Banner Indicator ===== */
+/* ================================================= */
+/* =============== Banner Indicator ================ */
+/* ================================================= */
+
 .banner-indicator {
   position: absolute;
   bottom: 20px;
@@ -237,83 +106,143 @@ body {
 }
 
 /* ================================================= */
-/* ===================== Footer ==================== */
+/* ================= Product List ================== */
 /* ================================================= */
-.site-footer {
-  background: var(--disabled-tab-color);
-  font-size: 13px;
-  color: #777;
+.products {
+  padding: 80px 0 120px;
+  background: var(--main-bg-color);
 }
 
-/* 상단 영역 */
-.footer-top {
-  border-bottom: 1px solid #ddd;
-}
-
-.footer-top-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 0;
-}
-
-/* 텍스트 링크 */
-.footer-links {
-  display: flex;
-  gap: 18px;
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px 56px;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.footer-links a {
-  text-decoration: none;
-  color: var(--main-text-color);
+/* 카드 */
+.card {
+  display: grid;
+  gap: 10px;
 }
 
-.footer-links a:hover {
-  text-decoration: underline;
-}
-
-.footer-links .strong {
-  font-weight: 600;
-  color: #222;
-}
-
-.footer-links li {
-  display: flex;
-  align-items: center;
-}
-
-/* | 구분선 */
-.footer-links li:not(:last-child)::after {
-  content: "|";
-  margin: 0 12px;
-}
-
-/* SNS 아이콘 */
-.footer-sns {
-  display: flex;
-  gap: 12px;
-}
-
-.footer-sns img {
-  width: 28px;
-  height: 28px;
+/* 이미지 박스 */
+.card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
   display: block;
 }
 
-/* 하단 회사 정보 */
-.footer-bottom {
-  padding: 32px 0;
+/* 상품 상단 설명(연한 텍스트) */
+.product-meta {
+  font-size: 12px;
+  color: var(--sub-text-color);
+  margin: 6px 0 2px;
 }
 
-.footer-inner p {
-  margin-bottom: 6px;
-  line-height: 1.7;
+/* 상품명 (살짝만 강조) */
+.product-name {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0;
 }
 
-.footer-inner .company {
-  font-weight: 600;
-  color: #666;
+.product-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--main-text-color);
+  margin: 0;
 }
+
+.product-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card:hover img {
+  transform: translateY(-2px);
+}
+
+.card img {
+  transition: transform 0.2s ease;
+}
+
+
+
+/* ================================================= */
+/* =================== Responsive ================== */
+/* ================================================= */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 28px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .products {
+    padding: 48px 0 80px;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .card {
+    max-width: 100%;
+  }
+
+  .card img {
+    border-radius: 10px;
+  }
+}
+
+/* Mobile Header (깨짐 방지) */
+@media (max-width: 640px) {
+  .header-inner {
+    grid-template-columns: 1fr auto;
+    row-gap: 12px;
+    padding: 14px 0;
+  }
+
+  .brand {
+    grid-column: 1;
+  }
+
+  .search {
+    grid-column: 1 / -1;
+    max-width: 100%;
+  }
+
+  .header-actions {
+    grid-column: 2;
+    justify-self: end;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .banner-inner {
+    height: 320px;
+  }
+
+  .banner-btn {
+    font-size: 28px;
+    padding: 0 10px;
+  }
+
+  .banner-indicator {
+    bottom: 14px;
+  }
+}
+

@@ -1,0 +1,165 @@
+/* ================================================= */
+/* ==================== Header ===================== */
+/* ================================================= */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--main-bg-color);
+  border-bottom: 1px solid var(--main-bg-color);
+}
+
+.container {
+  width: min(1200px, 92%);
+  margin: 0 auto;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 22px 0;
+}
+
+/* 로고 */
+.brand {
+  flex: 0 0 auto;
+}
+
+.brand-logo {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
+/* 검색 */
+.search {
+  flex: 0 0 400px;            /* ✅ 기본 400 유지 */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  background: var(--main-bg-color);
+  border: 2px solid var(--positive-text-color);
+  border-radius: 999px;
+  padding: 0.01rem 0.5rem;
+}
+
+.search-input {
+  flex: 1;
+  height: 34px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--sub-text-color);
+}
+
+.search-btn {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.search-btn:hover {
+  background: rgba(31, 191, 74, 0.12);
+}
+
+/* 오른쪽 메뉴 */
+.header-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.action {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: #222;
+  min-width: 60px;
+}
+
+.action-text {
+  font-size: 12px;
+  color: #444;
+}
+
+/* 접근성 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* ================================================= */
+/* ================= Header Responsive ============= */
+/* ================================================= */
+
+/* Tablet: 검색만 살짝 줄이기 */
+@media (max-width: 1024px) {
+  .search {
+    flex-basis: 360px;
+  }
+}
+
+/* Mobile: 2줄로 확실히 분리 */
+@media (max-width: 640px) {
+  .header-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "brand actions"
+      "search search";
+    row-gap: 12px;
+    padding: 14px 0;
+  }
+
+  .brand {
+    grid-area: brand;
+  }
+
+  .header-actions {
+    grid-area: actions;
+    gap: 14px;
+  }
+
+  /* 모바일에서는 텍스트 숨겨서 높이/겹침 방지 */
+  .action {
+    min-width: auto;
+    gap: 0;
+  }
+
+  .action-text {
+    display: none;
+  }
+
+  .search {
+    grid-area: search;
+    justify-self: center;
+    width: clamp(260px, 92vw, 400px);  /* ✅ 400 유지 목표 + 작은 폰만 줄어듦 */
+    flex: none;
+  }
+}
