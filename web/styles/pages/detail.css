@@ -21,9 +21,9 @@ html {
 }
 
 /* main */
-.container {
+.detail-container {
   max-width: 1200px;
-  margin: 2.5rem auto;
+  margin: 10rem auto;
   padding: 0 1.25rem;
 }
 
@@ -67,8 +67,8 @@ html {
 .product-price {
   font-size: 1.375rem;
 }
-.product-price strong {
-  color: #111;
+.product-delivery {
+  color: var(--sub-text-color);
 }
 
 /* 상품 수량 선택 */
@@ -109,16 +109,15 @@ html {
   padding: 1rem 0;
   font-size: 1.125rem;
 }
-.total-result {
+.order-total {
   color: var(--sub-text-color);
 }
 .order-total strong,
 .order-price {
-  color: var(--positive-text-colo);
+  color: var(--positive-text-color);
 }
 .price {
   font-size: 2.375rem;
-  color: var(--positive-text-color);
 }
 
 /* 상품 정보 버튼 영역 */
@@ -137,7 +136,7 @@ html {
   color: var(--white-text-color);
 }
 .btn-cart:hover {
-  background-color: var(--btn-color);
+  background-color: var(--cart-btn-color);
 }
 
 /* 상품 상세 탭 영역 */
