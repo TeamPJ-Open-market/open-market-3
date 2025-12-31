@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="styles/base/reset.css" />
     <link rel="stylesheet" href="styles/base/variables.css" />
     <link rel="stylesheet" href="styles/pages/cart.css" />
+    <script defer src="/js/layout.js"></script>
   </head>
   <body>
     <h2 class="title">장바구니</h2>
@@ -40,5 +41,18 @@
 
     <script src="js/cart.js"></script>
     <script src="js/api/config.js"></script>
+    <!-- 모달 -->
+    <div id="modal-overlay" class="modal-hidden">
+      <div class="modal-container">
+        <button class="modal-close-x" id="modal-close-x">&times;</button>
+        <div class="modal-content">
+          <p id="modal-text">메시지가 표시됩니다.</p>
+        </div>
+        <div class="modal-footer">
+          <button id="modal-btn-no" class="btn-secondary">취소</button>
+          <button id="modal-btn-yes" class="btn-primary">확인</button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

@@ -153,7 +153,9 @@ body {
   cursor: not-allowed;
 }
 
-/* 장바구니 헤더 바 */
+/* =========================
+   장바구니 헤더 스타일
+========================= */
 .cart-header {
   width: 100%;
   max-width: 1280px; /* 전체적인 너비는 프로젝트에 맞춰 조절하세요 */
@@ -171,12 +173,17 @@ body {
   font-size: 18px;
   color: var(--join-text-color);
 }
-/* 기본 체크박스 숨기기 */
+
+/* =========================
+   기본 체크박스 숨기기
+========================= */
 .check-container input {
   display: none;
 }
 
-/* 체크박스가 들어갈 바구니 디자인 */
+/* =========================
+   체크박스가 들어갈 바구니 디자인
+========================= */
 .check-container {
   display: inline-block;
   position: relative;
@@ -185,7 +192,10 @@ body {
   cursor: pointer;
 }
 
-/* 우리가 직접 만드는 동그란 체크박스 (기본 상태) */
+/* =========================
+   우리가 직접 만드는 동그란 체크박스 (기본 상태)
+========================= */
+
 .custom-checkbox {
   position: absolute;
   top: 0;
@@ -193,18 +203,23 @@ body {
   width: 20px;
   height: 20px;
   background-color: #fff;
-  border: 2px solid var(--main-btn-color); /* #c4c4c4 */
-  border-radius: 50%; /* 이 설정이 핵심! 완벽한 원형으로 만듭니다 */
+  border: 2px solid var(--main-btn-color);
+  border-radius: 50%;
   box-sizing: border-box;
 }
 
-/* 체크되었을 때의 스타일 */
+/* =========================
+   체크되었을 때의 스타일
+========================= */
+
 .check-container input:checked + .custom-checkbox {
   background-color: var(--main-btn-color); /* #21bf48 */
   border-color: var(--main-btn-color);
 }
 
-/* 체크되었을 때 안쪽에 나타날 하얀색 체크 표시(V) */
+/* =========================
+   체크되었을 때 안쪽에 나타날 하얀색 체크 표시(V)
+========================= */
 .custom-checkbox::after {
   content: "";
   position: absolute;
@@ -219,7 +234,9 @@ body {
   transform: rotate(45deg);
 }
 
-/* 체크박스가 활성화되면 체크 표시 보이기 */
+/* =========================
+   체크박스가 활성화되면 체크 표시 보이기
+========================= */
 .check-container input:checked + .custom-checkbox::after {
   display: block;
 }
@@ -233,7 +250,9 @@ body {
   flex: 1;
 }
 
-/* 빈 장바구니 메시지 영역 */
+/* =========================
+   빈 장바구니 메시지 영역
+========================= */
 #cart-empty {
   margin-top: 150px; /* 상단 바와의 거리 */
   text-align: center;
@@ -241,24 +260,80 @@ body {
   display: none; /* 기본은 숨김, JS로 제어 */
 }
 
-/* "장바구니에 담긴 상품이 없습니다." (굵고 검은색) */
-.empty-msg-main {
-  display: block;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--main-text-color);
-  margin-bottom: 15px;
-}
-
-/* "원하는 상품을 장바구니에 담아보세요!" (회색) */
-.empty-msg-sub {
-  display: block;
-  font-size: 14px;
-  color: var(--sub-text-color);
-}
-
 #total-price {
   color: var(--negative-text-color); /* 합계 금액은 강조색 사용 추천 */
   font-size: 24px;
   margin-left: 10px;
+}
+
+/* 모달 레이아웃 스타일 */
+#modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: none; /* JS에서 flex로 전환 */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-container {
+  background-color: var(--main-bg-color);
+  padding: 40px 20px;
+  border-radius: 5px;
+  border: 1px solid var(--main-border-color);
+  text-align: center;
+  position: relative;
+  width: 360px;
+}
+
+.modal-close-x {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--main-border-color);
+  cursor: pointer;
+}
+
+.modal-content p {
+  font-size: 16px;
+  color: var(--join-text-color);
+  margin-bottom: 30px;
+  line-height: 1.5;
+  white-space: pre-line; /* 줄바꿈 적용 */
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.modal-footer button {
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* 초록색 버튼 (확인/예) */
+.btn-primary {
+  background-color: var(--main-btn-color);
+  color: var(--white-text-color);
+  border: none;
+}
+
+/* 회색 버튼 (취소/아니오) */
+.btn-secondary {
+  background-color: var(--main-bg-color);
+  color: var(--sub-text-color);
+  border: 1px solid var(--main-border-color);
 }
