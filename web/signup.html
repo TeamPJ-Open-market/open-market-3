@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/base/reset.css" />
+    <link rel="stylesheet" href="styles/base/variables.css" />
+    <link rel="stylesheet" href="styles/pages/signup.css" />
+    <script defer src="js/signup.js"></script>
+    <title>회원가입</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 로고 이미지 -->
+      <img
+        class="title-logo"
+        src="assets/images/Logo-jadu-lg.png"
+        alt="대형자두로고"
+      />
+      <!-- 회원가입 선택 -->
+      <div class="signup-container">
+        <div class="tab-menu">
+          <button class="tab-link active" data-type="buyer">
+            구매회원가입
+          </button>
+          <button class="tab-link" data-type="seller">판매회원가입</button>
+        </div>
+
+        <!-- 폼 작성 -->
+        <div class="signup-box">
+          <form>
+            <div class="form-text">아이디</div>
+            <div class="input-id-group">
+              <input type="text" required />
+              <button class="id-check-btn" type="button">중복확인</button>
+            </div>
+
+            <div class="input-pw-group">
+              <div class="form-text">비밀번호</div>
+              <input type="password" required />
+            </div>
+
+            <div class="input-pw-group">
+              <div class="form-text">비밀번호 재확인</div>
+              <input type="password" required />
+            </div>
+
+            <div class="input-name-group">
+              <div class="form-text">이름</div>
+              <input type="text" required />
+
+              <div>
+                <select name="fruit">
+                  <option value="010">010</option>
+                  <option value="011">011</option>
+                  <option value="016">016</option>
+                  <option value="017">017</option>
+                  <option value="019">019</option>
+                </select>
+                <input type="number" required />
+                <input type="number" required />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
