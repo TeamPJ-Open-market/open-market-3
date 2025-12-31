@@ -154,25 +154,14 @@ body {
   position: relative;
 }
 
-@media (max-width: 1440px) {
-  .banner-slide {
-    padding: 60px 120px;
-  }
+.banner-slide {
+  position: absolute;
+  inset: 0;
+  display: none;
 }
 
 .banner-slide.is-active {
   display: block;
-}
-
-.banner-title {
-  font-size: 40px;
-  margin: 0 0 16px;
-}
-
-.banner-desc {
-  font-size: 18px;
-  margin: 0;
-  color: #555;
 }
 
 /* 좌우 버튼 */
@@ -317,3 +306,6 @@ body {
   font-weight: 600;
   color: #666;
 }
+
+
+

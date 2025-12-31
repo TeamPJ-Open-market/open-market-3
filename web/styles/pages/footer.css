@@ -1,0 +1,81 @@
+/* ================================================= */
+/* ===================== Footer ==================== */
+/* ================================================= */
+.site-footer {
+  background: var(--disabled-tab-color);
+  font-size: 13px;
+  color: #777;
+}
+
+/* 상단 영역 */
+.footer-top {
+  border-bottom: 1px solid #ddd;
+}
+
+.footer-top-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+}
+
+/* 텍스트 링크 */
+.footer-links {
+  display: flex;
+  gap: 18px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: var(--main-text-color);
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-links .strong {
+  font-weight: 600;
+  color: #222;
+}
+
+.footer-links li {
+  display: flex;
+  align-items: center;
+}
+
+/* | 구분선 */
+.footer-links li:not(:last-child)::after {
+  content: "|";
+  margin: 0 12px;
+}
+
+/* SNS 아이콘 */
+.footer-sns {
+  display: flex;
+  gap: 12px;
+}
+
+.footer-sns img {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+/* 하단 회사 정보 */
+.footer-bottom {
+  padding: 32px 0;
+}
+
+.footer-inner p {
+  margin-bottom: 6px;
+  line-height: 1.7;
+}
+
+.footer-inner .company {
+  font-weight: 600;
+  color: #666;
+}
