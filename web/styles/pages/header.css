@@ -5,7 +5,6 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-
   background: var(--main-bg-color);
   border-bottom: 1px solid var(--main-bg-color);
 }
@@ -16,16 +15,16 @@
 }
 
 .header-inner {
-  display: grid;
-  grid-template-columns: 70px 100px 30px 300px 550px 46px 26px 56px 70px;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 30px;
   padding: 22px 0;
 }
 
 /* 로고 */
 .brand {
-  grid-column: 2;
-  justify-self: start;
+  flex: 0 0 auto;
 }
 
 .brand-logo {
@@ -36,14 +35,10 @@
 
 /* 검색 */
 .search {
+  flex: 0 0 400px;            /* ✅ 기본 400 유지 */
   display: flex;
   align-items: center;
   gap: 8px;
-  grid-column: 4;
-
-  width: 100%;
-  max-width: 400px;
-  justify-self: center;
 
   background: var(--main-bg-color);
   border: 2px solid var(--positive-text-color);
@@ -71,7 +66,6 @@
   background: transparent;
   border-radius: 999px;
   cursor: pointer;
-
   display: grid;
   place-items: center;
 }
@@ -82,13 +76,12 @@
 
 /* 오른쪽 메뉴 */
 .header-actions {
+  flex: 0 0 auto;
   display: flex;
+  align-items: center;
   gap: 26px;
-  justify-self: end;
-  grid-column: 6;
 }
 
-/* 아이콘 */
 .icon {
   width: 18px;
   height: 18px;
@@ -119,4 +112,54 @@
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+
+/* ================================================= */
+/* ================= Header Responsive ============= */
+/* ================================================= */
+
+/* Tablet: 검색만 살짝 줄이기 */
+@media (max-width: 1024px) {
+  .search {
+    flex-basis: 360px;
+  }
+}
+
+/* Mobile: 2줄로 확실히 분리 */
+@media (max-width: 640px) {
+  .header-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "brand actions"
+      "search search";
+    row-gap: 12px;
+    padding: 14px 0;
+  }
+
+  .brand {
+    grid-area: brand;
+  }
+
+  .header-actions {
+    grid-area: actions;
+    gap: 14px;
+  }
+
+  /* 모바일에서는 텍스트 숨겨서 높이/겹침 방지 */
+  .action {
+    min-width: auto;
+    gap: 0;
+  }
+
+  .action-text {
+    display: none;
+  }
+
+  .search {
+    grid-area: search;
+    justify-self: center;
+    width: clamp(260px, 92vw, 400px);  /* ✅ 400 유지 목표 + 작은 폰만 줄어듦 */
+    flex: none;
+  }
 }

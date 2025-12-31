@@ -79,3 +79,36 @@
   font-weight: 600;
   color: #666;
 }
+
+/* ================================================= */
+/* ================= Footer Responsive ============= */
+/* ================================================= */
+
+@media (max-width: 640px) {
+  .footer-top-inner {
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .footer-links li::after {
+    margin: 0 6px;
+  }
+
+  .footer-sns {
+    align-self: flex-end;
+  }
+
+  .footer-bottom {
+    padding: 24px 0;
+  }
+
+  .footer-inner p {
+    font-size: 12px;
+  }
+}
