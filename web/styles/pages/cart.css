@@ -237,7 +237,7 @@ body {
 
 .btn-primary {
   background-color: var(--main-btn-color);
-  color: #fff;
+  color: var(--main-bg-color);
   border: none !important;
 }
 .modal-close-x {
@@ -250,4 +250,97 @@ body {
   color: #999;
   cursor: pointer;
   line-height: 1; /* 위치 정렬을 위해 추가 */
+}
+.price-summary-container {
+  background-color: var(--disabled-tab-color);
+  border-radius: 10px;
+  padding: 40px 0;
+  margin-top: 40px;
+}
+
+.summary-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.summary-item .label {
+  font-size: 16px;
+  color: #333;
+}
+
+.summary-item .value {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.summary-item.total .value {
+  color: var(--negative-text-color); /* 결제 예정 금액 강조색 */
+}
+
+/* 연산자 (마이너스, 플러스 아이콘) */
+.operator {
+  width: 34px;
+  height: 34px;
+  background-color: var(--main-bg-color);
+  border-radius: 50%;
+  position: relative;
+}
+
+.operator.minus::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 2px;
+  background: #bdbdbd;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.operator.plus::before,
+.operator.plus::after {
+  content: "";
+  position: absolute;
+  background: #bdbdbd;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.operator.plus::before {
+  width: 12px;
+  height: 2px;
+}
+.operator.plus::after {
+  width: 2px;
+  height: 12px;
+}
+
+/* 주문하기 버튼 컨테이너 */
+.order-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  margin-bottom: 60px;
+}
+
+#order-btn {
+  width: 220px;
+  height: 68px;
+  background-color: var(--main-btn-color);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
 }

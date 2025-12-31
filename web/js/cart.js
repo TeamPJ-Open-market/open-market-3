@@ -189,67 +189,25 @@ function onDecrease(e) {
   updateQuantity(id, item.quantity - 1);
 }
 
-// /**
-//  * 삭제 로직 (로그인/비로그인 통합)
-//  */
-// function onDelete(e) {
-//   const id = e.target.closest("li").dataset.id;
-//   if (!confirm("삭제하시겠습니까?")) return;
-
-//   if (Utils.isLoggedIn()) {
-//     fetch(`${API_URL}/cart/${id}`, {
-//       method: "DELETE",
-//       headers: Utils.getAuthHeaders(),
-//     }).then(loadCart);
-//   } else {
-//     let guestCart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
-//     guestCart = guestCart.filter((i) => i.product_id != id);
-//     localStorage.setItem("guest_cart", JSON.stringify(guestCart));
-//     loadCart();
-//   }
-// }
-
 /**
  * 합계 계산
- */
-function updateTotalPrice() {
+ */ function updateTotalPrice() {
   let total = 0;
   itemsEl.querySelectorAll("li").forEach((li) => {
     const checked = li.querySelector(".item-check").checked;
     if (!checked) return;
     const id = li.dataset.id;
     const item = cartItems.find((i) => i.id == id);
-    total += item.product.price * item.quantity;
+    if (item) total += item.product.price * item.quantity;
   });
-  totalPriceEl.textContent = Utils.formatNumber(total);
+
+  const formattedPrice = Utils.formatNumber(total);
+  totalPriceEl.textContent = formattedPrice;
+
+  // 피그마 디자인의 '결제 예정 금액' 부분도 업데이트
+  const finalPriceEl = document.getElementById("final-price");
+  if (finalPriceEl) finalPriceEl.textContent = formattedPrice;
 }
-
-// /**
-//  * 주문 이동 (결제 시 로그인 체크 필수)
-//  */
-// function moveToOrder() {
-//   if (!Utils.isLoggedIn()) {
-//     alert("결제는 로그인 후 가능합니다.");
-//     location.href = "signin.html";
-//     return;
-//   }
-
-//   const selectedIds = [];
-//   itemsEl.querySelectorAll("li").forEach((li) => {
-//     if (li.querySelector(".item-check").checked) {
-//       selectedIds.push(li.dataset.id);
-//     }
-//   });
-
-//   if (selectedIds.length === 0) {
-//     alert("주문할 상품을 선택하세요.");
-//     return;
-//   }
-
-//   localStorage.setItem("order_items", JSON.stringify(selectedIds));
-//   location.href = "order.html";
-// }
-
 /**
  * 이미지 가이드와 동일한 모달 노출 함수
  * @param {string} message - 표시할 문구
