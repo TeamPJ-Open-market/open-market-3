@@ -9,56 +9,121 @@ body {
 
 /* ===== Header ===== */
 .site-header {
-  background: white;
-  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: var(--main-bg-color);
+  border-bottom: 1px solid var(--main-bg-color);
+}
+
+.container {
+  width: min(1200px, 92%);
+  margin: 0 auto;
 }
 
 .header-inner {
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 16px;
+  grid-template-columns: 70px 100px 30px 300px 550px 46px 26px 56px 70px;
   align-items: center;
-  padding: 14px 0;
+  padding: 22px 0;
 }
 
-.logo img {
+/* 로고 */
+.brand {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.brand-logo {
   height: 32px;
+  width: auto;
+  display: block;
 }
 
+/* 검색 */
 .search {
   display: flex;
+  align-items: center;
   gap: 8px;
+  grid-column: 4;
+
+  width: 100%;
+  max-width: 400px;
+  justify-self: center;
+
+  background: var(--main-bg-color);
+  border: 2px solid var(--positive-text-color);
+  border-radius: 999px;
+  padding: 0.01rem 0.5rem;
 }
 
-.search input {
+.search-input {
   flex: 1;
-  height: 40px;
-  padding: 0 12px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  height: 34px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  outline: none;
 }
 
-.search button {
-  height: 40px;
-  padding: 0 14px;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 10px;
+.search-input::placeholder {
+  color: var(--sub-text-color);
+}
+
+.search-btn {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
   cursor: pointer;
+
+  display: grid;
+  place-items: center;
 }
 
-.gnb {
+.search-btn:hover {
+  background: rgba(31, 191, 74, 0.12);
+}
+
+/* 오른쪽 메뉴 */
+.header-actions {
   display: flex;
-  gap: 12px;
+  gap: 26px;
+  justify-self: end;
+  grid-column: 6;
 }
 
-.gnb a {
+/* 아이콘 */
+.icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.action {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
   text-decoration: none;
   color: #222;
-  padding: 8px 10px;
-  border-radius: 10px;
+  min-width: 60px;
 }
 
-.gnb a:hover {
-  background: #f5f5f5;
+.action-text {
+  font-size: 12px;
+  color: #444;
+}
+
+/* 접근성 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
