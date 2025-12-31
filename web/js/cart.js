@@ -89,17 +89,37 @@ function renderCartList() {
   itemsEl.innerHTML = "";
   cartItems.forEach((item) => {
     const li = document.createElement("li");
+    li.className = "cart-item"; // 스타일링을 위한 클래스 추가
     li.dataset.id = item.id;
 
     li.innerHTML = `
-      <input type="checkbox" class="item-check" checked />
-      <strong>${item.product.name}</strong><br/>
-      가격: ${Utils.formatNumber(item.product.price)}원<br/>
+  <div class="col-info">
+    <input type="checkbox" class="item-check" checked />
+    <img src="${item.product.image}" class="cart-img" />
+    <div class="product-text">
+      <span class="seller">${item.product.seller_store}</span>
+      <strong class="name">${item.product.name}</strong>
+      <span class="price">${Utils.formatNumber(item.product.price)}원</span>
+    </div>
+  </div>
+
+  <div class="col-qty">
+    <span>수량</span> <div class="qty-stepper">
       <button class="qty-minus">−</button>
-      <span class="qty">${item.quantity}</span>
+      <span class="qty-val">${item.quantity}</span>
       <button class="qty-plus">+</button>
-      <button class="delete-btn">삭제</button>
-    `;
+    </div>
+  </div>
+
+  <div class="col-price">
+    <span class="item-total-price">${Utils.formatNumber(
+      item.product.price * item.quantity
+    )}원</span>
+    <button class="order-item-btn">주문하기</button>
+  </div>
+
+  <button class="item-delete-btn">&times;</button>
+`;
     itemsEl.appendChild(li);
   });
 
@@ -109,23 +129,30 @@ function renderCartList() {
 
 /**
  * 이벤트 바인딩
- */
-function bindEvents() {
-  itemsEl
-    .querySelectorAll(".qty-plus")
-    .forEach((btn) => (btn.onclick = onIncrease));
-  itemsEl
-    .querySelectorAll(".qty-minus")
-    .forEach((btn) => (btn.onclick = onDecrease));
-  itemsEl
-    .querySelectorAll(".delete-btn")
-    .forEach((btn) => (btn.onclick = onDelete));
-  itemsEl
-    .querySelectorAll(".item-check")
-    .forEach((chk) => (chk.onchange = updateTotalPrice));
-  orderBtn.onclick = moveToOrder;
-}
+ */ function bindEvents() {
+  // 1. 수량 플러스 버튼
+  itemsEl.querySelectorAll(".qty-plus").forEach((btn) => {
+    btn.onclick = onIncrease;
+  });
 
+  // 2. 수량 마이너스 버튼
+  itemsEl.querySelectorAll(".qty-minus").forEach((btn) => {
+    btn.onclick = onDecrease;
+  });
+
+  // 3. 삭제 버튼 (클래스명 .item-delete-btn 으로 수정)
+  itemsEl.querySelectorAll(".item-delete-btn").forEach((btn) => {
+    btn.onclick = onDelete;
+  });
+
+  // 4. 체크박스 변경
+  itemsEl.querySelectorAll(".item-check").forEach((chk) => {
+    chk.onchange = updateTotalPrice;
+  });
+
+  // 5. 하단 주문하기 버튼
+  if (orderBtn) orderBtn.onclick = moveToOrder;
+}
 /**
  * 수량 변경 로직 (로그인/비로그인 통합)
  */
@@ -162,25 +189,25 @@ function onDecrease(e) {
   updateQuantity(id, item.quantity - 1);
 }
 
-/**
- * 삭제 로직 (로그인/비로그인 통합)
- */
-function onDelete(e) {
-  const id = e.target.closest("li").dataset.id;
-  if (!confirm("삭제하시겠습니까?")) return;
+// /**
+//  * 삭제 로직 (로그인/비로그인 통합)
+//  */
+// function onDelete(e) {
+//   const id = e.target.closest("li").dataset.id;
+//   if (!confirm("삭제하시겠습니까?")) return;
 
-  if (Utils.isLoggedIn()) {
-    fetch(`${API_URL}/cart/${id}`, {
-      method: "DELETE",
-      headers: Utils.getAuthHeaders(),
-    }).then(loadCart);
-  } else {
-    let guestCart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
-    guestCart = guestCart.filter((i) => i.product_id != id);
-    localStorage.setItem("guest_cart", JSON.stringify(guestCart));
-    loadCart();
-  }
-}
+//   if (Utils.isLoggedIn()) {
+//     fetch(`${API_URL}/cart/${id}`, {
+//       method: "DELETE",
+//       headers: Utils.getAuthHeaders(),
+//     }).then(loadCart);
+//   } else {
+//     let guestCart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
+//     guestCart = guestCart.filter((i) => i.product_id != id);
+//     localStorage.setItem("guest_cart", JSON.stringify(guestCart));
+//     loadCart();
+//   }
+// }
 
 /**
  * 합계 계산
@@ -229,23 +256,33 @@ function updateTotalPrice() {
  * @param {function} onYes - 확인 클릭 시 실행할 함수
  * @param {string} yesText - 확인 버튼 텍스트 (기본: 확인)
  * @param {string} noText - 취소 버튼 텍스트 (기본: 취소)
- */
-function openModal(message, onYes, yesText = "확인", noText = "취소") {
+ */ function openModal(message, onYes, yesText = "확인", noText = "취소") {
   modalText.innerText = message;
   modalBtnYes.innerText = yesText;
-  modalBtnNo.innerText = noText;
+
+  // 취소 버튼 텍스트가 있으면 보여주고, 없으면 숨김
+  if (noText) {
+    modalBtnNo.innerText = noText;
+    modalBtnNo.style.display = "block"; // 다시 보이게 설정
+  } else {
+    modalBtnNo.style.display = "none";
+  }
 
   modalOverlay.style.display = "flex";
 
-  // 확인 버튼 클릭 이벤트
   modalBtnYes.onclick = () => {
     onYes();
     closeModal();
   };
 
-  // 닫기/취소 이벤트
   modalBtnNo.onclick = closeModal;
   modalCloseX.onclick = closeModal;
+  modalOverlay.onclick = (e) => {
+    // 클릭된 대상이 흰색 컨테이너가 아니라 검은 배경(overlay)일 때만 닫기
+    if (e.target === modalOverlay) {
+      closeModal();
+    }
+  };
 }
 
 function closeModal() {
@@ -288,7 +325,7 @@ function moveToOrder() {
       },
       "예",
       "아니오"
-    ); // 버튼 텍스트를 이미지와 동일하게 '예/아니오'로 변경
+    );
     return;
   }
 
