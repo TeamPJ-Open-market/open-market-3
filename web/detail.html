@@ -6,8 +6,9 @@
     <title>ZADU - 오픈 마켓 / 상품 상세</title>
     <link rel="stylesheet" href="./styles/base/reset.css" />
     <link rel="stylesheet" href="./styles/base/variables.css" />
+    <link rel="stylesheet" href="./styles/pages/header.css" />
+    <link rel="stylesheet" href="./styles/pages/footer.css" />
     <link rel="stylesheet" href="./styles/pages/detail.css" />
-    <style></style>
   </head>
   <body>
     <main class="container">
@@ -31,10 +32,10 @@
           <p class="product-delivery">택배배송 / 무료배송</p>
           <!-- 상품 수량 선택 -->
           <div class="product-quantity">
-            <button class="minus" type="button">-</button>
+            <button class="btn-left minus" type="button">-</button>
             <input type="number" value="1" min="1" />
             <!-- <span class="count">1</span> -->
-            <button class="plus" type="button">+</button>
+            <button class="btn-right plus" type="button">+</button>
           </div>
           <!-- 총 상품 금액 -->
           <div class="total-price">
@@ -73,5 +74,8 @@
         <section class="product-policy"></section>
       </section>
     </main>
+
+    <script src="js/layout.js"></script>
+    <script src="js/detail.js"></script>
   </body>
 </html>
