@@ -1,5 +1,6 @@
-/* ===== 메인 페이지 ===== */
-
+/* ================================================= */
+/* =================== main page =================== */
+/* ================================================= */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -7,7 +8,9 @@ body {
   color: #222;
 }
 
-/* ===== Header ===== */
+/* ================================================= */
+/* ==================== Header ===================== */
+/* ================================================= */
 .site-header {
   position: sticky;
   top: 0;
@@ -126,4 +129,191 @@ body {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+
+/* ================================================= */
+/* ================== Main Banner ================== */
+/* ================================================= */
+.main-banner {
+  background: var(--disabled-tab-color);
+  width: 100%;
+}
+
+.banner-inner {
+  width: 100%;
+  max-width: 1920px;
+  height: 500px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 슬라이드 영역 */
+.banner-track {
+  height: 100%;
+  position: relative;
+}
+
+@media (max-width: 1440px) {
+  .banner-slide {
+    padding: 60px 120px;
+  }
+}
+
+.banner-slide.is-active {
+  display: block;
+}
+
+.banner-title {
+  font-size: 40px;
+  margin: 0 0 16px;
+}
+
+.banner-desc {
+  font-size: 18px;
+  margin: 0;
+  color: #555;
+}
+
+/* 좌우 버튼 */
+.banner-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  border: 0;
+  background: transparent; /* 동그란 배경 제거 */
+  cursor: pointer;
+
+  font-size: 36px; /* < > 크기 */
+  font-weight: 200;
+  opacity: 0.6;
+  color: var(--main-text-color);
+
+  padding: 0 16px; /* 클릭 영역만 확보 */
+  line-height: 1;
+}
+
+/* hover 시 살짝 강조 (선택) */
+.banner-btn:hover {
+  color: #000;
+}
+
+.banner-btn.prev {
+  left: 24px;
+}
+
+.banner-btn.next {
+  right: 24px;
+}
+
+/* ===== Banner Indicator ===== */
+.banner-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  gap: 10px;
+}
+
+.banner-indicator .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  border: 0;
+  background: #fff;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* 현재 슬라이드 */
+.banner-indicator .dot.is-active {
+  background: #000;
+  opacity: 1;
+}
+
+/* ================================================= */
+/* ===================== Footer ==================== */
+/* ================================================= */
+.site-footer {
+  background: var(--disabled-tab-color);
+  font-size: 13px;
+  color: #777;
+}
+
+/* 상단 영역 */
+.footer-top {
+  border-bottom: 1px solid #ddd;
+}
+
+.footer-top-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+}
+
+/* 텍스트 링크 */
+.footer-links {
+  display: flex;
+  gap: 18px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: var(--main-text-color);
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-links .strong {
+  font-weight: 600;
+  color: #222;
+}
+
+.footer-links li {
+  display: flex;
+  align-items: center;
+}
+
+/* | 구분선 */
+.footer-links li:not(:last-child)::after {
+  content: "|";
+  margin: 0 12px;
+}
+
+/* SNS 아이콘 */
+.footer-sns {
+  display: flex;
+  gap: 12px;
+}
+
+.footer-sns img {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+/* 하단 회사 정보 */
+.footer-bottom {
+  padding: 32px 0;
+}
+
+.footer-inner p {
+  margin-bottom: 6px;
+  line-height: 1.7;
+}
+
+.footer-inner .company {
+  font-weight: 600;
+  color: #666;
 }
