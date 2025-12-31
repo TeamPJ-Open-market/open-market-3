@@ -94,7 +94,11 @@ function renderCartList() {
 
     li.innerHTML = `
   <div class="col-info">
-    <input type="checkbox" class="item-check" checked />
+    <label class="check-container">
+      <input type="checkbox" class="item-check" checked />
+      <span class="custom-checkbox"></span>
+    </label>
+    
     <img src="${item.product.image}" class="cart-img" />
     <div class="product-text">
       <span class="seller">${item.product.seller_store}</span>
@@ -104,7 +108,7 @@ function renderCartList() {
   </div>
 
   <div class="col-qty">
-    <span>수량</span> <div class="qty-stepper">
+    <div class="qty-stepper">
       <button class="qty-minus">−</button>
       <span class="qty-val">${item.quantity}</span>
       <button class="qty-plus">+</button>
@@ -129,7 +133,22 @@ function renderCartList() {
 
 /**
  * 이벤트 바인딩
- */ function bindEvents() {
+ */
+function bindEvents() {
+  // 전체 선택 체크박스 가져오기
+  const checkAll = document.getElementById("check-all");
+  const itemChecks = itemsEl.querySelectorAll(".item-check");
+
+  // 0. 전체 선택 체크박스 로직 추가
+  if (checkAll) {
+    checkAll.onchange = () => {
+      itemChecks.forEach((chk) => {
+        chk.checked = checkAll.checked; // 상단 체크박스 상태를 모든 아이템에 복사
+      });
+      updateTotalPrice();
+    };
+  }
+
   // 1. 수량 플러스 버튼
   itemsEl.querySelectorAll(".qty-plus").forEach((btn) => {
     btn.onclick = onIncrease;
@@ -140,14 +159,21 @@ function renderCartList() {
     btn.onclick = onDecrease;
   });
 
-  // 3. 삭제 버튼 (클래스명 .item-delete-btn 으로 수정)
+  // 3. 삭제 버튼
   itemsEl.querySelectorAll(".item-delete-btn").forEach((btn) => {
     btn.onclick = onDelete;
   });
 
-  // 4. 체크박스 변경
-  itemsEl.querySelectorAll(".item-check").forEach((chk) => {
-    chk.onchange = updateTotalPrice;
+  // 4. 개별 체크박스 변경 (기능 보완)
+  itemChecks.forEach((chk) => {
+    chk.onchange = () => {
+      // 개별 체크박스가 하나라도 해제되면 전체 선택도 해제, 모두 체크되면 전체 선택도 체크
+      if (checkAll) {
+        const allChecked = Array.from(itemChecks).every((c) => c.checked);
+        checkAll.checked = allChecked;
+      }
+      updateTotalPrice();
+    };
   });
 
   // 5. 하단 주문하기 버튼
