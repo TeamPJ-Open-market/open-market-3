@@ -2,17 +2,19 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>장바구니</title>
     <link rel="stylesheet" href="styles/base/reset.css" />
     <link rel="stylesheet" href="styles/base/variables.css" />
     <link rel="stylesheet" href="styles/pages/cart.css" />
+    <script defer src="/js/layout.js"></script>
   </head>
   <body>
     <h2 class="title">장바구니</h2>
     <div class="cart-header">
       <div class="col-check">
         <label class="check-container">
-          <input type="checkbox" />
+          <input type="checkbox" id="check-all" checked />
           <span class="custom-checkbox"></span>
         </label>
       </div>
@@ -20,7 +22,6 @@
       <div class="col-qty">수량</div>
       <div class="col-price">상품금액</div>
     </div>
-    <!-- 빈 장바구니 메시지 -->
     <div id="cart-empty" style="display: none">
       <h3>장바구니에 담긴 상품이 없습니다.</h3>
       <br />
@@ -30,15 +31,48 @@
     <div id="cart-list" style="display: none">
       <ul id="cart-items"></ul>
 
-      <div class="summary">
-        선택 상품 합계:
-        <strong><span id="total-price">0</span>원</strong>
+      <div class="price-summary-container">
+        <div class="summary-box">
+          <div class="summary-item">
+            <span class="label">총 상품금액</span>
+            <span class="value"><span id="total-price">0</span>원</span>
+          </div>
+          <div class="operator minus"></div>
+          <div class="summary-item">
+            <span class="label">상품 할인</span>
+            <span class="value">0원</span>
+          </div>
+          <div class="operator plus"></div>
+          <div class="summary-item">
+            <span class="label">배송비</span>
+            <span class="value">0원</span>
+          </div>
+          <div class="summary-item total">
+            <span class="label">결제 예정 금액</span>
+            <span class="value"><span id="final-price">0</span>원</span>
+          </div>
+        </div>
       </div>
 
-      <button id="order-btn">주문하기</button>
+      <div class="order-btn-container">
+        <button id="order-btn">주문하기</button>
+      </div>
     </div>
 
-    <script src="js/cart.js"></script>
+    <div id="modal-overlay">
+      <div class="modal-container">
+        <button class="modal-close-x" id="modal-close-x">&times;</button>
+        <div class="modal-content">
+          <p id="modal-text">메시지가 표시됩니다.</p>
+        </div>
+        <div class="modal-footer">
+          <button id="modal-btn-no" class="btn-secondary">취소</button>
+          <button id="modal-btn-yes" class="btn-primary">확인</button>
+        </div>
+      </div>
+    </div>
+
     <script src="js/api/config.js"></script>
+    <script src="js/cart.js"></script>
   </body>
 </html>
