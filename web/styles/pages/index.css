@@ -9,8 +9,12 @@ body {
 
 /* ===== Header ===== */
 .site-header {
-  background: #fff;
-  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: var(--main-bg-color);
+  border-bottom: 1px solid var(--main-bg-color);
 }
 
 .container {
