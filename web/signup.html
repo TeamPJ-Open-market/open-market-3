@@ -29,12 +29,14 @@
         <!-- 폼 작성 -->
         <div class="signup-box">
           <form>
+            <!-- 아이디 -->
             <div class="form-text">아이디</div>
             <div class="input-id-group">
               <input type="text" required />
               <button class="id-check-btn" type="button">중복확인</button>
             </div>
 
+            <!-- 비밀번호 -->
             <div class="input-pw-group">
               <div class="form-text">비밀번호</div>
               <input type="password" required />
@@ -45,12 +47,14 @@
               <input type="password" required />
             </div>
 
+            <!-- 이름 -->
             <div class="input-name-group">
               <div class="form-text">이름</div>
               <input type="text" required />
 
+              <!-- 전화번호 작성 -->
               <div>
-                <select name="fruit">
+                <select name="phone-number">
                   <option value="010">010</option>
                   <option value="011">011</option>
                   <option value="016">016</option>
@@ -63,6 +67,13 @@
             </div>
           </form>
         </div>
+        <label>
+          <input type="checkbox" />
+          <p>
+            자두샵의 <span>이용약관</span> 및 <span>개인정보처리방침</span>에
+            대한 내용을 확인하였고 동의합니다.
+          </p>
+        </label>
       </div>
     </div>
   </body>
