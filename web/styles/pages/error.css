@@ -1,0 +1,110 @@
+/* 전체 영역 */
+.error-page {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 이미지 + 텍스트 나란히 */
+.error-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+}
+
+/* 이미지 */
+.error-image img {
+  width: 260px;
+  max-width: 100%;
+}
+
+/* 텍스트 영역 */
+.error-content h1 {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.error-content p {
+  color: var(--sub-text-color);
+  margin-bottom: 20px;
+}
+
+.error-content {
+  max-width: 420px;
+}
+
+/* 버튼 */
+.error-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  padding: 10px 50px;
+  border: 1px solid var(--main-border-color);
+  background: var(--main-bg-color);
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.error-buttons .btn {
+  color: var(--join-text-color);
+}
+
+.btn.primary {
+  background: var(--positive-text-color);
+  color: var(--white-text-color);
+  border-color: var(--positive-text-color);
+}
+
+.error-desc span {
+  display: block;
+}
+
+/* ================== 404 Responsive ================== */
+@media (max-width: 640px) {
+  .error-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    text-align: center;
+  }
+
+  .error-image img {
+    width: 220px; /* 이미지가 이미 괜찮으면 이 줄은 생략해도 됨 */
+  }
+
+  .error-content h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+
+  .error-content p {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  .error-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn {
+    padding: 10px 20px; /* 버튼 가로/세로 살짝 축소 */
+    font-size: 13px;
+    min-width: 140px; /* 너가 원한 '넉넉한 버튼' 느낌 유지 */
+  }
+}
+
+@media (max-width: 420px) {
+  .error-content h1 {
+    font-size: 20px;
+  }
+
+  .btn {
+    min-width: 120px;
+    padding: 10px 16px;
+  }
+}
