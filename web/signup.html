@@ -17,63 +17,69 @@
         src="assets/images/Logo-jadu-lg.png"
         alt="대형자두로고"
       />
-      <!-- 회원가입 선택 -->
+
       <div class="signup-container">
+        <!-- 회원가입 선택 -->
         <div class="tab-menu">
-          <button class="tab-link active" data-type="buyer">
-            구매회원가입
-          </button>
-          <button class="tab-link" data-type="seller">판매회원가입</button>
+          <button class="tab-link active" id="buyer-tab">구매회원가입</button>
+          <button class="tab-link" id="seller-tab">판매회원가입</button>
         </div>
 
         <!-- 폼 작성 -->
-        <div class="signup-box">
-          <form>
-            <!-- 아이디 -->
-            <div class="form-text">아이디</div>
-            <div class="input-id-group">
-              <input type="text" required />
-              <button class="id-check-btn" type="button">중복확인</button>
-            </div>
 
-            <!-- 비밀번호 -->
-            <div class="input-pw-group">
-              <div class="form-text">비밀번호</div>
-              <input type="password" required />
-            </div>
+        <form class="signup-box">
+          <!-- 아이디 -->
+          <div class="form-text">아이디</div>
+          <div class="input-id-group">
+            <input type="text" id="username" required />
+            <button class="id-check-btn" type="button">중복확인</button>
+            <span id="username-message" class="massage"></span>
+          </div>
 
-            <div class="input-pw-group">
-              <div class="form-text">비밀번호 재확인</div>
-              <input type="password" required />
-            </div>
+          <!-- 비밀번호 -->
+          <div class="input-pw-group">
+            <div class="form-text">비밀번호</div>
+            <input type="password" required />
+          </div>
 
-            <!-- 이름 -->
-            <div class="input-name-group">
-              <div class="form-text">이름</div>
-              <input type="text" required />
+          <!-- 비밀번호 재확인 -->
+          <div class="input-pw-group">
+            <div class="form-text">비밀번호 재확인</div>
+            <input type="password" required />
+          </div>
 
-              <!-- 전화번호 작성 -->
-              <div>
-                <select name="phone-number">
-                  <option value="010">010</option>
-                  <option value="011">011</option>
-                  <option value="016">016</option>
-                  <option value="017">017</option>
-                  <option value="019">019</option>
-                </select>
-                <input type="number" required />
-                <input type="number" required />
-              </div>
-            </div>
-          </form>
-        </div>
-        <label>
-          <input type="checkbox" />
-          <p>
+          <!-- 이름 -->
+          <div class="input-name-group">
+            <div class="form-text">이름</div>
+            <input type="text" required />
+          </div>
+
+          <!-- 전화번호 작성 -->
+          <div class="form-text">휴대폰번호</div>
+          <div class="input-phone-number-group">
+            <select class="number-select" name="phone-number" id="phone1">
+              <option value="010">010</option>
+              <option value="011">011</option>
+              <option value="016">016</option>
+              <option value="017">017</option>
+              <option value="019">019</option>
+            </select>
+            <input type="number" id="phone2" required />
+            <input type="number" id="phone3" required />
+          </div>
+        </form>
+
+        <!-- 하단 체크설명 및 체크상자 -->
+        <label class="agree-check-container">
+          <input type="checkbox" id="agree-check" />
+          <p class="agree-text">
             자두샵의 <span>이용약관</span> 및 <span>개인정보처리방침</span>에
             대한 내용을 확인하였고 동의합니다.
           </p>
         </label>
+        <div class="signup-btn-box">
+          <button class="signup-btn" type="submit">가입하기</button>
+        </div>
       </div>
     </div>
   </body>
