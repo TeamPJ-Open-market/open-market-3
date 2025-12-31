@@ -1,11 +1,14 @@
 :root {
   /* 배경 색상 */
   --main-bg-color: #ffffff;
-  --main-border-color: #c4c4c4;
   --disabled-tab-color: #f2f2f2;
+
+  /* 외곽선 색상 */
+  --main-border-color: #c4c4c4;
 
   /* 폰트 색상 */
   --main-text-color: #000000;
+  --white-text-color: #ffffff;
   --join-text-color: #333333;
   --sub-text-color: #767676;
   --positive-text-color: #21bf48;
@@ -14,5 +17,5 @@
   /* 버튼 색상 */
   --main-btn-color: #21bf48;
   --disabled-btn-color: #c4c4c4;
-  --btn-color: #767676;
+  --cart-btn-color: #767676;
 }
