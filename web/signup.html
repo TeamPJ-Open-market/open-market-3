@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="styles/base/reset.css" />
     <link rel="stylesheet" href="styles/base/variables.css" />
     <link rel="stylesheet" href="styles/pages/signup.css" />
-    <script defer src="js/signup.js"></script>
+    <script defer type="module" src="js/signup.js"></script>
     <title>회원가입</title>
   </head>
   <body>
@@ -32,20 +32,24 @@
           <div class="form-text">아이디</div>
           <div class="input-id-group">
             <input type="text" id="username" required />
-            <button class="id-check-btn" type="button">중복확인</button>
+            <button class="id-check-btn" type="button" id="check-username-btn">
+              중복확인
+            </button>
             <span id="username-message" class="massage"></span>
           </div>
 
           <!-- 비밀번호 -->
           <div class="input-pw-group">
             <div class="form-text">비밀번호</div>
-            <input type="password" required />
+            <input type="password" id="password" required />
+            <span id="passwordMessage" class="massage"></span>
           </div>
 
           <!-- 비밀번호 재확인 -->
           <div class="input-pw-group">
             <div class="form-text">비밀번호 재확인</div>
-            <input type="password" required />
+            <input type="password" id="passwordConfirm" required />
+            <span id="passwordConfirmMessage" class="massage"></span>
           </div>
 
           <!-- 이름 -->
