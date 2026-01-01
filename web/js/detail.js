@@ -1,14 +1,60 @@
-// 1. URL에서 product_id 추출 (장바구니에 넣을 상품 = 이 id의 상품)
+// URL에서 product_id 추출 (장바구니에 넣을 상품 = 이 id의 상품)
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get("id");
-const quantity = 1; // 기본 수량 설정
 
-// 2. 로그인 여부 판단 함수
+// 상품 정보 표시를 위한 DOM 요소들
+const productImage = document.getElementById("product-image");
+const productBrand = document.getElementById("product-brand");
+const productName = document.getElementById("product-name");
+const productPrice = document.getElementById("product-price");
+const productDelivery = document.getElementById("product-delivery");
+
+const quantityInput = document.querySelector(".product-quantity input");
+
+// API에서 한 번 받아온 데이터 저장
+let currentProduct = null;
+
+// 상품 정보, 상세 조회 + 화면 렌더링
+async function loadProduct() {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/products/${productId}`
+    );
+
+    if (!response.ok) {
+      throw new Error("상품 정보를 불러오지 못했습니다.");
+    }
+
+    const data = await response.json();
+    currentProduct = data;
+
+    // 화면 렌더링
+    productImage.src = data.image;
+    productImage.alt = data.name;
+    productBrand.textContent = data.brand;
+    productName.textContent = data.name;
+    productPrice.textContent = data.price.toLocaleString();
+    productDelivery.textContent = data.delivery;
+  } catch (error) {
+    console.error(error);
+    alert("상품 정보를 불러오는 중 오류가 발생했습니다.");
+  }
+}
+
+// 페이지 진입 시 실행
+loadProduct();
+
+// 로그인 여부 판단 함수
 function isLoggedIn() {
   return !!localStorage.getItem("accessToken");
 }
 
-// 3. GET /api/products/:product_id 호출하여 상세 정보 표시
+// 수량 관리
+function getQuantity() {
+  return Number(quantityInput.value);
+}
+
+// GET /api/products/:product_id 호출하여 상세 정보 표시
 // 장바구니 및 주문에 사용되는 데이터의 신뢰성을 위해
 // URL에서 받은 id로 서버에서 상품 정보를 다시 조회하는 것.
 async function fetchProduct() {
@@ -18,18 +64,20 @@ async function fetchProduct() {
   return response.json();
 }
 
-// 4. "바로 구매" 클릭 시
-async function handleDirectOrder() {
-  const product = await fetchProduct();
-
+// "바로 구매" 클릭 시
+function handleDirectOrder() {
   const orderData = [
     {
       order_type: "direct_order",
       product_id: product.id,
       quantity: quantity,
+
+      // product_id: currentProduct.id,
+      // quantity: getQuantity(),
       // ... 기타 정보
     },
   ];
+
   sessionStorage.setItem("orderData", JSON.stringify(orderData));
   window.location.href = "order.html";
 }
@@ -40,18 +88,21 @@ async function handleDirectOrder() {
 // 2. 성공 시 sessionStorage에도 저장
 // 3. 모달 표시 ("장바구니에 담았습니다")
 
-// 5. "장바구니" 클릭 시
+// "장바구니" 클릭 시
 async function handleAddToCart() {
-  const product = await fetchProduct();
-
   await fetch("http://localhost:3000/api/cart/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
     body: JSON.stringify({
       product_id: product.id,
       quantity: quantity,
+
+      // product_id: currentProduct.id,
+      // quantity: getQuantity(),
+      // ... 기타 정보
     }),
   });
 
@@ -104,5 +155,5 @@ document.querySelector(".btn-cart").addEventListener("click", () => {
 // 이후 모든 버튼 액션에서 동일한 기준으로 로그인 상태를 판단한다.
 
 // 버튼의 역할에 따라
-// 바로 구매는 cart 페이지로,
-// 장바구니는 order 페이지로 분기 처리한다.
+// 바로 구매는 order.html로,
+// 장바구니는 cart.html로 분기 처리한다.
