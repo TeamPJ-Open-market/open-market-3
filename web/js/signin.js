@@ -18,7 +18,6 @@ sellerTab.addEventListener("click", () => {
 });
 
 // 로그인 페이지 경고 메세지 삭제
-
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const usernameMessage = document.getElementById("username-message");
@@ -37,7 +36,7 @@ async function handleSignin(event) {
   const password = document.getElementById("password").value;
   const usernameMessage = document.getElementById("username-message");
 
-  // 기본 Validation
+  // 아이디 비밀번호 공백 경고 메세지
   if (!username && !password) {
     Validation.showMessage(
       usernameInput,
@@ -78,7 +77,12 @@ async function handleSignin(event) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.detail || "로그인에 실패했습니다.");
+      Validation.showMessage(
+        usernameInput,
+        usernameMessage,
+        "아이디 또는 비밀번호를 확인해주세요.",
+        "error"
+      );
     }
 
     // 사용자 타입 확인
@@ -104,7 +108,7 @@ async function handleSignin(event) {
     }
   } catch (error) {
     console.error("로그인 오류:", error);
-    alert(error.message || "아이디 또는 비밀번호를 확인해주세요.");
+    alert("로그인에 실패했습니다.");
   }
 }
 
