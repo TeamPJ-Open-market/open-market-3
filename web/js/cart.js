@@ -175,13 +175,29 @@ function bindEvents() {
 /**
  * 수량 변경 로직
  */
-function updateQuantity(id, newQuantity) {
-  // 비로그인 체크 없이 바로 PATCH 호출
-  fetch(`${API_URL}/cart/${id}`, {
-    method: "PATCH",
-    headers: Utils.getAuthHeaders(),
-    body: JSON.stringify({ quantity: newQuantity }),
-  }).then(loadCart);
+// 장바구니 상품 수량 수정
+async function updateQuantity(id, newQuantity) {
+  try {
+    const response = await fetch(`${API_URL}/cart/${id}/`, {
+      method: "PUT", // 명세서 규칙에 의해 PUT으로
+      headers: Utils.getAuthHeaders(), // 인증 헤더 포함 (자물쇠 아이콘 대응)
+      body: JSON.stringify({
+        quantity: newQuantity,
+        product_id: productId, // 상품의 원본 ID
+        is_active: true, // 현재 활성화 상태 전달
+      }),
+    });
+
+    if (response.ok) {
+      // 수정 성공 시 최신 데이터를 서버에서 다시 불러와 화면 갱신
+      loadCart();
+    } else {
+      const errorData = await response.json();
+      console.error("수량 수정 실패:", errorData);
+    }
+  } catch (err) {
+    console.error("네트워크 오류 발생:", err);
+  }
 }
 
 function onIncrease(e) {
@@ -212,7 +228,6 @@ function onDecrease(e) {
   const formattedPrice = Utils.formatNumber(total);
   totalPriceEl.textContent = formattedPrice;
 
-  // 피그마 디자인의 '결제 예정 금액' 부분도 업데이트
   const finalPriceEl = document.getElementById("final-price");
   if (finalPriceEl) finalPriceEl.textContent = formattedPrice;
 }
