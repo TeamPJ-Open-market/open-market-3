@@ -17,60 +17,38 @@ let cartItems = []; // 장바구니 상태 저장 (서버 데이터 형식에 �
 document.addEventListener("DOMContentLoaded", loadCart);
 
 /**
- * 장바구니 데이터 로드 (로그인/비로그인 분기)
+ * 장바구니 데이터 로드 (로그인 확인)
  */
 async function loadCart() {
+  // 1. 로그인 체크: 로그인 안 되어 있으면 로그인 페이지로 튕겨내기
+  if (!Utils.isLoggedIn()) {
+    alert("로그인이 필요한 서비스입니다.");
+    location.href = "signin.html"; // 로그인 페이지 파일명에 맞게 수정
+    return;
+  }
+
   // 초기 상태 설정
   emptyEl.style.display = "block";
   listEl.style.display = "none";
 
-  if (Utils.isLoggedIn()) {
-    // 1. 로그인 상태: 서버 API 호출
-    try {
-      const res = await fetch(`${API_URL}/cart`, {
-        headers: Utils.getAuthHeaders(),
-      });
-      const data = await res.json();
-      cartItems = data.results;
+  // 2. 로그인 상태이므로 서버 API만 호출
+  try {
+    const res = await fetch(`${API_URL}/cart`, {
+      headers: Utils.getAuthHeaders(),
+    });
+    const data = await res.json();
+    cartItems = data.results;
 
-      if (cartItems && cartItems.length > 0) {
-        renderCartList();
-      } else {
-        renderEmpty();
-      }
-    } catch (err) {
-      console.error("데이터 로딩 실패:", err);
-      renderEmpty();
-    }
-  } else {
-    // 2. 비로그인 상태: localStorage(guest_cart) 사용
-    const guestCart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
-
-    if (guestCart.length > 0) {
-      try {
-        // 상세 정보를 채우기 위해 각 상품 API 호출 (병렬 처리)
-        const promises = guestCart.map(async (item) => {
-          const res = await fetch(`${API_URL}/products/${item.product_id}`);
-          const productData = await res.json();
-          return {
-            id: item.product_id, // 비로그인은 product_id를 키로 사용
-            product: productData,
-            quantity: item.quantity,
-          };
-        });
-
-        cartItems = await Promise.all(promises);
-        renderCartList();
-      } catch (err) {
-        console.error("비로그인 상품 정보 로딩 실패:", err);
-        renderEmpty();
-      }
+    if (cartItems && cartItems.length > 0) {
+      renderCartList();
     } else {
       renderEmpty();
     }
+  } catch (err) {
+    console.error("데이터 로딩 실패:", err);
+    renderEmpty();
   }
 }
-
 /**
  * 빈 장바구니 화면
  */
@@ -180,26 +158,15 @@ function bindEvents() {
   if (orderBtn) orderBtn.onclick = moveToOrder;
 }
 /**
- * 수량 변경 로직 (로그인/비로그인 통합)
+ * 수량 변경 로직
  */
 function updateQuantity(id, newQuantity) {
-  if (Utils.isLoggedIn()) {
-    // 로그인: PATCH API 호출
-    fetch(`${API_URL}/cart/${id}`, {
-      method: "PATCH",
-      headers: Utils.getAuthHeaders(),
-      body: JSON.stringify({ quantity: newQuantity }),
-    }).then(loadCart);
-  } else {
-    // 비로그인: localStorage 수정
-    const guestCart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
-    const item = guestCart.find((i) => i.product_id == id);
-    if (item) {
-      item.quantity = newQuantity;
-      localStorage.setItem("guest_cart", JSON.stringify(guestCart));
-      loadCart();
-    }
-  }
+  // 비로그인 체크 없이 바로 PATCH 호출
+  fetch(`${API_URL}/cart/${id}`, {
+    method: "PATCH",
+    headers: Utils.getAuthHeaders(),
+    body: JSON.stringify({ quantity: newQuantity }),
+  }).then(loadCart);
 }
 
 function onIncrease(e) {
@@ -277,23 +244,14 @@ function closeModal() {
 
 /**
  * 케이스 1: 상품 삭제 시
- */
-function onDelete(e) {
+ */ function onDelete(e) {
   const id = e.target.closest("li").dataset.id;
 
   openModal("상품을 삭제하시겠습니까?", () => {
-    // 삭제 실행 로직
-    if (Utils.isLoggedIn()) {
-      fetch(`${API_URL}/cart/${id}`, {
-        method: "DELETE",
-        headers: Utils.getAuthHeaders(),
-      }).then(loadCart);
-    } else {
-      let guestCart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
-      guestCart = guestCart.filter((i) => i.product_id != id);
-      localStorage.setItem("guest_cart", JSON.stringify(guestCart));
-      loadCart();
-    }
+    fetch(`${API_URL}/cart/${id}`, {
+      method: "DELETE",
+      headers: Utils.getAuthHeaders(),
+    }).then(loadCart);
   });
 }
 
