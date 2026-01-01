@@ -7,11 +7,10 @@
     <!-- css -->
     <link rel="stylesheet" href="./styles/base/reset.css" />
     <link rel="stylesheet" href="./styles/base/variables.css" />
-    <link rel="stylesheet" href="./styles/pages/header.css" />
-    <link rel="stylesheet" href="./styles/pages/footer.css" />
     <link rel="stylesheet" href="./styles/pages/detail.css" />
     <!-- js -->
     <script defer src="./js/layout.js"></script>
+    <script defer src="./js/common/validation.js"></script>
   </head>
   <body>
     <main class="detail-container">
@@ -36,7 +35,7 @@
           <!-- 상품 수량 선택 -->
           <div class="product-quantity">
             <button class="btn-left minus" type="button">-</button>
-            <input type="number" value="1" min="1" />
+            <input type="number" value="1" min="1" aria-label="상품 수량" />
             <!-- <span class="count">1</span> -->
             <button class="btn-right plus" type="button">+</button>
           </div>
@@ -61,13 +60,15 @@
 
       <!-- 상품 상세 탭 영역 -->
       <section class="product-content">
-        <nav class="product-tabs">
-          <ul class="tab-menu">
-            <li class="active">상세정보</li>
-            <li>리뷰</li>
-            <li>Q&A</li>
-            <li>반품/교환정보</li>
-          </ul>
+        <nav class="product-tab-menu">
+          <button class="product-tab active" aria-selected="true">
+            상세정보
+          </button>
+          <button class="product-tab" aria-selected="false">리뷰</button>
+          <button class="product-tab" aria-selected="false">Q&A</button>
+          <button class="product-tab" aria-selected="false">
+            반품/교환정보
+          </button>
         </nav>
 
         <!-- 상세 페이지 내용 영역 -->
@@ -78,6 +79,6 @@
       </section>
     </main>
 
-    <script src="./js/detail.js"></script>
+    <script defer src="./js/detail.js"></script>
   </body>
 </html>
