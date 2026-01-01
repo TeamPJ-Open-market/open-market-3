@@ -1,3 +1,6 @@
+import { Validation } from "./common/validation.js";
+
+/// 탭 전환 (구매회원/판매회원)
 const buyerTab = document.getElementById("buyer-tab");
 const sellerTab = document.getElementById("seller-tab");
 let userType = "BUYER";
@@ -14,19 +17,53 @@ sellerTab.addEventListener("click", () => {
   userType = "SELLER";
 });
 
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const usernameMessage = document.getElementById("username-message");
+
+// 로그인 페이지
+const clearValidationMessage = () => {
+  Validation.clearMessage(usernameInput, usernameMessage);
+};
+usernameInput.addEventListener("input", clearValidationMessage);
+passwordInput.addEventListener("input", clearValidationMessage);
+
 // 로그인 처리
 async function handleSignin(event) {
   event.preventDefault();
-
+  const usernameInput = document.getElementById("username");
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
+  const usernameMessage = document.getElementById("username-message");
 
   // 기본 Validation
-  if (!username || !password) {
-    alert("아이디와 비밀번호를 입력해주세요.");
+  if (!username && !password) {
+    Validation.showMessage(
+      usernameInput,
+      usernameMessage,
+      "아이디와 비밀번호를 입력해 주세요.",
+      "error"
+    );
+    return;
+  } else if (!username) {
+    Validation.showMessage(
+      usernameInput,
+      usernameMessage,
+      "아이디를 입력해 주세요.",
+      "error"
+    );
+    return;
+  } else if (!password) {
+    Validation.showMessage(
+      usernameInput,
+      usernameMessage,
+      "비밀번호를 입력해 주세요.",
+      "error"
+    );
     return;
   }
 
+  //config.js를 활용했을때 fetch(`${API_URL}/accounts/signin/`, 수정
   try {
     const response = await fetch("http://localhost:3000/api/accounts/signin", {
       method: "POST",

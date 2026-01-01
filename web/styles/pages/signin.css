@@ -60,6 +60,7 @@
   border: none;
   border-bottom: 1px solid var(--main-border-color);
   outline: none;
+  font-size: 16px;
 }
 
 /* 초록색 로그인 버튼 */
