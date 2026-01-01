@@ -43,6 +43,15 @@
   margin: -1px 0;
 }
 
+.error {
+  color: var(--negative-text-color);
+}
+
+input.error {
+  color: unset;
+  border-color: var(--negative-text-color);
+}
+
 /* 로그인 박스 테두리 */
 .login-box {
   border: 1px solid var(--main-border-color);

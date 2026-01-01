@@ -17,11 +17,12 @@ sellerTab.addEventListener("click", () => {
   userType = "SELLER";
 });
 
+// 로그인 페이지 경고 메세지 삭제
+
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const usernameMessage = document.getElementById("username-message");
 
-// 로그인 페이지
 const clearValidationMessage = () => {
   Validation.clearMessage(usernameInput, usernameMessage);
 };
