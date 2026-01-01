@@ -10,55 +10,55 @@
     <script defer src="/js/layout.js"></script>
   </head>
   <body>
-    <h2 class="title">장바구니</h2>
-    <div class="cart-header">
-      <div class="col-check">
-        <label class="check-container">
-          <input type="checkbox" id="check-all" checked />
-          <span class="custom-checkbox"></span>
-        </label>
+    <div class="cart-container">
+      <h2 class="title">장바구니</h2>
+      <div class="cart-header">
+        <div class="col-check">
+          <label class="check-container">
+            <input type="checkbox" id="check-all" checked />
+            <span class="custom-checkbox"></span>
+          </label>
+        </div>
+        <div class="col-info">상품정보</div>
+        <div class="col-qty">수량</div>
+        <div class="col-price">상품금액</div>
       </div>
-      <div class="col-info">상품정보</div>
-      <div class="col-qty">수량</div>
-      <div class="col-price">상품금액</div>
-    </div>
-    <div id="cart-empty" style="display: none">
-      <h3>장바구니에 담긴 상품이 없습니다.</h3>
-      <br />
-      원하는 상품을 장바구니에 담아보세요!
-    </div>
+      <div id="cart-empty" style="display: none">
+        <strong>장바구니에 담긴 상품이 없습니다.</strong>
+        <p>원하는 상품을 장바구니에 담아보세요!</p>
+      </div>
 
-    <div id="cart-list" style="display: none">
-      <ul id="cart-items"></ul>
+      <div id="cart-list" style="display: none">
+        <ul id="cart-items"></ul>
 
-      <div class="price-summary-container">
-        <div class="summary-box">
-          <div class="summary-item">
-            <span class="label">총 상품금액</span>
-            <span class="value"><span id="total-price">0</span>원</span>
-          </div>
-          <div class="operator minus"></div>
-          <div class="summary-item">
-            <span class="label">상품 할인</span>
-            <span class="value">0원</span>
-          </div>
-          <div class="operator plus"></div>
-          <div class="summary-item">
-            <span class="label">배송비</span>
-            <span class="value">0원</span>
-          </div>
-          <div class="summary-item total">
-            <span class="label">결제 예정 금액</span>
-            <span class="value"><span id="final-price">0</span>원</span>
+        <div class="price-summary-container">
+          <div class="summary-box">
+            <div class="summary-item">
+              <span class="label">총 상품금액</span>
+              <span class="value"><span id="total-price">0</span>원</span>
+            </div>
+            <div class="operator minus"></div>
+            <div class="summary-item">
+              <span class="label">상품 할인</span>
+              <span class="value">0원</span>
+            </div>
+            <div class="operator plus"></div>
+            <div class="summary-item">
+              <span class="label">배송비</span>
+              <span class="value">0원</span>
+            </div>
+            <div class="summary-item total">
+              <span class="label">결제 예정 금액</span>
+              <span class="value"><span id="final-price">0</span>원</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="order-btn-container">
-        <button id="order-btn">주문하기</button>
+        <div class="order-btn-container">
+          <button id="order-btn">주문하기</button>
+        </div>
       </div>
     </div>
-
     <div id="modal-overlay">
       <div class="modal-container">
         <button class="modal-close-x" id="modal-close-x">&times;</button>

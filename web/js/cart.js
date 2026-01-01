@@ -49,6 +49,7 @@ async function loadCart() {
     renderEmpty();
   }
 }
+
 /**
  * 빈 장바구니 화면
  */
@@ -156,6 +157,20 @@ function bindEvents() {
 
   // 5. 하단 주문하기 버튼
   if (orderBtn) orderBtn.onclick = moveToOrder;
+
+  // 6. 개별 상품 '주문하기' 버튼 이벤트 추가
+  itemsEl.querySelectorAll(".order-item-btn").forEach((btn) => {
+    btn.onclick = (e) => {
+      // 클릭한 버튼이 속한 li 요소에서 상품 ID 추출
+      const id = e.target.closest("li").dataset.id;
+
+      // 해당 상품 ID 하나만 배열에 담아 로컬 스토리지에 저장
+      localStorage.setItem("order_items", JSON.stringify([id]));
+
+      // 주문서 페이지로 이동
+      location.href = "order.html";
+    };
+  });
 }
 /**
  * 수량 변경 로직
@@ -259,31 +274,21 @@ function closeModal() {
  * 케이스 2: 주문하기 클릭 시 (로그인 체크)
  */
 function moveToOrder() {
-  if (!Utils.isLoggedIn()) {
-    openModal(
-      "로그인이 필요한 서비스입니다.\n로그인 하시겠습니까?",
-      () => {
-        location.href = "signin.html";
-      },
-      "예",
-      "아니오"
-    );
-    return;
-  }
-
-  // 로그인 된 경우 주문 로직 진행...
+  // 1. 선택된 상품 ID 수집
   const selectedIds = [];
   itemsEl.querySelectorAll("li").forEach((li) => {
-    if (li.querySelector(".item-check").checked)
+    if (li.querySelector(".item-check").checked) {
       selectedIds.push(li.dataset.id);
+    }
   });
 
+  // 2. 선택된 상품이 없는 경우 안내 모달 노출
   if (selectedIds.length === 0) {
     openModal("주문할 상품을 선택해주세요.", () => {}, "확인", "");
-    modalBtnNo.style.display = "none"; // 버튼이 하나만 필요한 경우
     return;
   }
 
+  // 3. 선택된 상품 정보를 로컬 스토리지에 담아 주문서 페이지로 이동
   localStorage.setItem("order_items", JSON.stringify(selectedIds));
   location.href = "order.html";
 }
