@@ -1,5 +1,5 @@
 /* =========================
-   1. 기본 설정 (모든 기기 공통)
+   1. 기본 설정 
 ========================= */
 * {
   box-sizing: border-box;
@@ -21,6 +21,13 @@ body {
   padding: 0 15px;
 }
 
+/* JS 제어용 (!important 없이 우선순위 강화) */
+#cart-container.is-hidden,
+#cart-empty.is-hidden,
+#cart-list.is-hidden {
+  display: none;
+}
+
 .title {
   font-size: 24px;
   font-weight: bold;
@@ -28,16 +35,11 @@ body {
   text-align: center;
 }
 
-#cart-container.is-hidden {
-  display: none;
-}
-
 /* =========================
    2. [모바일 기본] 장바구니 리스트
 ========================= */
-
 .cart-header {
-  display: flex; /* 기존 display: none 삭제 */
+  display: flex;
   align-items: center;
   background-color: var(--disabled-tab-color);
   border-radius: 10px;
@@ -48,12 +50,11 @@ body {
 
 .cart-header div {
   text-align: center;
-  font-size: 14px; /* 모바일은 글씨를 조금 작게 */
+  font-size: 14px;
   font-weight: bold;
   flex: 1;
 }
 
-/* 체크박스 영역 비중 조절 */
 .cart-header .col-check {
   flex: 0.5;
   display: flex;
@@ -63,12 +64,12 @@ body {
 .cart-header .col-info {
   flex: 2;
 }
+
 #cart-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   text-align: center;
   padding: 60px 0;
   background-color: var(--main-bg-color);
@@ -89,7 +90,7 @@ body {
 
 .cart-item {
   display: flex;
-  flex-direction: row; /* 세로 정렬 */
+  flex-direction: row; /* 기존대로 가로 유지 */
   background-color: var(--main-bg-color);
   border: 1px solid var(--main-border-color);
   border-radius: 10px;
@@ -99,7 +100,6 @@ body {
   position: relative;
 }
 
-/* 상품 정보 구역 */
 .col-info {
   display: flex;
   align-items: center;
@@ -108,7 +108,7 @@ body {
 }
 
 .cart-img {
-  width: 80px; /* 모바일에 맞는 적당한 크기 */
+  width: 80px;
   height: 80px;
   border-radius: 8px;
   object-fit: cover;
@@ -131,7 +131,6 @@ body {
   font-size: 15px;
 }
 
-/* 수량 및 가격 구역을 모바일에서는 한 줄로 배치 */
 .col-qty,
 .col-price {
   display: flex;
@@ -156,6 +155,8 @@ body {
   justify-content: center;
   align-items: center;
   background: var(--main-bg-color);
+  border: none;
+  cursor: pointer;
 }
 
 .item-total-price {
@@ -170,6 +171,7 @@ body {
   padding: 6px 15px;
   border-radius: 5px;
   font-size: 13px;
+  cursor: pointer;
 }
 
 .item-delete-btn {
@@ -180,138 +182,12 @@ body {
   border: none;
   font-size: 20px;
   color: var(--main-border-color);
+  cursor: pointer;
 }
 
 /* =========================
-   3. [PC 환경] 미디어 쿼리 (768px 이상)
+   3. 가격 요약 및 주문 버튼
 ========================= */
-@media (min-width: 768px) {
-  .title {
-    font-size: 32px;
-  }
-  .cart-header {
-    padding: 15px 0;
-    margin-bottom: 10px;
-    /* display: flex는 이미 상단에서 정의했으므로 중복 선언 불필요 */
-  }
-
-  .cart-header div {
-    font-size: 16px; /* PC에서는 다시 크게 */
-  }
-
-  .cart-header .col-info {
-    flex: 3; /* PC에서는 상품정보를 더 넓게 */
-  }
-
-  /* 체크박스 위치를 상품 리스트와 수직으로 맞춤 */
-  .cart-header .col-check {
-    flex: 0.5;
-    padding-left: 0;
-  }
-
-  /* 아이템 가로 배치로 변경 */
-  .cart-item {
-    flex-direction: row;
-    padding: 20px 0;
-
-    align-items: center;
-  }
-
-  .col-info {
-    flex: 3;
-    padding-left: 30px;
-    margin-bottom: 0;
-  }
-
-  .cart-img {
-    width: 140px;
-    height: 140px;
-  }
-
-  .col-qty {
-    flex: 1;
-    display: flex;
-    border-top: none;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .col-price {
-    flex: 1;
-    border-top: none;
-    display: flex;
-    flex-direction: column; /* 가격 아래에 버튼 배치 */
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .item-delete-btn {
-    top: 20px;
-    right: 20px;
-  }
-}
-/* 모달 내부 상세 디자인 추가 */
-
-#modal-overlay {
-  display: none; /* 평소에는 숨김 */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  justify-content: center;
-  align-items: center;
-}
-.modal-container {
-  background-color: var(--main-bg-color);
-  padding: 30px;
-  border-radius: 10px;
-  text-align: center;
-  position: relative;
-  width: 90%;
-  max-width: 400px; /* 모바일에서도 안 찌그러지게 */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.modal-content p {
-  font-size: 18px;
-  margin-bottom: 25px;
-  line-height: 1.5;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.modal-footer button {
-  padding: 10px 30px;
-  border-radius: 5px;
-  border: 1px solid var(--main-border-color);
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.btn-primary {
-  background-color: var(--main-btn-color);
-  color: var(--main-bg-color);
-  border: none !important;
-}
-.modal-close-x {
-  position: absolute;
-  top: 15px; /* 위에서 15px */
-  right: 15px; /* 오른쪽에서 15px */
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #999;
-  cursor: pointer;
-  line-height: 1; /* 위치 정렬을 위해 추가 */
-}
 .price-summary-container {
   background-color: var(--disabled-tab-color);
   border-radius: 10px;
@@ -336,19 +212,15 @@ body {
 
 .summary-item .label {
   font-size: 16px;
-  color: #333;
 }
-
 .summary-item .value {
   font-size: 24px;
   font-weight: 700;
 }
-
 .summary-item.total .value {
-  color: var(--negative-text-color); /* 결제 예정 금액 강조색 */
+  color: var(--negative-text-color);
 }
 
-/* 연산자 (마이너스, 플러스 아이콘) */
 .operator {
   width: 34px;
   height: 34px;
@@ -360,11 +232,11 @@ body {
 .operator.minus::after {
   content: "";
   position: absolute;
+  top: 50%;
+  left: 50%;
   width: 12px;
   height: 2px;
   background: #bdbdbd;
-  top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
 }
 
@@ -372,9 +244,9 @@ body {
 .operator.plus::after {
   content: "";
   position: absolute;
-  background: #bdbdbd;
   top: 50%;
   left: 50%;
+  background: #bdbdbd;
   transform: translate(-50%, -50%);
 }
 .operator.plus::before {
@@ -386,7 +258,6 @@ body {
   height: 12px;
 }
 
-/* 주문하기 버튼 컨테이너 */
 .order-btn-container {
   display: flex;
   justify-content: center;
@@ -405,29 +276,28 @@ body {
   font-weight: 700;
   cursor: pointer;
 }
-/* 1. 기본 체크박스 숨기기 */
+
+/* =========================
+   4. 체크박스 커스텀
+========================= */
 .check-container input {
   display: none;
 }
 
-/* 2. 체크박스 테두리 (기본 상태) */
 .custom-checkbox {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px solid var(--checkbox-bg-color); /* 초록색 테두리 */
-  border-radius: 50%; /* 원형으로 만들기 */
+  border: 2px solid var(--checkbox-bg-color);
+  border-radius: 50%;
   position: relative;
   cursor: pointer;
-  background-color: var(--main-bg-color);
 }
 
-/* 3. 체크되었을 때의 상태 (가운데 초록 점 또는 체크 표시) */
 .check-container input:checked + .custom-checkbox {
-  background-color: var(--checkbox-bg-color); /* 전체 초록색으로 채움 */
+  background-color: var(--checkbox-bg-color);
 }
 
-/* 4. 체크되었을 때 안쪽에 흰색 체크 모양(V) 넣기 */
 .check-container input:checked + .custom-checkbox::after {
   content: "";
   position: absolute;
@@ -438,4 +308,56 @@ body {
   border: solid var(--checkbox-check-color);
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
+}
+
+/* =========================
+   5. [PC 환경] 미디어 쿼리 (768px 이상)
+========================= */
+@media (min-width: 768px) {
+  .title {
+    font-size: 32px;
+  }
+  .cart-header div {
+    font-size: 16px;
+  }
+  .cart-header .col-info {
+    flex: 3;
+  }
+  .cart-header .col-check {
+    flex: 0.5;
+    padding-left: 0;
+  }
+
+  .cart-item {
+    padding: 20px 0;
+  }
+  .col-info {
+    flex: 3;
+    padding-left: 30px;
+  }
+  .cart-img {
+    width: 140px;
+    height: 140px;
+  }
+
+  .col-qty {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .col-price {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .item-delete-btn {
+    top: 20px;
+    right: 20px;
+  }
 }
