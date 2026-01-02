@@ -157,3 +157,11 @@ input:focus {
   background-color: var(--disabled-btn-color);
   cursor: pointer;
 }
+
+.error {
+  border-color: var(--negative-border-color);
+}
+
+.success {
+  border-color: var(--positive-border-color);
+}

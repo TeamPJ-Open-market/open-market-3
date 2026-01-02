@@ -75,26 +75,8 @@ async function checkUsername() {
       }
     );
 
+    // 아이디 중복 확인 메시지 출력
     const data = await response.json();
-    console.log("받은 data", data);
-    console.log("받은 data", data.value);
-
-    // -------------------------------------------------------------------todo
-    // if (response.ok) {
-    //   Validation.showMessage(
-    //     usernameInput,
-    //     usernameMessage,
-    //     "이미 사용 중인 아이디입니다.",
-    //     "error"
-    //   );
-    //   isUsernameChecked = true;
-    // } else {
-    //   Validation.showMessage(
-    //     usernameInput,
-    //     usernameMessage,
-    //     "사용 가능한 아이디입니다.",
-    //     "success"
-    //   );
     if (data.message) {
       Validation.showMessage(
         usernameInput,
@@ -166,11 +148,26 @@ function validatePassword() {
   return true;
 }
 
+const phoneCheck = document.querySelector(".input-phone-number-group");
+
+phoneCheck.addEventListener("input", (e) => {
+  if (e.target.tagName === "INPUT") {
+    validatePhone();
+  }
+});
+
 // 전화번호 Validation
 function validatePhone() {
   const phone1 = document.getElementById("phone1").value;
   const phone2 = document.getElementById("phone2").value;
   const phone3 = document.getElementById("phone3").value;
+  const phoneInput = document.getElementById("phone1");
+  const phoneMessage = document.getElementById("phoneMessage");
+
+  if (phone2 === "" || phone3 === "") {
+    Validation.clearMessage(phoneInput, phoneMessage);
+    return false;
+  }
 
   if (!Validation.isValidPhone(phone1, phone2, phone3)) {
     Validation.showMessage(
@@ -180,8 +177,9 @@ function validatePhone() {
       "error"
     );
     return false;
+  } else {
+    Validation.showMessage(phoneInput, phoneMessage, "", "success");
   }
-
   return true;
 }
 
