@@ -37,127 +37,162 @@
 /*----------------------------------------------------------------------------
 
 
-
-
-/* 1. 컨테이너: 시안의 기준 너비 1280px 설정 */
-.container {
-  width: 1280px;
-  padding: 16px 8px;
-  height: 691px;
-  left: 320px;
-}
-
-/* 2. 섹션 공통 스타일 */
+/* 섹션 전체 너비 및 상단 간격 */
 .form-section {
-  width: 100%;
-  margin-top: 40px; /* 섹션 간 상단 간격 */
+  width: 1280px; /* 피그마 박스 너비 */
+  margin: 0 auto;
+  padding-bottom: 60px;
 }
 
-/* 섹션 대제목 (배송정보 등) */
+/* '배송정보' 대제목: 굵은 아래선 */
 .form-section h3 {
   font-size: 24px;
   font-weight: 700;
+  color: var(--main-text-color);
   padding-bottom: 18px;
   border-bottom: 2px solid var(--main-border-color);
-  margin-bottom: 40px;
+  margin-bottom: 0;
 }
 
-/* 3. 정보 그룹 (주문자 정보 / 배송지 정보) */
+/* '주문자 정보 / 배송지 정보' 소제목 */
 .form-group-title {
   font-size: 18px;
   font-weight: 500;
-  padding-bottom: 12px;
-  border-bottom: 2px solid var(--main-border-color); /* 얇은 회색 선 */
-  margin-top: 40px;
-  margin-bottom: 0; /* 아래행과 바로 붙도록 설정 */
+  color: var(--join-text-color);
+  padding: 12px 0;
+  border-bottom: 2px solid var(--main-border-color);
+  margin-bottom: 0;
 }
 
-/* 4. 입력 행 (Row) 스타일 */
+/* 각 입력 행: Flex 레이아웃으로 줄맞춤 */
 .form-row {
   display: flex;
   align-items: center;
-  padding: 12px 0; /* 행 간의 수직 간격 */
-  border-bottom: 1px solid var(--light-border-color); /* 행 사이 구분선 */
+  padding: 12px 0;
+  border-bottom: 1px solid var(--light-border-color); /* 행 사이 연한 선 */
 }
 
-/* 라벨 너비 고정으로 인풋창 세로 줄맞춤 */
+/* [핵심] 라벨 너비 고정: 모든 인풋의 왼쪽 시작점을 일직선으로 맞춤 */
 .form-row label {
-  width: 170px; /* 피그마 라벨 영역 너비 반영 */
+  width: 170px; /* 피그마에서 측정한 라벨 영역 너비 */
   font-size: 16px;
   color: var(--main-text-color);
+  flex-shrink: 0;
 }
 
-/* 5. 입력창(Input) 세부 스타일 */
-.form-row input {
+/* 기본 인풋 스타일 */
+input[type="text"],
+input[type="email"] {
   height: 40px;
   border: 1px solid var(--main-border-color);
   border-radius: 4px;
   padding: 0 12px;
   font-size: 15px;
+  outline: none;
 }
 
-/* 이름, 이메일, 주소 등 가로로 긴 인풋 */
+/* 인풋 너비 상세 설정 */
+.input-medium {
+  width: 334px;
+} /* 이름, 이메일 등 중간 크기 */
 .input-full {
-  width: 334px; /* 시안상의 기본 인풋 너비 */
-}
+  width: 532px;
+} /* 주소, 메시지 등 긴 크기 */
 
-/* 주소 하단 상세주소창 */
-.address-inputs input {
-  width: 532px; /* 주소 입력창은 더 길게 설정 */
-  margin-top: 8px; /* 주소창들 사이 간격 */
-  display: block;
-}
-
-/* 휴대폰 번호 입력 그룹 */
+/* 휴대폰 입력 그룹 */
 .phone-inputs {
   display: flex;
   align-items: center;
-  gap: 10px; /* 인풋과 하이픈(-) 사이 간격 */
+  gap: 10px;
 }
-
 .phone-inputs input {
   width: 80px;
   text-align: center;
 }
 
-/* 6. 우편번호 조회 버튼 */
+/* 주소 입력 그룹: 세로로 쌓기 */
+.address-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.post-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.input-post {
+  width: 150px; /* 시안상의 짧은 너비 반영 */
+}
+/* 우편번호 조회 버튼 (시안의 초록색 적용) */
 .btn-post {
-  height: 40px;
+  height: 40px; /* 입력창 높이와 통일 */
   padding: 0 20px;
-  background-color: var(--main-btn-color); /* ZADU 초록색 */
+  background-color: var(--main-btn-color); /* #21bf48 */
   color: var(--white-text-color);
   border: none;
-  border-radius: 4px;
+  border-radius: 4px; /* 시안의 둥근 모서리 반영 */
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  margin-left: 10px;
+  white-space: nowrap; /* 글자가 줄바꿈되지 않게 고정 */
 }
 
+/* 마우스 올렸을 때 효과 */
 .btn-post:hover {
   opacity: 0.9;
 }
-/* 배송 메시지를 포함한 모든 입력 행 공통 */
-.form-row {
+
+/* 전체 너비 입력창 (기본주소, 상세주소) */
+.input-full {
+  width: 100%;
+  max-width: 532px; /* 시안에서 측정된 최대 너비 */
+}
+
+/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+
+/* 결제수단 섹션 전체 간격 */
+.payment-section {
+  width: 760px; /* 배송정보와 동일한 너비 반영 */
+  margin: 40px auto;
+  left: 320px;
+}
+
+/* 결제수단 타이틀 (배송정보 타이틀 스타일과 통일) */
+.payment-section h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--main-text-color);
+  padding-bottom: 18px;
+  border-bottom: 2px solid var(--main-text-color);
+  margin-bottom: 0;
+}
+
+/* 라디오 버튼들을 담는 가로 컨테이너 */
+.payment-options {
   display: flex;
   align-items: center;
-  padding: 12px 0; /* 피그마 인스펙트 기준 상하 간격 */
-  border-bottom: 1px solid var(--light-border-color);
+  gap: 20px; /* 선택지 사이의 가로 간격 */
+  padding: 18px 0;
+  border-bottom: 1px solid var(--main-border-color); /* 섹션 마무리 선 */
 }
 
-/* 라벨: 이름, 휴대폰, 이메일, 수령인, 배송주소, 배송 메시지 모두 동일한 너비 */
-.form-row label {
-  width: 170px; /* 모든 라벨의 가로폭을 통일하여 인풋창 시작점을 맞춤 */
+/* 각 결제 수단 항목 */
+.method-item {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 라디오 동그라미와 글자 사이 간격 */
+  cursor: pointer;
   font-size: 16px;
   color: var(--main-text-color);
-  flex-shrink: 0; /* 화면이 좁아져도 라벨 너비 고정 */
 }
 
-/* 배송 메시지 입력창 (전체 너비 활용) */
-.form-row .input-full {
-  width: 100%; /* 배송 메시지는 보통 길게 입력하므로 가로를 꽉 채우거나 */
-  max-width: 800px; /* 시안상의 최대 길이에 맞춰 제한할 수 있습니다 */
-  height: 40px;
-  border: 1px solid var(--main-border-color);
-  border-radius: 4px;
-  padding: 0 12px;
+/* 라디오 버튼 커스텀 (ZADU 브랜드 컬러 적용) */
+.method-item input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--main-btn-color); /* 선택 시 초록색으로 표시 */
+  cursor: pointer;
 }
