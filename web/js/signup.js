@@ -35,6 +35,7 @@ usernameInput.addEventListener("input", clearValidationMessage);
 
 // 아이디(이메일) 중복 확인
 
+let isUsernameChecked = false;
 document.addEventListener("DOMContentLoaded", () => {
   const checkBtn = document.getElementById("check-username-btn");
   checkBtn.addEventListener("click", checkUsername);
@@ -84,6 +85,7 @@ async function checkUsername() {
         data.message,
         "success"
       );
+      isUsernameChecked = true;
     } else if (data.error) {
       Validation.showMessage(
         usernameInput,
@@ -129,12 +131,12 @@ function validatePassword() {
     return false;
   }
 
-  if (password === passwordConfirm) {
+  if (password !== passwordConfirm) {
     Validation.showMessage(
       passwordConfirmInput,
       passwordConfirmMessage,
-      "비밀번호가 일치합니다.",
-      "success"
+      "비밀번호가 일치하지 않습니다.",
+      "error"
     );
     return false;
   }
@@ -142,8 +144,8 @@ function validatePassword() {
   Validation.showMessage(
     passwordConfirmInput,
     passwordConfirmMessage,
-    "비밀번호가 일치하지 않습니다.",
-    "error"
+    "비밀번호가 일치합니다.",
+    "success"
   );
   return true;
 }
@@ -202,10 +204,12 @@ async function handleBuyerSignup(e) {
   }
 
   if (!validatePassword()) {
+    alert("비밀번호를 확인 해주세요.");
     return;
   }
 
   if (!validatePhone()) {
+    alert("전화번호를 확인을 해주세요.");
     return;
   }
 
@@ -241,3 +245,9 @@ async function handleBuyerSignup(e) {
     alert(error.message);
   }
 }
+
+// 폼 제출 이벤트
+const signupForm = document.getElementById("signup-form");
+signupForm.addEventListener("submit", (e) => {
+  handleBuyerSignup(e);
+});

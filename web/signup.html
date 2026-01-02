@@ -27,7 +27,7 @@
 
         <!-- 폼 작성 -->
 
-        <form class="signup-box" novalidate>
+        <form class="signup-box" id="signup-form" novalidate>
           <!-- 아이디 -->
           <div class="form-text">아이디</div>
           <div class="input-id-group">
@@ -55,7 +55,7 @@
           <!-- 이름 -->
           <div class="input-name-group">
             <div class="form-text">이름</div>
-            <input type="text" required />
+            <input id="name" type="text" required />
           </div>
 
           <!-- 전화번호 작성 -->
@@ -87,6 +87,7 @@
             class="signup-btn"
             id="signup-agree-btn"
             type="submit"
+            form="signup-form"
             disabled
           >
             가입하기
