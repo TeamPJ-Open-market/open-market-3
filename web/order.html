@@ -65,31 +65,21 @@
             placeholder="메시지를 입력해주세요."
           />
         </div>
-      </section>
-      <section class="payment-section">
-        <h3>결제수단</h3>
-        <div class="payment-options">
-          <label class="method-item">
-            <input type="radio" name="payment" value="card" checked />
-            <span>신용/체크카드</span>
-          </label>
-          <label class="method-item">
-            <input type="radio" name="payment" value="transfer" />
-            <span>무통장 입금</span>
-          </label>
-          <label class="method-item">
-            <input type="radio" name="payment" value="phone" />
-            <span>휴대폰 결제</span>
-          </label>
-          <label class="method-item">
-            <input type="radio" name="payment" value="naver" />
-            <span>네이버페이</span>
-          </label>
-          <label class="method-item">
-            <input type="radio" name="payment" value="kakao" />
-            <span>카카오페이</span>
-          </label>
-        </div>
+        <section class="payment-method">
+          <h3>결제수단</h3>
+
+          <div class="form-row">
+            <label class="empty-label"></label>
+
+            <div class="payment-options">
+              <label><input type="radio" name="payment" /> 신용/체크카드</label>
+              <label><input type="radio" name="payment" /> 무통장입금</label>
+              <label><input type="radio" name="payment" /> 휴대폰결제</label>
+              <label><input type="radio" name="payment" /> 네이버페이</label>
+              <label><input type="radio" name="payment" /> 카카오페이</label>
+            </div>
+          </div>
+        </section>
       </section>
     </main>
 

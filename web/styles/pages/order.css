@@ -138,61 +138,48 @@ input[type="email"] {
   cursor: pointer;
   white-space: nowrap; /* 글자가 줄바꿈되지 않게 고정 */
 }
-
-/* 마우스 올렸을 때 효과 */
-.btn-post:hover {
-  opacity: 0.9;
+/* =========================
+   결제수단 영역
+========================= */
+.payment-method {
+  margin-top: 40px;
 }
 
-/* 전체 너비 입력창 (기본주소, 상세주소) */
-.input-full {
-  width: 100%;
-  max-width: 532px; /* 시안에서 측정된 최대 너비 */
+/* 결제수단 제목 */
+.payment-method h3 {
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
 }
 
-/*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-
-
-/* 결제수단 섹션 전체 간격 */
-.payment-section {
-  width: 760px; /* 배송정보와 동일한 너비 반영 */
-  margin: 40px auto;
-  left: 320px;
+/* 배송정보의 form-row 와 동일한 구조 */
+.payment-method .form-row {
+  display: flex;
+  align-items: flex-start;
 }
 
-/* 결제수단 타이틀 (배송정보 타이틀 스타일과 통일) */
-.payment-section h3 {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--main-text-color);
-  padding-bottom: 18px;
-  border-bottom: 2px solid var(--main-text-color);
-  margin-bottom: 0;
+/* label 자리 맞추기용 (배송정보 label 폭과 동일해야 함) */
+.payment-method .empty-label {
+  width: 120px; /* ← 배송정보 label 폭과 꼭 맞추기 */
+  flex-shrink: 0;
 }
 
-/* 라디오 버튼들을 담는 가로 컨테이너 */
+/* 라디오 버튼 묶음 */
 .payment-options {
   display: flex;
-  align-items: center;
-  gap: 20px; /* 선택지 사이의 가로 간격 */
-  padding: 18px 0;
-  border-bottom: 1px solid var(--main-border-color); /* 섹션 마무리 선 */
+  gap: 24px; /* 항목 간 간격 */
+  flex-wrap: wrap; /* 화면 좁아지면 줄바꿈 */
 }
 
-/* 각 결제 수단 항목 */
-.method-item {
+/* 개별 결제수단 */
+.payment-options label {
   display: flex;
   align-items: center;
-  gap: 8px; /* 라디오 동그라미와 글자 사이 간격 */
+  font-size: 14px;
   cursor: pointer;
-  font-size: 16px;
-  color: var(--main-text-color);
 }
 
-/* 라디오 버튼 커스텀 (ZADU 브랜드 컬러 적용) */
-.method-item input[type="radio"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--main-btn-color); /* 선택 시 초록색으로 표시 */
-  cursor: pointer;
+/* 라디오 버튼 간격 */
+.payment-options input[type="radio"] {
+  margin-right: 6px;
 }
