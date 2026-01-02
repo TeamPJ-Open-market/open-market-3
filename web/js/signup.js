@@ -183,6 +183,14 @@ function validatePhone() {
   return true;
 }
 
+//동의 체크박스
+
+const agreeCheck = document.getElementById("agree-check");
+const submitBtn = document.getElementById("signup-agree-btn");
+agreeCheck.addEventListener("change", () => {
+  submitBtn.disabled = !agreeCheck.checked;
+});
+
 // 구매회원 회원가입 제출
 async function handleBuyerSignup(e) {
   e.preventDefault();
