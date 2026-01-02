@@ -11,6 +11,7 @@ body {
 /* ================================================= */
 /* ================== Main Banner ================== */
 /* ================================================= */
+/* ================== Main Banner ================== */
 .main-banner {
   background: var(--disabled-tab-color);
   width: 100%;
@@ -25,63 +26,67 @@ body {
   overflow: hidden;
 }
 
-/* 슬라이드 영역 */
+/* 트랙/슬라이드가 버튼을 덮지 않게 */
 .banner-track {
-  height: 100%;
   position: relative;
+  height: 100%;
+  z-index: 1;
 }
 
 .banner-slide {
   position: absolute;
   inset: 0;
   display: none;
+  /* 슬라이드가 버튼 클릭을 막지 않게 */
+  pointer-events: none;
 }
 
 .banner-slide.is-active {
   display: block;
 }
 
-/* 좌우 버튼 */
+/* 좌우 버튼 (클릭 가능 + 손가락 커서) */
 .banner-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 10;
 
   border: 0;
-  background: transparent; /* 동그란 배경 제거 */
+  background: transparent;
   cursor: pointer;
 
-  font-size: 36px; /* < > 크기 */
+  font-size: 36px;
   font-weight: 200;
-  opacity: 0.6;
+  opacity: 0.7;
   color: var(--main-text-color);
 
-  padding: 0 16px; /* 클릭 영역만 확보 */
+  padding: 0 16px;
   line-height: 1;
+
+  /* 모바일에서 클릭 잘 되게 */
+  pointer-events: auto;
+  user-select: none;
 }
 
-/* hover 시 살짝 강조 (선택) */
 .banner-btn:hover {
-  color: #000;
+  opacity: 1;
 }
 
 .banner-btn.prev {
   left: 24px;
 }
-
 .banner-btn.next {
   right: 24px;
 }
 
-/* ================================================= */
-/* =============== Banner Indicator ================ */
-/* ================================================= */
-
+/* Indicator */
 .banner-indicator {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 10;
 
   display: flex;
   gap: 10px;
@@ -91,15 +96,13 @@ body {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-
   border: 0;
   background: #fff;
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: pointer;
   padding: 0;
 }
 
-/* 현재 슬라이드 */
 .banner-indicator .dot.is-active {
   background: #000;
   opacity: 1;
@@ -163,7 +166,13 @@ body {
   display: block;
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 }
+
+.card {
+  cursor: pointer;
+}
+
 
 .card:hover img {
   transform: translateY(-2px);
@@ -172,8 +181,6 @@ body {
 .card img {
   transition: transform 0.2s ease;
 }
-
-
 
 /* ================================================= */
 /* =================== Responsive ================== */
@@ -245,4 +252,3 @@ body {
     bottom: 14px;
   }
 }
-

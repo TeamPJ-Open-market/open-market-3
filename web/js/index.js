@@ -3,17 +3,27 @@ console.log("index.js loaded");
 const API_ORIGIN = "http://localhost:3000";
 const API_BASE = `${API_ORIGIN}/api`;
 
-// ===== 공통 레이아웃 로딩 =====
 const path = window.location.pathname;
 
-fetch("./header.html")
-  .then((res) => res.text())
-  .then((html) => document.body.insertAdjacentHTML("afterbegin", html));
+// ===== 공통 레이아웃 로딩 =====
+async function loadLayout() {
+  try {
+    const headerRes = await fetch("./header.html");
+    const headerHtml = await headerRes.text();
+    document.body.insertAdjacentHTML("afterbegin", headerHtml);
+  } catch (e) {
+    console.error("header load failed", e);
+  }
 
-if (!path.includes("login") && !path.includes("signup")) {
-  fetch("./footer.html")
-    .then((res) => res.text())
-    .then((html) => document.body.insertAdjacentHTML("beforeend", html));
+  if (!path.includes("login") && !path.includes("signup")) {
+    try {
+      const footerRes = await fetch("./footer.html");
+      const footerHtml = await footerRes.text();
+      document.body.insertAdjacentHTML("beforeend", footerHtml);
+    } catch (e) {
+      console.error("footer load failed", e);
+    }
+  }
 }
 
 // ===== 상품 목록 불러오기 =====
@@ -41,10 +51,11 @@ function renderProducts(list) {
 
   grid.innerHTML = list
     .map((p) => {
-      const imgUrl = p.image;
+      const imgUrl = p.image?.startsWith("http")
+        ? p.image
+        : new URL(p.image, window.location.href).href;
 
       const meta = p.info ?? "";
-      const storeName = p.seller?.store_name ?? "";
       const priceText = `${Number(p.price).toLocaleString()}원`;
 
       return `
@@ -61,19 +72,24 @@ function renderProducts(list) {
     .join("");
 }
 
+// ===== 메인 배너 =====
 function initBanner() {
-  const slides = document.querySelectorAll(".banner-slide");
-  const dots = document.querySelectorAll(".banner-indicator .dot");
+  const slides = [...document.querySelectorAll(".banner-slide")];
+  const dots = [...document.querySelectorAll(".banner-indicator .dot")];
   const prevBtn = document.querySelector(".banner-btn.prev");
   const nextBtn = document.querySelector(".banner-btn.next");
 
-  if (!slides.length || !prevBtn || !nextBtn || !dots.length) return;
+  if (!slides.length || !prevBtn || !nextBtn) return;
 
-  let current = 0;
+  const useDots = dots.length === slides.length;
+
+  let current = slides.findIndex((s) => s.classList.contains("is-active"));
+  if (current < 0) current = 0;
 
   function renderSlide(index) {
     slides.forEach((s, i) => s.classList.toggle("is-active", i === index));
-    dots.forEach((d, i) => d.classList.toggle("is-active", i === index));
+    if (useDots)
+      dots.forEach((d, i) => d.classList.toggle("is-active", i === index));
   }
 
   prevBtn.addEventListener("click", () => {
@@ -86,17 +102,21 @@ function initBanner() {
     renderSlide(current);
   });
 
-  dots.forEach((dot, index) => {
-    dot.addEventListener("click", () => {
-      current = index % slides.length;
-      renderSlide(current);
+  if (useDots) {
+    dots.forEach((dot, index) => {
+      dot.addEventListener("click", () => {
+        current = index;
+        renderSlide(current);
+      });
     });
-  });
+  }
 
   renderSlide(current);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  initBanner();
-  loadProducts();
+// ✅ 실행 순서 보장
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadLayout(); // header/footer 먼저
+  initBanner(); // 배너는 DOM 있어야 함
+  loadProducts(); // 상품 렌더링
 });
