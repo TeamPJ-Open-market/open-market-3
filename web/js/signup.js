@@ -24,8 +24,18 @@ const passwordConfirm = document.getElementById("passwordConfirm");
 passwordInput.addEventListener("input", validatePassword);
 passwordConfirm.addEventListener("input", validatePassword);
 
+// 로그인 페이지 경고 메세지 삭제
+const usernameInput = document.getElementById("username");
+const usernameMessage = document.getElementById("username-message");
+
+const clearValidationMessage = () => {
+  Validation.clearMessage(usernameInput, usernameMessage);
+};
+usernameInput.addEventListener("input", clearValidationMessage);
+
 // 아이디(이메일) 중복 확인
 
+let isUsernameChecked = false;
 document.addEventListener("DOMContentLoaded", () => {
   const checkBtn = document.getElementById("check-username-btn");
   checkBtn.addEventListener("click", checkUsername);
@@ -66,21 +76,21 @@ async function checkUsername() {
       }
     );
 
+    // 아이디 중복 확인 메시지 출력
     const data = await response.json();
-
-    if (response.ok && data.Success) {
+    if (data.message) {
       Validation.showMessage(
         usernameInput,
         usernameMessage,
-        "사용 가능한 아이디입니다.",
+        data.message,
         "success"
       );
       isUsernameChecked = true;
-    } else {
+    } else if (data.error) {
       Validation.showMessage(
         usernameInput,
         usernameMessage,
-        "이미 사용 중인 아이디입니다.",
+        data.error,
         "error"
       );
       isUsernameChecked = false;
@@ -121,12 +131,12 @@ function validatePassword() {
     return false;
   }
 
-  if (password === passwordConfirm) {
+  if (password !== passwordConfirm) {
     Validation.showMessage(
       passwordConfirmInput,
       passwordConfirmMessage,
-      "비밀번호가 일치합니다.",
-      "success"
+      "비밀번호가 일치하지 않습니다.",
+      "error"
     );
     return false;
   }
@@ -134,17 +144,32 @@ function validatePassword() {
   Validation.showMessage(
     passwordConfirmInput,
     passwordConfirmMessage,
-    "비밀번호가 일치하지 않습니다.",
-    "error"
+    "비밀번호가 일치합니다.",
+    "success"
   );
   return true;
 }
+
+const phoneCheck = document.querySelector(".input-phone-number-group");
+
+phoneCheck.addEventListener("input", (e) => {
+  if (e.target.tagName === "INPUT") {
+    validatePhone();
+  }
+});
 
 // 전화번호 Validation
 function validatePhone() {
   const phone1 = document.getElementById("phone1").value;
   const phone2 = document.getElementById("phone2").value;
   const phone3 = document.getElementById("phone3").value;
+  const phoneInput = document.getElementById("phone1");
+  const phoneMessage = document.getElementById("phoneMessage");
+
+  if (phone2 === "" || phone3 === "") {
+    Validation.clearMessage(phoneInput, phoneMessage);
+    return false;
+  }
 
   if (!Validation.isValidPhone(phone1, phone2, phone3)) {
     Validation.showMessage(
@@ -154,10 +179,19 @@ function validatePhone() {
       "error"
     );
     return false;
+  } else {
+    Validation.showMessage(phoneInput, phoneMessage, "", "success");
   }
-
   return true;
 }
+
+//동의 체크박스
+
+const agreeCheck = document.getElementById("agree-check");
+const submitBtn = document.getElementById("signup-agree-btn");
+agreeCheck.addEventListener("change", () => {
+  submitBtn.disabled = !agreeCheck.checked;
+});
 
 // 구매회원 회원가입 제출
 async function handleBuyerSignup(e) {
@@ -170,10 +204,12 @@ async function handleBuyerSignup(e) {
   }
 
   if (!validatePassword()) {
+    alert("비밀번호를 확인 해주세요.");
     return;
   }
 
   if (!validatePhone()) {
+    alert("전화번호를 확인을 해주세요.");
     return;
   }
 
@@ -209,3 +245,9 @@ async function handleBuyerSignup(e) {
     alert(error.message);
   }
 }
+
+// 폼 제출 이벤트
+const signupForm = document.getElementById("signup-form");
+signupForm.addEventListener("submit", (e) => {
+  handleBuyerSignup(e);
+});

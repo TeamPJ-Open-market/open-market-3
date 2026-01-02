@@ -6,6 +6,8 @@
   /* 외곽선 색상 */
   --main-border-color: #c4c4c4;
   --light-border-color: #e0e0e0;
+  --positive-border-color: #21bf48;
+  --negative-border-color: #eb5757;
 
   /* 폰트 색상 */
   --main-text-color: #000000;

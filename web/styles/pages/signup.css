@@ -149,11 +149,29 @@ input:focus {
 
 /* 회원가입 버튼 */
 .signup-btn {
+  font-size: 18px;
+  font-weight: 700;
   width: 480px;
   padding: 19px 0;
   border: none;
   border-radius: 5px;
   color: var(--white-text-color);
-  background-color: var(--disabled-btn-color);
   cursor: pointer;
+}
+
+button:disabled {
+  background-color: var(--disabled-btn-color);
+  cursor: not-allowed;
+}
+
+.signup-btn-box > button:not(:disabled) {
+  background-color: var(--main-btn-color);
+}
+
+.error {
+  border-color: var(--negative-border-color);
+}
+
+.success {
+  border-color: var(--positive-border-color);
 }
