@@ -7,11 +7,10 @@
     <!-- css -->
     <link rel="stylesheet" href="./styles/base/reset.css" />
     <link rel="stylesheet" href="./styles/base/variables.css" />
-    <link rel="stylesheet" href="./styles/pages/header.css" />
-    <link rel="stylesheet" href="./styles/pages/footer.css" />
     <link rel="stylesheet" href="./styles/pages/detail.css" />
     <!-- js -->
     <script defer src="./js/layout.js"></script>
+    <script defer src="./js/common/validation.js"></script>
   </head>
   <body>
     <main class="detail-container">
@@ -23,20 +22,30 @@
             src="./assets/images/product3.png"
             alt="딥러닝 개발자 무릎 담요"
           />
+          <!-- <img id="product-image" src="" alt="" /> -->
         </div>
         <!-- 상품 정보 -->
         <div class="product-summary">
           <span class="product-brand">백엔드글로브</span>
           <h2 class="product-name">딥러닝 개발자 무릎 담요</h2>
+          <!-- 회사 이름 -->
+          <!-- <span class="product-brand" id="product-brand"></span> -->
+          <!-- 상품 이름 -->
+          <!-- <h2 class="product-name" id="product-name"></h2> -->
           <p class="product-price">
             <strong>17,500</strong>
+            <!-- 상품 가격 -->
+            <!-- <strong id="product-price"></strong> -->
             <span class="unit">원</span>
           </p>
           <p class="product-delivery">택배배송 / 무료배송</p>
+          <!-- 택배배송 / 무료배송 -->
+          <!-- <p class="product-delivery" id="product-delivery"></p>
+ -->
           <!-- 상품 수량 선택 -->
           <div class="product-quantity">
             <button class="btn-left minus" type="button">-</button>
-            <input type="number" value="1" min="1" />
+            <input type="number" value="1" min="1" aria-label="상품 수량" />
             <!-- <span class="count">1</span> -->
             <button class="btn-right plus" type="button">+</button>
           </div>
@@ -44,9 +53,10 @@
           <div class="total-price">
             <span class="total-label">총 상품 금액</span>
             <p class="order-total">
-              총 수량 <strong>1</strong>개
+              총 수량 <strong id="total-quantity">1</strong>개
               <span class="order-price">
                 <strong class="price">17,500</strong>
+                <!-- <strong class="price" id="total-price"></strong> -->
                 <span class="unit">원</span>
               </span>
             </p>
@@ -61,13 +71,15 @@
 
       <!-- 상품 상세 탭 영역 -->
       <section class="product-content">
-        <nav class="product-tabs">
-          <ul class="tab-menu">
-            <li class="active">상세정보</li>
-            <li>리뷰</li>
-            <li>Q&A</li>
-            <li>반품/교환정보</li>
-          </ul>
+        <nav class="product-tab-menu">
+          <button class="product-tab active" aria-selected="true">
+            상세정보
+          </button>
+          <button class="product-tab" aria-selected="false">리뷰</button>
+          <button class="product-tab" aria-selected="false">Q&A</button>
+          <button class="product-tab" aria-selected="false">
+            반품/교환정보
+          </button>
         </nav>
 
         <!-- 상세 페이지 내용 영역 -->
@@ -78,6 +90,6 @@
       </section>
     </main>
 
-    <script src="./js/detail.js"></script>
+    <script defer src="./js/detail.js"></script>
   </body>
 </html>
