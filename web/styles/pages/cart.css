@@ -262,7 +262,7 @@ body {
   align-items: center;
 }
 .modal-container {
-  background-color: #fff;
+  background-color: var(--main-bg-color);
   padding: 30px;
   border-radius: 10px;
   text-align: center;
@@ -394,7 +394,7 @@ body {
   width: 220px;
   height: 68px;
   background-color: var(--main-btn-color);
-  color: #fff;
+  color: var(--white-text-color);
   border: none;
   border-radius: 5px;
   font-size: 24px;
@@ -411,16 +411,16 @@ body {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px solid #21bf48; /* 초록색 테두리 */
+  border: 2px solid var(--checkbox-bg-color); /* 초록색 테두리 */
   border-radius: 50%; /* 원형으로 만들기 */
   position: relative;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--main-bg-color);
 }
 
 /* 3. 체크되었을 때의 상태 (가운데 초록 점 또는 체크 표시) */
 .check-container input:checked + .custom-checkbox {
-  background-color: #21bf48; /* 전체 초록색으로 채움 */
+  background-color: var(--checkbox-bg-color); /* 전체 초록색으로 채움 */
 }
 
 /* 4. 체크되었을 때 안쪽에 흰색 체크 모양(V) 넣기 */
@@ -431,7 +431,7 @@ body {
   top: 2px;
   width: 5px;
   height: 10px;
-  border: solid white;
+  border: solid var(--checkbox-check-color);
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
