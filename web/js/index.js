@@ -1,81 +1,66 @@
 console.log("index.js loaded");
 
+const API_ORIGIN = "http://localhost:3000";
+const API_BASE = `${API_ORIGIN}/api`;
+
 // ===== 공통 레이아웃 로딩 =====
 const path = window.location.pathname;
 
-// header
 fetch("./header.html")
   .then((res) => res.text())
   .then((html) => document.body.insertAdjacentHTML("afterbegin", html));
 
-// footer (로그인/회원가입 제외)
 if (!path.includes("login") && !path.includes("signup")) {
   fetch("./footer.html")
     .then((res) => res.text())
     .then((html) => document.body.insertAdjacentHTML("beforeend", html));
 }
 
-// ===== 상품 데이터 =====
-const products = [
-  {
-    id: 1,
-    img: "./assets/images/product1.png",
-    meta: "우당탕탕 라이캣의 실험실",
-    name: "Hack Your Life 개발자 노트북 파우치",
-    price: "29,000원",
-  },
-  {
-    id: 2,
-    img: "./assets/images/product2.png",
-    meta: "제주코딩베이스캠프",
-    name: "네 개발잡니다 개발자키링 금속키링",
-    price: "29,000원",
-  },
-  {
-    id: 3,
-    img: "./assets/images/product3.png",
-    meta: "백엔드글로벌",
-    name: "딥러닝 개발자 무릎 담요",
-    price: "29,000원",
-  },
-  {
-    id: 4,
-    img: "./assets/images/product4.png",
-    meta: "코딩앤유",
-    name: "우당탕탕 라이캣의 실험실 스티커 팩",
-    price: "29,000원",
-  },
-  {
-    id: 5,
-    img: "./assets/images/product5.png",
-    meta: "파이썬스쿨",
-    name: "버그를 Java라 버그잡는 개리씨 키링 개발자키링...",
-    price: "29,000원",
-  },
-];
+// ===== 상품 목록 불러오기 =====
+async function loadProducts() {
+  const grid = document.querySelector("#productGrid");
+  if (!grid) return;
 
-// ✅ 함수 이름: renderProducts (이걸 호출해야 함)
+  try {
+    const res = await fetch(`${API_BASE}/products`);
+    if (!res.ok) throw new Error("products fetch failed");
+
+    const data = await res.json();
+    const list = data.results ?? [];
+
+    renderProducts(list);
+  } catch (e) {
+    console.error(e);
+    grid.innerHTML = `<li>상품을 불러오지 못했습니다.</li>`;
+  }
+}
+
 function renderProducts(list) {
   const grid = document.querySelector("#productGrid");
   if (!grid) return;
 
   grid.innerHTML = list
-    .map(
-      (p) => `
-      <li class="card">
-        <a href="./detail.html?id=${p.id}" class="product-link">
-          <img src="${p.img}" alt="${p.name}" />
-          <p class="product-meta">${p.meta}</p>
-          <p class="product-name">${p.name}</p>
-          <p class="product-price">${p.price}</p>
-        </a>
-      </li>
-    `
-    )
+    .map((p) => {
+      const imgUrl = p.image;
+
+      const meta = p.info ?? "";
+      const storeName = p.seller?.store_name ?? "";
+      const priceText = `${Number(p.price).toLocaleString()}원`;
+
+      return `
+        <li class="card">
+          <a class="product-link" href="./detail.html?id=${p.id}">
+            <img src="${imgUrl}" alt="${p.name}" />
+            <p class="product-meta">${meta}</p>
+            <p class="product-name">${p.name}</p>
+            <p class="product-price">${priceText}</p>
+          </a>
+        </li>
+      `;
+    })
     .join("");
 }
 
-// ===== 메인 배너 =====
 function initBanner() {
   const slides = document.querySelectorAll(".banner-slide");
   const dots = document.querySelectorAll(".banner-indicator .dot");
@@ -87,10 +72,8 @@ function initBanner() {
   let current = 0;
 
   function renderSlide(index) {
-    slides.forEach((slide, i) =>
-      slide.classList.toggle("is-active", i === index)
-    );
-    dots.forEach((dot, i) => dot.classList.toggle("is-active", i === index));
+    slides.forEach((s, i) => s.classList.toggle("is-active", i === index));
+    dots.forEach((d, i) => d.classList.toggle("is-active", i === index));
   }
 
   prevBtn.addEventListener("click", () => {
@@ -113,8 +96,7 @@ function initBanner() {
   renderSlide(current);
 }
 
-// ✅ DOMContentLoaded는 딱 1번만
 document.addEventListener("DOMContentLoaded", () => {
   initBanner();
-  renderProducts(products);
+  loadProducts();
 });
