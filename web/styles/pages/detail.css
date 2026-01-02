@@ -19,12 +19,25 @@ html {
   transition: all 0.5s;
   cursor: pointer;
 }
+/* 폰트 사이즈 */
+/* 36px */
+.text-size-xl {
+  font-size: 2.57rem;
+}
+/* 18px */
+.text-size-md {
+  font-size: 1.3rem;
+}
+/* 16px */
+.text-size-base {
+  font-size: 1.14rem;
+}
 
 /* MAIN */
 .detail-container {
   max-width: 1200px;
   margin: 10rem auto;
-  padding: 0 1.25rem;
+  padding: 0 1.4rem;
 }
 
 /* 상품 정보 영역 */
@@ -39,7 +52,7 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--disabled-tab-color);
+  background-color: red;
 }
 .product-image img {
   width: 100%;
@@ -49,7 +62,7 @@ html {
 .product-summary {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 0.5rem;
 }
 .product-brand {
   font-size: 1.29rem;
@@ -156,8 +169,24 @@ html {
   color: var(--positive-text-color);
 }
 
-/* 반응형 - 테블릿, PC 버전  */
-@media (min-width: 768px) {
+/* ========================================================= */
+/*                         미디어쿼리                         */
+/* ========================================================= */
+
+/* 모바일 버전  */
+@media (max-width: 767px) {
+}
+
+/* 테블릿 버전  */
+@media (min-width: 768px) and (max-width: 1089px) {
+  .product-image {
+    width: 80%;
+    margin: 0 auto;
+  }
+}
+
+/* PC 버전  */
+@media (min-width: 1090px) {
   /* 상품 정보 */
   .product-detail {
     grid-template-columns: 1fr 1fr;
