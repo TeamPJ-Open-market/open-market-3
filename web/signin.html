@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="styles/base/reset.css" />
     <link rel="stylesheet" href="styles/base/variables.css" />
     <link rel="stylesheet" href="styles/pages/signin.css" />
-    <script defer src="js/signin.js"></script>
+    <script defer type="module" src="js/signin.js"></script>
     <title>login page</title>
   </head>
   <body>
@@ -27,7 +27,7 @@
 
         <!-- 아이디 비밀번호 로그인버튼 -->
         <div class="login-box">
-          <form id="signin-form">
+          <form id="signin-form" novalidate>
             <div class="input-group">
               <input type="text" id="username" placeholder="아이디" required />
             </div>
@@ -39,14 +39,14 @@
                 required
               />
             </div>
-            <span></span>
+            <span id="username-message"></span>
             <button type="submit" class="login-btn">로그인</button>
           </form>
         </div>
       </div>
 
       <!-- 회원가입 링크 -->
-      <a href="signup.html">회원가입 | 비밀번호 찾기</a>
+      <a class="signup-link" href="signup.html">회원가입 | 비밀번호 찾기</a>
     </div>
   </body>
 </html>
