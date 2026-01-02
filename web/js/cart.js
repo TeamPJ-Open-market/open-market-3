@@ -4,7 +4,7 @@ const listEl = document.getElementById("cart-list");
 const itemsEl = document.getElementById("cart-items");
 const totalPriceEl = document.getElementById("total-price");
 const orderBtn = document.getElementById("order-btn");
-
+const containerEl = document.getElementById("cart-container");
 // 모달 관련 요소
 const modalOverlay = document.getElementById("modal-overlay");
 const modalText = document.getElementById("modal-text");
@@ -20,11 +20,35 @@ document.addEventListener("DOMContentLoaded", loadCart);
  * 장바구니 데이터 로드 (로그인 확인)
  */
 async function loadCart() {
-  // 1. 로그인 체크: 로그인 안 되어 있으면 로그인 페이지로 튕겨내기
+  // [STEP 1] 로그인 체크
   if (!Utils.isLoggedIn()) {
-    alert("로그인이 필요한 서비스입니다.");
-    location.href = "signin.html";
-    return;
+    // HTML/CSS에서 이미 container가 is-hidden 상태이므로
+    // 여기서는 아무것도 노출하지 않고 모달만 띄웁니다.
+    openModal(
+      "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
+      () => {
+        location.href = "signin.html";
+      },
+      "로그인하기",
+      "취소"
+    );
+
+    // 모달에서 '취소'를 누를 경우의 처리
+    modalBtnNo.onclick = () => {
+      location.href = "index.html";
+    };
+    // 2. 상단 X 버튼을 눌렀을 때도 메인으로!
+    modalCloseX.onclick = () => {
+      location.href = "index.html";
+    };
+
+    // 3. 모달 배경(어두운 부분)을 클릭했을 때도 메인으로!
+    modalOverlay.onclick = (e) => {
+      if (e.target === modalOverlay) {
+        location.href = "index.html";
+      }
+    };
+    return; // 이후 로직 실행 중단
   }
 
   // 초기 상태 설정
@@ -39,6 +63,10 @@ async function loadCart() {
     const data = await res.json();
     cartItems = data.results;
 
+    // [STEP 3] 데이터 로드 완료 후 화면 노출
+    // 데이터가 성공적으로 왔으니 부모 컨테이너의 숨김을 해제합니다.
+    containerEl.classList.remove("is-hidden");
+
     if (cartItems && cartItems.length > 0) {
       renderCartList();
     } else {
@@ -46,24 +74,25 @@ async function loadCart() {
     }
   } catch (err) {
     console.error("데이터 로딩 실패:", err);
+    // 에러 발생 시에도 컨테이너는 보여주되 빈 화면이나 에러 문구를 노출
+    containerEl.classList.remove("is-hidden");
     renderEmpty();
   }
 }
-
 /**
  * 빈 장바구니 화면
  */
 function renderEmpty() {
-  emptyEl.style.display = "block";
-  listEl.style.display = "none";
+  emptyEl.classList.add("is-hidden");
+  listEl.classList.remove("is-hidden");
 }
 
 /**
  * 장바구니 리스트 렌더링
  */
 function renderCartList() {
-  emptyEl.style.display = "none";
-  listEl.style.display = "block";
+  emptyEl.classList.add("is-hidden");
+  listEl.classList.remove("is-hidden");
 
   itemsEl.innerHTML = "";
   cartItems.forEach((item) => {

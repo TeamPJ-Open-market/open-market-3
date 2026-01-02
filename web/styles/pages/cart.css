@@ -28,6 +28,10 @@ body {
   text-align: center;
 }
 
+#cart-container.is-hidden {
+  display: none;
+}
+
 /* =========================
    2. [모바일 기본] 장바구니 리스트
 ========================= */
