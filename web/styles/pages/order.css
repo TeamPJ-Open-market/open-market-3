@@ -1,230 +1,163 @@
-/* 2. 기본 초기화 */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* 1. 디자인 시스템 정의 (제공해주신 루트 적용) */
+:root {
+  /* 배경 색상 */
+  --main-bg-color: #ffffff;
+  --disabled-tab-color: #f2f2f2;
+
+  /* 외곽선 색상 */
+  --main-border-color: #c4c4c4;
+  --light-border-color: #e0e0e0;
+
+  /* 폰트 색상 */
+  --main-text-color: #000000;
+  --white-text-color: #ffffff;
+  --join-text-color: #333333;
+  --sub-text-color: #767676;
+  --positive-text-color: #21bf48;
+  --negative-text-color: #eb5757;
+
+  /* 버튼 색상 */
+  --main-btn-color: #21bf48;
+  --disabled-btn-color: #c4c4c4;
+  --cart-btn-color: #767676;
+
+  /* 체크박스 색상 */
+  --checkbox-bg-color: #21bf48;
+  --checkbox-check-color: #ffffff;
 }
 
-body {
-  font-family: sans-serif;
-  color: var(--color-text-main);
-  line-height: 1.5;
-  padding-bottom: 100px;
-}
-
-.container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-/* 3. Header & Title */
-.header {
-  padding: 20px 0;
-  border-bottom: var(--border-light);
-  margin-bottom: 30px;
-}
-
-.header-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo img {
-  height: 40px;
-  width: auto;
-  display: block;
-}
-
+/* 3. 주문/결제하기 */
 .page-title {
+  font-size: 36px; /* 피그마 크기 */
+  font-weight: 700; /* 피그마 굵기 */
   text-align: center;
-  margin: 40px 0;
+  margin-bottom: 50px; /* 상단/하단 여백 */
+  line-height: 44px; /* 행간 */
+}
+/*----------------------------------------------------------------------------
+
+
+
+
+/* 1. 컨테이너: 시안의 기준 너비 1280px 설정 */
+.container {
+  width: 1280px;
+  padding: 16px 8px;
+  height: 691px;
+  left: 320px;
+}
+
+/* 2. 섹션 공통 스타일 */
+.form-section {
+  width: 100%;
+  margin-top: 40px; /* 섹션 간 상단 간격 */
+}
+
+/* 섹션 대제목 (배송정보 등) */
+.form-section h3 {
   font-size: 24px;
+  font-weight: 700;
+  padding-bottom: 18px;
+  border-bottom: 2px solid var(--main-border-color);
+  margin-bottom: 40px;
 }
 
-/* 4. Layout */
-.checkout-layout {
-  display: flex;
-  gap: 30px;
-  align-items: flex-start;
-}
-
-.checkout-main {
-  flex: 1;
-}
-
-.checkout-sidebar {
-  width: 320px;
-  position: sticky;
-  top: 20px;
-}
-
-/* 5. Product Table */
-.product-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.product-table th {
-  background: var(--color-bg-light);
-  padding: 12px;
-  border-top: var(--border-header);
-  font-size: 14px;
-}
-
-.product-table td {
-  padding: 20px 10px;
-  border-bottom: var(--border-light);
-  text-align: center;
-}
-
-.product-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  text-align: left;
-}
-
-.product-img {
-  width: 80px;
-  height: 80px;
-  background: var(--color-bg-img);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.product-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.brand {
-  color: var(--color-text-sub);
-  font-size: 12px;
-}
-
-.name {
-  font-weight: bold;
-  font-size: 14px;
-  margin: 4px 0;
-}
-
-.total-order-price {
-  text-align: right;
-  margin-top: 15px;
-  font-weight: bold;
-}
-
-.total-order-price span {
-  color: var(--color-accent);
-  font-size: 20px;
-}
-
-/* 6. Forms */
-section {
-  margin-bottom: 50px;
-}
-
-h3 {
-  border-bottom: var(--border-header);
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-}
-
+/* 3. 정보 그룹 (주문자 정보 / 배송지 정보) */
 .form-group-title {
-  font-weight: bold;
-  margin-bottom: 15px;
-  border-bottom: var(--border-light);
-  padding-bottom: 5px;
+  font-size: 18px;
+  font-weight: 500;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--main-border-color); /* 얇은 회색 선 */
+  margin-top: 40px;
+  margin-bottom: 0; /* 아래행과 바로 붙도록 설정 */
 }
 
+/* 4. 입력 행 (Row) 스타일 */
 .form-row {
   display: flex;
-  margin-bottom: 10px;
   align-items: center;
+  padding: 12px 0; /* 행 간의 수직 간격 */
+  border-bottom: 1px solid var(--light-border-color); /* 행 사이 구분선 */
 }
 
+/* 라벨 너비 고정으로 인풋창 세로 줄맞춤 */
 .form-row label {
-  width: 100px;
-  font-size: 14px;
+  width: 170px; /* 피그마 라벨 영역 너비 반영 */
+  font-size: 16px;
+  color: var(--main-text-color);
 }
 
+/* 5. 입력창(Input) 세부 스타일 */
 .form-row input {
-  flex: 1;
-  padding: 8px;
-  border: var(--border-input);
-  border-radius: var(--radius-sm);
+  height: 40px;
+  border: 1px solid var(--main-border-color);
+  border-radius: 4px;
+  padding: 0 12px;
+  font-size: 15px;
+}
+
+/* 이름, 이메일, 주소 등 가로로 긴 인풋 */
+.input-full {
+  width: 334px; /* 시안상의 기본 인풋 너비 */
+}
+
+/* 주소 하단 상세주소창 */
+.address-inputs input {
+  width: 532px; /* 주소 입력창은 더 길게 설정 */
+  margin-top: 8px; /* 주소창들 사이 간격 */
+  display: block;
+}
+
+/* 휴대폰 번호 입력 그룹 */
+.phone-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 인풋과 하이픈(-) 사이 간격 */
 }
 
 .phone-inputs input {
-  width: 60px !important;
-  flex: none;
+  width: 80px;
   text-align: center;
 }
 
+/* 6. 우편번호 조회 버튼 */
 .btn-post {
-  background: var(--color-primary);
-  color: white;
+  height: 40px;
+  padding: 0 20px;
+  background-color: var(--main-btn-color); /* ZADU 초록색 */
+  color: var(--white-text-color);
   border: none;
-  padding: 0 15px;
+  border-radius: 4px;
+  font-weight: 500;
   cursor: pointer;
-  border-radius: var(--radius-sm);
-  height: 35px;
+  margin-left: 10px;
 }
 
-/* 7. Payment Options */
-.payment-options {
+.btn-post:hover {
+  opacity: 0.9;
+}
+/* 배송 메시지를 포함한 모든 입력 행 공통 */
+.form-row {
   display: flex;
-  gap: 15px;
-  padding: 15px;
-  border: var(--border-light);
-  flex-wrap: wrap;
+  align-items: center;
+  padding: 12px 0; /* 피그마 인스펙트 기준 상하 간격 */
+  border-bottom: 1px solid var(--light-border-color);
 }
 
-/* 8. Sidebar Summary */
-.summary-box {
-  border: 2px solid var(--color-primary);
-  border-radius: var(--radius-lg);
-  padding: 20px;
+/* 라벨: 이름, 휴대폰, 이메일, 수령인, 배송주소, 배송 메시지 모두 동일한 너비 */
+.form-row label {
+  width: 170px; /* 모든 라벨의 가로폭을 통일하여 인풋창 시작점을 맞춤 */
+  font-size: 16px;
+  color: var(--main-text-color);
+  flex-shrink: 0; /* 화면이 좁아져도 라벨 너비 고정 */
 }
 
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-.summary-row.total {
-  border-top: var(--border-light);
-  padding-top: 15px;
-  margin-top: 15px;
-  font-weight: bold;
-}
-
-.total-price {
-  color: var(--color-accent);
-  font-size: 24px;
-}
-
-.btn-submit {
-  width: 100%;
-  padding: 15px;
-  background: #cccccc; /* 비활성 상태 */
-  border: none;
-  color: white;
-  border-radius: var(--radius-md);
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 15px;
-}
-
-.btn-submit:hover {
-  background: var(--color-primary);
+/* 배송 메시지 입력창 (전체 너비 활용) */
+.form-row .input-full {
+  width: 100%; /* 배송 메시지는 보통 길게 입력하므로 가로를 꽉 채우거나 */
+  max-width: 800px; /* 시안상의 최대 길이에 맞춰 제한할 수 있습니다 */
+  height: 40px;
+  border: 1px solid var(--main-border-color);
+  border-radius: 4px;
+  padding: 0 12px;
 }

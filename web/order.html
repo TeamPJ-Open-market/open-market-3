@@ -37,11 +37,11 @@
               <label>이름</label><input type="text" id="orderer-name" />
             </div>
             <div class="form-row">
-              <label>휴대폰</label>
+              <label for="phone-1">휴대폰</label>
               <div class="phone-inputs">
-                <input type="text" maxlength="3" /> -
-                <input type="text" maxlength="4" /> -
-                <input type="text" maxlength="4" />
+                <input type="text" id="phone-1" maxlength="3" /> -
+                <input type="text" id="phone-2" maxlength="4" /> -
+                <input type="text" id="phone-3" maxlength="4" />
               </div>
             </div>
             <div class="form-row">
@@ -101,6 +101,28 @@
         </aside>
       </div>
     </main>
+    <div class="payment-options" id="payment-methods">
+      <label class="method-item">
+        <input type="radio" name="payment" value="card" checked />
+        <span>신용/체크카드</span>
+      </label>
+      <label class="method-item">
+        <input type="radio" name="payment" value="transfer" />
+        <span>무통장 입금</span>
+      </label>
+      <label class="method-item">
+        <input type="radio" name="payment" value="phone" />
+        <span>휴대폰 결제</span>
+      </label>
+      <label class="method-item">
+        <input type="radio" name="payment" value="naver" />
+        <span>네이버페이</span>
+      </label>
+      <label class="method-item">
+        <input type="radio" name="payment" value="kakao" />
+        <span>카카오페이</span>
+      </label>
+    </div>
 
     <script src="js/order.js"></script>
   </body>
