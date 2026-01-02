@@ -21,7 +21,6 @@ body {
   padding: 0 15px;
 }
 
-/* JS 제어용 (!important 없이 우선순위 강화) */
 #cart-container.is-hidden,
 #cart-empty.is-hidden,
 #cart-list.is-hidden {
