@@ -24,6 +24,15 @@ const passwordConfirm = document.getElementById("passwordConfirm");
 passwordInput.addEventListener("input", validatePassword);
 passwordConfirm.addEventListener("input", validatePassword);
 
+// 로그인 페이지 경고 메세지 삭제
+const usernameInput = document.getElementById("username");
+const usernameMessage = document.getElementById("username-message");
+
+const clearValidationMessage = () => {
+  Validation.clearMessage(usernameInput, usernameMessage);
+};
+usernameInput.addEventListener("input", clearValidationMessage);
+
 // 아이디(이메일) 중복 확인
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -67,20 +76,37 @@ async function checkUsername() {
     );
 
     const data = await response.json();
+    console.log("받은 data", data);
+    console.log("받은 data", data.value);
 
-    if (response.ok && data.Success) {
+    // -------------------------------------------------------------------todo
+    // if (response.ok) {
+    //   Validation.showMessage(
+    //     usernameInput,
+    //     usernameMessage,
+    //     "이미 사용 중인 아이디입니다.",
+    //     "error"
+    //   );
+    //   isUsernameChecked = true;
+    // } else {
+    //   Validation.showMessage(
+    //     usernameInput,
+    //     usernameMessage,
+    //     "사용 가능한 아이디입니다.",
+    //     "success"
+    //   );
+    if (data.message) {
       Validation.showMessage(
         usernameInput,
         usernameMessage,
-        "사용 가능한 아이디입니다.",
+        data.message,
         "success"
       );
-      isUsernameChecked = true;
-    } else {
+    } else if (data.error) {
       Validation.showMessage(
         usernameInput,
         usernameMessage,
-        "이미 사용 중인 아이디입니다.",
+        data.error,
         "error"
       );
       isUsernameChecked = false;
