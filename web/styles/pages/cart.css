@@ -11,7 +11,7 @@
 
 body {
   padding: 20px 0;
-  background-color: #f8f8f8;
+  background-color: var(--main-bg-color);
 }
 
 .cart-container {
@@ -31,11 +31,11 @@ body {
 /* =========================
    2. [모바일 기본] 장바구니 리스트
 ========================= */
-/* 헤더는 모바일에서 숨김 */
+
 .cart-header {
   display: flex; /* 기존 display: none 삭제 */
   align-items: center;
-  background-color: var(--main-bg-color);
+  background-color: var(--disabled-tab-color);
   border-radius: 10px;
   margin-bottom: 10px;
   padding: 12px 0;
@@ -59,15 +59,39 @@ body {
 .cart-header .col-info {
   flex: 2;
 }
+#cart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  padding: 60px 0;
+  background-color: var(--main-bg-color);
+  margin-top: 10px;
+}
+
+#cart-empty strong {
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+#cart-empty p {
+  font-size: 14px;
+  color: var(--sub-text-color);
+}
 
 .cart-item {
   display: flex;
-  flex-direction: column; /* 세로 정렬 */
+  flex-direction: row; /* 세로 정렬 */
   background-color: var(--main-bg-color);
   border: 1px solid var(--main-border-color);
   border-radius: 10px;
-  padding: 15px;
+  padding: 20px;
   margin-bottom: 15px;
+  align-items: center;
   position: relative;
 }
 
@@ -127,7 +151,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #fff;
+  background: var(--main-bg-color);
 }
 
 .item-total-price {
@@ -137,7 +161,7 @@ body {
 
 .order-item-btn {
   background-color: var(--main-btn-color);
-  color: #fff;
+  color: var(--white-text-color);
   border: none;
   padding: 6px 15px;
   border-radius: 5px;
@@ -185,6 +209,8 @@ body {
   .cart-item {
     flex-direction: row;
     padding: 20px 0;
+
+    align-items: center;
   }
 
   .col-info {
@@ -200,15 +226,20 @@ body {
 
   .col-qty {
     flex: 1;
+    display: flex;
     border-top: none;
     justify-content: center;
+    align-items: center;
   }
 
   .col-price {
     flex: 1;
     border-top: none;
-
-    gap: 10px;
+    display: flex;
+    flex-direction: column; /* 가격 아래에 버튼 배치 */
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
   }
 
   .item-delete-btn {
@@ -231,7 +262,7 @@ body {
   align-items: center;
 }
 .modal-container {
-  background-color: #fff;
+  background-color: var(--main-bg-color);
   padding: 30px;
   border-radius: 10px;
   text-align: center;
@@ -363,7 +394,7 @@ body {
   width: 220px;
   height: 68px;
   background-color: var(--main-btn-color);
-  color: #fff;
+  color: var(--white-text-color);
   border: none;
   border-radius: 5px;
   font-size: 24px;
@@ -380,16 +411,16 @@ body {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px solid #21bf48; /* 초록색 테두리 */
+  border: 2px solid var(--checkbox-bg-color); /* 초록색 테두리 */
   border-radius: 50%; /* 원형으로 만들기 */
   position: relative;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--main-bg-color);
 }
 
 /* 3. 체크되었을 때의 상태 (가운데 초록 점 또는 체크 표시) */
 .check-container input:checked + .custom-checkbox {
-  background-color: #21bf48; /* 전체 초록색으로 채움 */
+  background-color: var(--checkbox-bg-color); /* 전체 초록색으로 채움 */
 }
 
 /* 4. 체크되었을 때 안쪽에 흰색 체크 모양(V) 넣기 */
@@ -400,7 +431,7 @@ body {
   top: 2px;
   width: 5px;
   height: 10px;
-  border: solid white;
+  border: solid var(--checkbox-check-color);
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }

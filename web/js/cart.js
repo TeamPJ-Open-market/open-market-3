@@ -23,7 +23,7 @@ async function loadCart() {
   // 1. 로그인 체크: 로그인 안 되어 있으면 로그인 페이지로 튕겨내기
   if (!Utils.isLoggedIn()) {
     alert("로그인이 필요한 서비스입니다.");
-    location.href = "signin.html"; // 로그인 페이지 파일명에 맞게 수정
+    location.href = "signin.html";
     return;
   }
 
@@ -49,6 +49,7 @@ async function loadCart() {
     renderEmpty();
   }
 }
+
 /**
  * 빈 장바구니 화면
  */
@@ -156,17 +157,47 @@ function bindEvents() {
 
   // 5. 하단 주문하기 버튼
   if (orderBtn) orderBtn.onclick = moveToOrder;
+
+  // 6. 개별 상품 '주문하기' 버튼 이벤트 추가
+  itemsEl.querySelectorAll(".order-item-btn").forEach((btn) => {
+    btn.onclick = (e) => {
+      // 클릭한 버튼이 속한 li 요소에서 상품 ID 추출
+      const id = e.target.closest("li").dataset.id;
+
+      // 해당 상품 ID 하나만 배열에 담아 로컬 스토리지에 저장
+      localStorage.setItem("order_items", JSON.stringify([id]));
+
+      // 주문서 페이지로 이동
+      location.href = "order.html";
+    };
+  });
 }
 /**
  * 수량 변경 로직
  */
-function updateQuantity(id, newQuantity) {
-  // 비로그인 체크 없이 바로 PATCH 호출
-  fetch(`${API_URL}/cart/${id}`, {
-    method: "PATCH",
-    headers: Utils.getAuthHeaders(),
-    body: JSON.stringify({ quantity: newQuantity }),
-  }).then(loadCart);
+// 장바구니 상품 수량 수정
+async function updateQuantity(id, newQuantity) {
+  try {
+    const response = await fetch(`${API_URL}/cart/${id}/`, {
+      method: "PUT", // 명세서 규칙에 의해 PUT으로
+      headers: Utils.getAuthHeaders(), // 인증 헤더 포함 (자물쇠 아이콘 대응)
+      body: JSON.stringify({
+        quantity: newQuantity,
+        product_id: productId, // 상품의 원본 ID
+        is_active: true, // 현재 활성화 상태 전달
+      }),
+    });
+
+    if (response.ok) {
+      // 수정 성공 시 최신 데이터를 서버에서 다시 불러와 화면 갱신
+      loadCart();
+    } else {
+      const errorData = await response.json();
+      console.error("수량 수정 실패:", errorData);
+    }
+  } catch (err) {
+    console.error("네트워크 오류 발생:", err);
+  }
 }
 
 function onIncrease(e) {
@@ -197,7 +228,6 @@ function onDecrease(e) {
   const formattedPrice = Utils.formatNumber(total);
   totalPriceEl.textContent = formattedPrice;
 
-  // 피그마 디자인의 '결제 예정 금액' 부분도 업데이트
   const finalPriceEl = document.getElementById("final-price");
   if (finalPriceEl) finalPriceEl.textContent = formattedPrice;
 }
@@ -240,8 +270,6 @@ function closeModal() {
   modalOverlay.style.display = "none";
 }
 
-// --- 실제 사용 예시 ---
-
 /**
  * 케이스 1: 상품 삭제 시
  */ function onDelete(e) {
@@ -256,34 +284,43 @@ function closeModal() {
 }
 
 /**
- * 케이스 2: 주문하기 클릭 시 (로그인 체크)
- */
-function moveToOrder() {
-  if (!Utils.isLoggedIn()) {
-    openModal(
-      "로그인이 필요한 서비스입니다.\n로그인 하시겠습니까?",
-      () => {
-        location.href = "signin.html";
-      },
-      "예",
-      "아니오"
-    );
-    return;
-  }
-
-  // 로그인 된 경우 주문 로직 진행...
+ * 케이스 2: 주문하기 클릭 시 주문창으로 이동및 장바구니 정보 서버에 전달
+ */ async function moveToOrder() {
   const selectedIds = [];
+  // 현재 체크박스에 선택된 장바구니 아이템 ID 수집
   itemsEl.querySelectorAll("li").forEach((li) => {
-    if (li.querySelector(".item-check").checked)
+    if (li.querySelector(".item-check").checked) {
       selectedIds.push(li.dataset.id);
+    }
   });
 
   if (selectedIds.length === 0) {
     openModal("주문할 상품을 선택해주세요.", () => {}, "확인", "");
-    modalBtnNo.style.display = "none"; // 버튼이 하나만 필요한 경우
     return;
   }
 
-  localStorage.setItem("order_items", JSON.stringify(selectedIds));
-  location.href = "order.html";
+  try {
+    // [명세서 규칙] POST /order/ 호출하여 주문 생성
+    const response = await fetch(`${API_URL}/order/`, {
+      method: "POST",
+      headers: Utils.getAuthHeaders(), // 자물쇠 아이콘에 따른 인증 헤더 포함
+      body: JSON.stringify({
+        order_items: selectedIds, // 선택된 장바구니 아이템 PK 리스트
+        order_kind: "cart_order", // 주문 종류 (장바구니 주문)
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // 서버에서 발급한 주문 PK를 저장하고 주문서 페이지로 이동
+      // 명세서의 GET /order/{order_pk}/ 조회를 위해 ID 보관
+      localStorage.setItem("pending_order_id", data.id);
+      location.href = "order.html";
+    } else {
+      alert("주문 생성 실패: " + (data.message || "다시 시도해주세요."));
+    }
+  } catch (err) {
+    console.error("네트워크 오류:", err);
+  }
 }
