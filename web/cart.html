@@ -6,11 +6,11 @@
     <title>장바구니</title>
     <link rel="stylesheet" href="styles/base/reset.css" />
     <link rel="stylesheet" href="styles/base/variables.css" />
+    <link rel="stylesheet" href="styles/components/modal.css" />
     <link rel="stylesheet" href="styles/pages/cart.css" />
-    <script defer src="/js/layout.js"></script>
   </head>
   <body>
-    <div class="cart-container">
+    <div id="cart-container" class="cart-container is-hidden">
       <h2 class="title">장바구니</h2>
       <div class="cart-header">
         <div class="col-check">
@@ -23,12 +23,12 @@
         <div class="col-qty">수량</div>
         <div class="col-price">상품금액</div>
       </div>
-      <div id="cart-empty" style="display: none">
+      <div id="cart-empty" class="is-hidden">
         <strong>장바구니에 담긴 상품이 없습니다.</strong>
         <p>원하는 상품을 장바구니에 담아보세요!</p>
       </div>
 
-      <div id="cart-list" style="display: none">
+      <div id="cart-list" class="is-hidden">
         <ul id="cart-items"></ul>
 
         <div class="price-summary-container">
@@ -59,20 +59,11 @@
         </div>
       </div>
     </div>
-    <div id="modal-overlay">
-      <div class="modal-container">
-        <button class="modal-close-x" id="modal-close-x">&times;</button>
-        <div class="modal-content">
-          <p id="modal-text">메시지가 표시됩니다.</p>
-        </div>
-        <div class="modal-footer">
-          <button id="modal-btn-no" class="btn-secondary">취소</button>
-          <button id="modal-btn-yes" class="btn-primary">확인</button>
-        </div>
-      </div>
-    </div>
 
     <script src="js/api/config.js"></script>
+    <script src="js/common/modal.js"></script>
+    <script src="/js/layout.js"></script>
+    <script src="js/header.js"></script>
     <script src="js/cart.js"></script>
   </body>
 </html>

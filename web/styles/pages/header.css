@@ -35,7 +35,7 @@
 
 /* 검색 */
 .search {
-  flex: 0 0 400px;            /* ✅ 기본 400 유지 */
+  flex: 0 0 400px; /* ✅ 기본 400 유지 */
   display: flex;
   align-items: center;
   gap: 8px;
@@ -95,6 +95,8 @@
   text-decoration: none;
   color: #222;
   min-width: 60px;
+  background-color: white;
+  border: none;
 }
 
 .action-text {
@@ -159,7 +161,7 @@
   .search {
     grid-area: search;
     justify-self: center;
-    width: clamp(260px, 92vw, 400px);  /* ✅ 400 유지 목표 + 작은 폰만 줄어듦 */
+    width: clamp(260px, 92vw, 400px); /* ✅ 400 유지 목표 + 작은 폰만 줄어듦 */
     flex: none;
   }
 }
