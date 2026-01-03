@@ -9,6 +9,8 @@ const productTitle = document.getElementById("product-title");
 const productPrice = document.getElementById("product-price");
 
 const quantityInput = document.getElementById("quantity-input");
+const purchaseButton = document.getElementById("btn-purchase");
+const addCartButton = document.getElementById("btn-add-cart");
 
 // API에서 한 번 받아온 데이터 저장
 let currentProduct = null;
@@ -52,15 +54,23 @@ function getQuantity() {
   return Number(quantityInput.value);
 }
 
+function validateBeforeAction() {
+  if (!isLoggedIn()) {
+    window.location.href = "signin.html";
+    return false;
+  }
+
+  if (!currentProduct) {
+    alert("상품 정보가 아직 로드되지 않았습니다.");
+    return false;
+  }
+
+  return true;
+}
+
 // GET /api/products/:product_id 호출하여 상세 정보 표시
 // 장바구니 및 주문에 사용되는 데이터의 신뢰성을 위해
 // URL에서 받은 id로 서버에서 상품 정보를 다시 조회하는 것.
-async function fetchProduct() {
-  const response = await fetch(
-    `http://localhost:3000/api/products/${productId}`
-  );
-  return response.json();
-}
 
 // "바로 구매" 클릭 시
 function handleDirectOrder() {
@@ -85,41 +95,46 @@ function handleDirectOrder() {
 
 // "장바구니" 클릭 시
 async function handleAddToCart() {
-  await fetch("http://localhost:3000/api/cart/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    },
-    body: JSON.stringify({
-      product_id: currentProduct.id,
-      quantity: getQuantity(),
-      // ... 기타 정보
-    }),
-  });
+  try {
+    const response = await fetch("http://localhost:3000/api/cart/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+      body: JSON.stringify({
+        product_id: currentProduct.id,
+        quantity: getQuantity(),
+      }),
+    });
 
-  alert("장바구니에 담았습니다");
-  window.location.href = "cart.html";
+    if (!response.ok) {
+      throw new Error("장바구니 담기 실패");
+    }
+
+    alert("장바구니에 담았습니다.");
+    window.location.href = "cart.html";
+  } catch (error) {
+    console.error(error);
+    alert("장바구니 처리 중 오류가 발생했습니다.");
+  }
 }
 
 // 이벤트 리스너 등록
 // 바로 구매 버튼
-document.getElementById("btn-purchase").addEventListener("click", () => {
-  if (!isLoggedIn()) {
-    window.location.href = "signin.html";
-    return;
-  }
+if (purchaseButton) {
+  purchaseButton.addEventListener("click", () => {
+    if (!validateBeforeAction()) return;
+    handleDirectOrder();
+  });
+}
 
-  handleDirectOrder();
-});
-document.getElementById("btn-add-cart").addEventListener("click", () => {
-  if (!isLoggedIn()) {
-    window.location.href = "signin.html";
-    return;
-  }
-
-  handleAddToCart();
-});
+if (addCartButton) {
+  addCartButton.addEventListener("click", () => {
+    if (!validateBeforeAction()) return;
+    handleAddToCart();
+  });
+}
 
 // 1. 버튼 클릭 시 로그인 여부를 먼저 판단하고,
 // 2. 인증된 경우에만 로직 함수를 호출하도록 구조를 정리.
