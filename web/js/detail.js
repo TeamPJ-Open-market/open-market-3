@@ -1,3 +1,8 @@
+import { Utils } from "./api/config.js";
+import { Modal } from "./common/modal.js";
+
+console.log("🔥 detail.js 실행됨 (import 제거)");
+
 // URL에서 product_id 추출 (장바구니에 넣을 상품 = 이 id의 상품)
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get("id");
