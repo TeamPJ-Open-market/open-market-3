@@ -5,11 +5,10 @@ const productId = urlParams.get("id");
 // 상품 정보 표시를 위한 DOM 요소들
 const productImage = document.getElementById("product-image");
 const productBrand = document.getElementById("product-brand");
-const productName = document.getElementById("product-name");
+const productTitle = document.getElementById("product-title");
 const productPrice = document.getElementById("product-price");
-const productDelivery = document.getElementById("product-delivery");
 
-const quantityInput = document.querySelector(".product-quantity input");
+const quantityInput = document.getElementById("quantity-input");
 
 // API에서 한 번 받아온 데이터 저장
 let currentProduct = null;
@@ -32,9 +31,8 @@ async function loadProduct() {
     productImage.src = data.image;
     productImage.alt = data.name;
     productBrand.textContent = data.brand;
-    productName.textContent = data.name;
+    productTitle.textContent = data.name;
     productPrice.textContent = data.price.toLocaleString();
-    productDelivery.textContent = data.delivery;
   } catch (error) {
     console.error(error);
     alert("상품 정보를 불러오는 중 오류가 발생했습니다.");
@@ -69,11 +67,8 @@ function handleDirectOrder() {
   const orderData = [
     {
       order_type: "direct_order",
-      product_id: product.id,
-      quantity: quantity,
-
-      // product_id: currentProduct.id,
-      // quantity: getQuantity(),
+      product_id: currentProduct.id,
+      quantity: getQuantity(),
       // ... 기타 정보
     },
   ];
@@ -97,11 +92,8 @@ async function handleAddToCart() {
       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
     body: JSON.stringify({
-      product_id: product.id,
-      quantity: quantity,
-
-      // product_id: currentProduct.id,
-      // quantity: getQuantity(),
+      product_id: currentProduct.id,
+      quantity: getQuantity(),
       // ... 기타 정보
     }),
   });
@@ -112,7 +104,7 @@ async function handleAddToCart() {
 
 // 이벤트 리스너 등록
 // 바로 구매 버튼
-document.querySelector(".btn-buy").addEventListener("click", () => {
+document.getElementById("btn-purchase").addEventListener("click", () => {
   if (!isLoggedIn()) {
     window.location.href = "signin.html";
     return;
@@ -120,8 +112,7 @@ document.querySelector(".btn-buy").addEventListener("click", () => {
 
   handleDirectOrder();
 });
-// 장바구니 버튼
-document.querySelector(".btn-cart").addEventListener("click", () => {
+document.getElementById("btn-add-cart").addEventListener("click", () => {
   if (!isLoggedIn()) {
     window.location.href = "signin.html";
     return;
