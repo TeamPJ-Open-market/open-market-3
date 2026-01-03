@@ -13,7 +13,14 @@ const productBrand = document.getElementById("product-brand");
 const productTitle = document.getElementById("product-title");
 const productPrice = document.getElementById("product-price");
 
+// 수량 선택 및 총 금액 표시 DOM 요소들
 const quantityInput = document.getElementById("quantity-input");
+const quantityDecreaseBtn = document.getElementById("quantity-decrease");
+const quantityIncreaseBtn = document.getElementById("quantity-increase");
+const totalQuantityEl = document.getElementById("total-quantity");
+const totalPriceEl = document.getElementById("total-price");
+
+// 버튼들
 const purchaseButton = document.getElementById("btn-purchase");
 const addCartButton = document.getElementById("btn-add-cart");
 
@@ -39,43 +46,99 @@ async function loadProduct() {
     productImage.alt = data.name;
     productBrand.textContent = data.brand;
     productTitle.textContent = data.name;
-    productPrice.textContent = data.price.toLocaleString();
+    productPrice.textContent = `${Utils.formatNumber(data.price)}원`;
+
+    // 최초 총 수량 / 총 금액 계산
+    updateOrderSummary();
   } catch (error) {
     console.error(error);
-    alert("상품 정보를 불러오는 중 오류가 발생했습니다.");
+    Modal.open({
+      message: "상품 정보를 불러오는 중 오류가 발생했습니다.",
+      cancelText: "",
+    });
   }
 }
 
 // 페이지 진입 시 실행
 loadProduct();
 
-// 로그인 여부 판단 함수
-function isLoggedIn() {
-  return !!localStorage.getItem("accessToken");
-}
-
-// 수량 관리
+// 수량 가져오는 공통 함수
 function getQuantity() {
-  return Number(quantityInput.value);
+  return Math.max(1, Number(quantityInput.value) || 1);
 }
 
+/**
+ * 최초 총 수량 / 총 금액 계산 함수
+ * updateOrderSummary()
+ *
+ * - 현재 수량을 읽는다
+ * - 총 수량 표시를 업데이트한다
+ * - 상품 단가 × 수량으로 총 금액을 계산한다
+ * - 화면에 총 상품 금액을 표시한다
+ *
+ * 👉 총 상품 금액과 관련된
+ *    모든 책임은 이 함수 하나가 가진다
+ */
+function updateOrderSummary() {
+  if (!currentProduct) return;
+
+  const quantity = getQuantity();
+  const totalPrice = currentProduct.price * quantity;
+
+  // 총 수량 표시
+  totalQuantityEl.textContent = quantity;
+
+  // 총 금액 표시
+  totalPriceEl.textContent = Utils.formatNumber(totalPrice);
+}
+
+// 수량 변경 이벤트 핸들러
+// - 버튼
+quantityDecreaseBtn.addEventListener("click", () => {
+  const quantity = getQuantity();
+  if (quantity > 1) {
+    quantityInput.value = quantity - 1;
+    updateOrderSummary();
+  }
+});
+
+// + 버튼
+quantityIncreaseBtn.addEventListener("click", () => {
+  const quantity = getQuantity();
+  quantityInput.value = quantity + 1;
+  updateOrderSummary();
+});
+
+// input 직접 수정 시
+quantityInput.addEventListener("input", () => {
+  updateOrderSummary();
+});
+
+// 로그인 여부 판단 함수 (공통 검증 함수 활용: Utils)
 function validateBeforeAction() {
-  if (!isLoggedIn()) {
-    window.location.href = "signin.html";
+  if (!Utils.isLoggedIn()) {
+    Modal.open({
+      message: "로그인이 필요합니다. 로그인 페이지로 이동할까요?",
+      confirmText: "로그인",
+      cancelText: "취소",
+      onConfirm: () => {
+        window.location.href = "signin.html";
+      },
+    });
     return false;
   }
 
+  // 상품 정보 로드 여부 확인
   if (!currentProduct) {
-    alert("상품 정보가 아직 로드되지 않았습니다.");
+    Modal.open({
+      message: "상품 정보가 아직 로드되지 않았습니다.",
+      cancelText: "",
+    });
     return false;
   }
 
   return true;
 }
-
-// GET /api/products/:product_id 호출하여 상세 정보 표시
-// 장바구니 및 주문에 사용되는 데이터의 신뢰성을 위해
-// URL에서 받은 id로 서버에서 상품 정보를 다시 조회하는 것.
 
 // "바로 구매" 클릭 시
 function handleDirectOrder() {
@@ -96,50 +159,48 @@ function handleDirectOrder() {
 // "장바구니" 클릭 시
 // 1. POST /api/cart/ 호출
 // 2. 성공 시 sessionStorage에도 저장
-// 3. 모달 표시 ("장바구니에 담았습니다")
+// 3. 모달 표시 ("장바구니에 담았습니다") 후 cart.html 이동
 
 // "장바구니" 클릭 시
 async function handleAddToCart() {
   try {
     const response = await fetch("http://localhost:3000/api/cart/", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
+      headers: Utils.getAuthHeaders(),
       body: JSON.stringify({
         product_id: currentProduct.id,
         quantity: getQuantity(),
       }),
     });
 
-    if (!response.ok) {
-      throw new Error("장바구니 담기 실패");
-    }
-
-    alert("장바구니에 담았습니다.");
-    window.location.href = "cart.html";
+    Modal.open({
+      message: "장바구니에 담았습니다.",
+      cancelText: "",
+      onConfirm: () => {
+        window.location.href = "cart.html";
+      },
+    });
   } catch (error) {
     console.error(error);
-    alert("장바구니 처리 중 오류가 발생했습니다.");
+    Modal.open({
+      message: "장바구니 처리 중 오류가 발생했습니다.",
+      cancelText: "",
+    });
   }
 }
 
-// 이벤트 리스너 등록
+// 버튼 이벤트 리스너 등록
 // 바로 구매 버튼
-if (purchaseButton) {
-  purchaseButton.addEventListener("click", () => {
-    if (!validateBeforeAction()) return;
-    handleDirectOrder();
-  });
-}
+purchaseButton?.addEventListener("click", () => {
+  if (!validateBeforeAction()) return;
+  handleDirectOrder();
+});
 
-if (addCartButton) {
-  addCartButton.addEventListener("click", () => {
-    if (!validateBeforeAction()) return;
-    handleAddToCart();
-  });
-}
+// 장바구니 버튼
+addCartButton?.addEventListener("click", () => {
+  if (!validateBeforeAction()) return;
+  handleAddToCart();
+});
 
 // 1. 버튼 클릭 시 로그인 여부를 먼저 판단하고,
 // 2. 인증된 경우에만 로직 함수를 호출하도록 구조를 정리.
@@ -155,12 +216,6 @@ if (addCartButton) {
 // 9. 에러 핸들링 추가 고려 (네트워크 오류, 서버 오류 등)
 // 10. 수량 변경 기능 추가 고려 (현재는 고정된 수량 1로 설정)
 // 11. 모달 창 구현 고려 (장바구니에 담았습니다 메시지 등)
-
-// 12. CSS 변수 이름 오타 수정 (positive-text-colo -> positive-text-color)
-// 13. 버튼 스타일 개선 (배경색 및 테두리 색상 변경, 좌우 버튼 모서리 둥글게 처리)
-// 14. 불필요한 CSS 속성 제거 (배경색 #fff 제거)
-// 15. CSS 변수 사용으로 일관된 테마 적용
-// 16. CSS 클래스명 명확화 (btn-left, btn-right)
 
 // 로그인 여부를 판단하는 기준이 필요해 accessToken 존재 여부를 체크하는 공통 함수를 정의했다.
 // 이후 모든 버튼 액션에서 동일한 기준으로 로그인 상태를 판단한다.

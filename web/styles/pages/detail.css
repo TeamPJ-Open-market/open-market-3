@@ -138,11 +138,8 @@ html {
   color: var(--sub-text-color);
 }
 .total-quantity,
-.order-total-price {
+.total-price {
   color: var(--positive-text-color);
-}
-.order-price {
-  font-size: 2.375rem;
 }
 
 /* 상품 정보 버튼 영역 */

@@ -5,6 +5,8 @@ const STORAGE_KEYS = {
   USER: "user",
 };
 
+// “로그인 상태 판단의 기준은 Utils 하나로 통일한다.”
+// 상태 판단의 단일 책임(Single Source of Truth)
 export const Utils = {
   getUser() {
     const user = localStorage.getItem(STORAGE_KEYS.USER);
