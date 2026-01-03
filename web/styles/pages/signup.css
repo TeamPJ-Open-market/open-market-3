@@ -184,3 +184,9 @@ button:disabled {
 .success {
   border-color: var(--positive-border-color);
 }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* 스피너 제거 */
+  margin: 0; /* 불필요한 여백 제거 */
+}
