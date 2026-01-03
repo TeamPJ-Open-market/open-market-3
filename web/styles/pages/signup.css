@@ -3,13 +3,21 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 100px 0;
+  min-width: 480px;
 }
 
 /* 로고 크기 및 위치 */
 .title-logo {
   width: 238px;
   height: 84px;
-  margin: 100px 0;
+}
+
+/* 회원가입 컨테이너 설정 */
+.signup-container {
+  width: 100%;
+  max-width: 550px;
+  margin: 60px 30px 30px 30px;
 }
 
 /* 탭 전체 디자인 */
@@ -22,6 +30,7 @@
   flex: 1;
   padding: 20px 0;
   border: 1px solid var(--main-border-color);
+  border-bottom: none;
   background-color: var(--disabled-tab-color);
   cursor: pointer;
   font-size: 18px;

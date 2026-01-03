@@ -1,4 +1,12 @@
 import { Validation } from "./common/validation.js";
+import { Utils } from "./api/config.js";
+
+//로그인 유무확인
+window.onload = function () {
+  if (Utils.isLoggedIn()) {
+    location.replace("/index.html");
+  }
+};
 
 // 탭 전환 (구매회원/판매회원)
 
