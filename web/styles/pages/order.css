@@ -1,45 +1,14 @@
-/* 1. 디자인 시스템 정의 (제공해주신 루트 적용) */
-:root {
-  /* 배경 색상 */
-  --main-bg-color: #ffffff;
-  --disabled-tab-color: #f2f2f2;
-
-  /* 외곽선 색상 */
-  --main-border-color: #c4c4c4;
-  --light-border-color: #e0e0e0;
-
-  /* 폰트 색상 */
-  --main-text-color: #000000;
-  --white-text-color: #ffffff;
-  --join-text-color: #333333;
-  --sub-text-color: #767676;
-  --positive-text-color: #21bf48;
-  --negative-text-color: #eb5757;
-
-  /* 버튼 색상 */
-  --main-btn-color: #21bf48;
-  --disabled-btn-color: #c4c4c4;
-  --cart-btn-color: #767676;
-
-  /* 체크박스 색상 */
-  --checkbox-bg-color: #21bf48;
-  --checkbox-check-color: #ffffff;
-}
-
-/* 3. 주문/결제하기 */
 .page-title {
-  font-size: 36px; /* 피그마 크기 */
-  font-weight: 700; /* 피그마 굵기 */
+  font-size: 36px;
+  font-weight: 700;
   text-align: center;
-  margin-bottom: 50px; /* 상단/하단 여백 */
-  line-height: 44px; /* 행간 */
+  margin-bottom: 50px;
+  line-height: 44px;
 }
-/*----------------------------------------------------------------------------
-
 
 /* 섹션 전체 너비 및 상단 간격 */
 .form-section {
-  width: 1280px; /* 피그마 박스 너비 */
+  width: 1280px;
   margin: 0 auto;
   padding-bottom: 60px;
 }
@@ -65,7 +34,8 @@
 }
 
 /* 각 입력 행: Flex 레이아웃으로 줄맞춤 */
-.form-row {
+.form-row,
+.payment {
   display: flex;
   align-items: center;
   padding: 12px 0;
@@ -85,7 +55,6 @@ input[type="text"],
 input[type="email"] {
   height: 40px;
   border: 1px solid var(--main-border-color);
-  border-radius: 4px;
   padding: 0 12px;
   font-size: 15px;
   outline: none;
@@ -109,7 +78,18 @@ input[type="email"] {
   width: 80px;
   text-align: center;
 }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* 스피너 제거 */
+  margin: 0; /* 불필요한 여백 제거 */
+}
 
+.phone-inputs input {
+  border: 1px solid var(--main-border-color);
+  height: 36px;
+  width: 101px;
+  text-align: center;
+}
 /* 주소 입력 그룹: 세로로 쌓기 */
 .address-inputs {
   display: flex;
@@ -132,54 +112,112 @@ input[type="email"] {
   background-color: var(--main-btn-color); /* #21bf48 */
   color: var(--white-text-color);
   border: none;
-  border-radius: 4px; /* 시안의 둥근 모서리 반영 */
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap; /* 글자가 줄바꿈되지 않게 고정 */
 }
+/* 하단 그리드 */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px; /* 왼쪽 넓게, 오른쪽 고정 */
+  gap: 40px;
+  margin-top: 60px;
+  align-items: start;
+}
+
 /* =========================
-   결제수단 영역
+   결제수단
 ========================= */
 .payment-method {
-  margin-top: 40px;
+  border: 1px solid var(--white-text-color);
+  background: var(--white-text-color);
 }
 
-/* 결제수단 제목 */
-.payment-method h3 {
-  margin-bottom: 16px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-/* 배송정보의 form-row 와 동일한 구조 */
-.payment-method .form-row {
-  display: flex;
-  align-items: flex-start;
-}
-
-/* label 자리 맞추기용 (배송정보 label 폭과 동일해야 함) */
-.payment-method .empty-label {
-  width: 120px; /* ← 배송정보 label 폭과 꼭 맞추기 */
-  flex-shrink: 0;
-}
-
-/* 라디오 버튼 묶음 */
 .payment-options {
   display: flex;
-  gap: 24px; /* 항목 간 간격 */
-  flex-wrap: wrap; /* 화면 좁아지면 줄바꿈 */
+  gap: 20px;
+  justify-content: center;
 }
 
-/* 개별 결제수단 */
 .payment-options label {
   display: flex;
   align-items: center;
-  font-size: 14px;
-  cursor: pointer;
+  gap: 10px;
 }
 
-/* 라디오 버튼 간격 */
-.payment-options input[type="radio"] {
-  margin-right: 6px;
+/* =========================
+   최종결제 정보
+========================= */
+.final-payment {
+  border: 2px solid var(--positive-text-color);
+  border-radius: 4px;
+  padding: 20px;
+}
+
+.final-payment h3 {
+  margin-bottom: 16px;
+}
+
+.price-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.price-list li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.total-price {
+  display: flex;
+  justify-content: space-between;
+  margin: 16px 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--negative-text-color);
+}
+
+.agree {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 16px;
+}
+
+.pay-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--disabled-btn-color);
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+}
+/* =========================
+   상품 정보
+========================= */
+.order-header,
+.order-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  align-items: center;
+}
+
+.product-info {
+  display: flex;
+  gap: 12px;
+}
+
+.product-info img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}
+
+.order-total {
+  text-align: right;
+  margin-top: 20px;
+  font-size: 16px;
 }

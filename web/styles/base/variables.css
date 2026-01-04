@@ -24,5 +24,6 @@
 
   /* 체크박스 색상 */
   --checkbox-bg-color: #21bf48;
+  --checkbox-disabled-color: #f2f2f2;
   --checkbox-check-color: #ffffff;
 }

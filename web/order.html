@@ -11,6 +11,21 @@
     <main class="container">
       <h2 class="page-title">주문/결제하기</h2>
 
+      <div class="order-table">
+        <div class="order-header">
+          <span>상품정보</span>
+          <span>할인</span>
+          <span>배송비</span>
+          <span>주문금액</span>
+        </div>
+
+        <div id="order-list"></div>
+
+        <div class="order-total">
+          총 주문금액 <strong id="total-price">0원</strong>
+        </div>
+      </div>
+
       <section class="form-section">
         <h3>배송정보</h3>
 
@@ -22,9 +37,9 @@
         <div class="form-row">
           <label>휴대폰</label>
           <div class="phone-inputs">
-            <input type="text" maxlength="3" /> -
-            <input type="text" maxlength="4" /> -
-            <input type="text" maxlength="4" />
+            <input type="number" id="order-phone1" class="phone" /> -
+            <input type="number" id="order-phone2" class="phone" /> -
+            <input type="number" id="order-phone3" class="phone" />
           </div>
         </div>
         <div class="form-row">
@@ -40,9 +55,9 @@
         <div class="form-row">
           <label>휴대폰</label>
           <div class="phone-inputs">
-            <input type="text" maxlength="3" /> -
-            <input type="text" maxlength="4" /> -
-            <input type="text" maxlength="4" />
+            <input type="number" id="receiver-phone1" class="phone" /> -
+            <input type="number" id="receiver-phone2" class="phone" /> -
+            <input type="number" id="receiver-phone3" class="phone" />
           </div>
         </div>
         <div class="form-row">
@@ -65,24 +80,52 @@
             placeholder="메시지를 입력해주세요."
           />
         </div>
-        <section class="payment-method">
-          <h3>결제수단</h3>
+        <!-- 하단 영역 전체 -->
+        <section class="bottom-grid">
+          <!-- 결제수단 -->
+          <section class="payment-method">
+            <h3>결제수단</h3>
 
-          <div class="form-row">
-            <label class="empty-label"></label>
-
-            <div class="payment-options">
-              <label><input type="radio" name="payment" /> 신용/체크카드</label>
-              <label><input type="radio" name="payment" /> 무통장입금</label>
-              <label><input type="radio" name="payment" /> 휴대폰결제</label>
-              <label><input type="radio" name="payment" /> 네이버페이</label>
-              <label><input type="radio" name="payment" /> 카카오페이</label>
+            <div class="payment">
+              <div class="payment-options">
+                <label
+                  ><input type="radio" name="payment" /> 신용/체크카드</label
+                >
+                <label><input type="radio" name="payment" /> 무통장입금</label>
+                <label><input type="radio" name="payment" /> 휴대폰결제</label>
+                <label><input type="radio" name="payment" /> 네이버페이</label>
+                <label><input type="radio" name="payment" /> 카카오페이</label>
+              </div>
             </div>
-          </div>
+          </section>
+
+          <!-- 최종결제 정보 -->
+          <aside class="final-payment">
+            <h3>최종결제 정보</h3>
+
+            <ul class="price-list">
+              <li><span>상품금액</span><strong>원</strong></li>
+              <li><span>할인금액</span><strong>원</strong></li>
+              <li><span>배송비</span><strong>원</strong></li>
+            </ul>
+
+            <div class="total-price">
+              <span>결제금액</span>
+              <strong>원</strong>
+            </div>
+
+            <label class="agree">
+              <input type="checkbox" />
+              주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.
+            </label>
+
+            <button class="pay-btn">결제하기</button>
+          </aside>
         </section>
       </section>
     </main>
 
+    <script src="js/api/config.js"></script>
     <script src="js/order.js"></script>
   </body>
 </html>

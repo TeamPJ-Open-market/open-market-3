@@ -1,4 +1,12 @@
 import { Validation } from "./common/validation.js";
+import { Utils } from "./api/config.js";
+
+//로그인 유무확인
+window.onload = function () {
+  if (Utils.isLoggedIn()) {
+    location.replace("/index.html");
+  }
+};
 
 /// 탭 전환 (구매회원/판매회원)
 const buyerTab = document.getElementById("buyer-tab");
@@ -17,18 +25,30 @@ sellerTab.addEventListener("click", () => {
   userType = "SELLER";
 });
 
-// 로그인 페이지 경고 메세지 삭제
+/**
+ * (변수일때 주석)
+ * 로그인
+ * usernameInput - 아이디
+ * passwordInput - 비밀번호
+ * usernameMessage - 경고 메세지
+ */
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const usernameMessage = document.getElementById("username-message");
 
+//경고메세지 영역 clear
 const clearValidationMessage = () => {
   Validation.clearMessage(usernameInput, usernameMessage);
 };
+
+//경고메세지 영역 clear event 선언
 usernameInput.addEventListener("input", clearValidationMessage);
 passwordInput.addEventListener("input", clearValidationMessage);
 
-// 로그인 처리
+// 로그인
+// event (obj 값들)
+// @param id
+// @param password
 async function handleSignin(event) {
   event.preventDefault();
   const usernameInput = document.getElementById("username");
