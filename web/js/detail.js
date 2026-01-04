@@ -1,11 +1,16 @@
 import { Utils } from "./api/config.js";
 import { Modal } from "./common/modal.js";
 
-console.log("🔥 detail.js 실행됨 (import 제거)");
+console.log("🔥 detail.js 실행됨");
+
+// 회사 이름 -> UI 상수 (기획 고정값)
+const BRAND_NAME = "백엔드글로벌";
 
 // URL에서 product_id 추출 (장바구니에 넣을 상품 = 이 id의 상품)
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get("id");
+
+console.log("🟡 productId:", productId);
 
 // 상품 정보 표시를 위한 DOM 요소들
 const productImage = document.getElementById("product-image");
@@ -24,11 +29,15 @@ const totalPriceEl = document.getElementById("total-price");
 const purchaseButton = document.getElementById("btn-purchase");
 const addCartButton = document.getElementById("btn-add-cart");
 
+console.log("🟡 버튼 DOM 확인:", purchaseButton, addCartButton);
+
 // API에서 한 번 받아온 데이터 저장
 let currentProduct = null;
 
 // 상품 정보, 상세 조회 + 화면 렌더링
 async function loadProduct() {
+  console.log("🟡 loadProduct 실행");
+
   try {
     const response = await fetch(
       `http://localhost:3000/api/products/${productId}`
@@ -39,19 +48,22 @@ async function loadProduct() {
     }
 
     const data = await response.json();
+    console.log("🟢 상품 데이터:", data);
+
     currentProduct = data;
 
     // 화면 렌더링
     productImage.src = data.image;
     productImage.alt = data.name;
-    productBrand.textContent = data.brand;
+    // 회사 이름은 API가 아닌 기획 고정값
+    productBrand.textContent = BRAND_NAME;
     productTitle.textContent = data.name;
     productPrice.textContent = `${Utils.formatNumber(data.price)}원`;
 
     // 최초 총 수량 / 총 금액 계산
     updateOrderSummary();
   } catch (error) {
-    console.error(error);
+    console.error("🔴 loadProduct 에러:", error);
     Modal.open({
       message: "상품 정보를 불러오는 중 오류가 발생했습니다.",
       cancelText: "",
@@ -61,12 +73,6 @@ async function loadProduct() {
 
 // 페이지 진입 시 실행
 loadProduct();
-
-// 수량 가져오는 공통 함수
-function getQuantity() {
-  return Math.max(1, Number(quantityInput.value) || 1);
-}
-
 /**
  * 최초 총 수량 / 총 금액 계산 함수
  * updateOrderSummary()
@@ -79,6 +85,12 @@ function getQuantity() {
  * 👉 총 상품 금액과 관련된
  *    모든 책임은 이 함수 하나가 가진다
  */
+
+// 수량 가져오는 공통 함수
+function getQuantity() {
+  return Math.max(1, Number(quantityInput.value) || 1);
+}
+
 function updateOrderSummary() {
   if (!currentProduct) return;
 
@@ -104,19 +116,26 @@ quantityDecreaseBtn.addEventListener("click", () => {
 
 // + 버튼
 quantityIncreaseBtn.addEventListener("click", () => {
-  const quantity = getQuantity();
   quantityInput.value = quantity + 1;
   updateOrderSummary();
 });
 
 // input 직접 수정 시
+// quantityInput.addEventListener("input", updateOrderSummary);
 quantityInput.addEventListener("input", () => {
   updateOrderSummary();
 });
 
-// 로그인 여부 판단 함수 (공통 검증 함수 활용: Utils)
+// 버튼 클릭시 로그인 여부 판단 함수 (공통 검증 함수 활용: Utils)
 function validateBeforeAction() {
+  console.log("🟡 validateBeforeAction 실행");
+
   if (!Utils.isLoggedIn()) {
+    console.log("🔴 로그인 안 됨");
+
+    // 돌아올 페이지 저장
+    localStorage.setItem("redirect_after_login", window.location.href);
+
     Modal.open({
       message: "로그인이 필요합니다. 로그인 페이지로 이동할까요?",
       confirmText: "로그인",
@@ -140,8 +159,10 @@ function validateBeforeAction() {
   return true;
 }
 
-// "바로 구매" 클릭 시
+// "바로 구매" 클릭 시 로직
 function handleDirectOrder() {
+  console.log("🟢 handleDirectOrder 실행");
+
   const orderData = [
     {
       order_type: "direct_order",
@@ -161,10 +182,12 @@ function handleDirectOrder() {
 // 2. 성공 시 sessionStorage에도 저장
 // 3. 모달 표시 ("장바구니에 담았습니다") 후 cart.html 이동
 
-// "장바구니" 클릭 시
+// "장바구니" 클릭 시 로직
 async function handleAddToCart() {
+  console.log("🟢 handleAddToCart 실행");
+
   try {
-    const response = await fetch("http://localhost:3000/api/cart/", {
+    await fetch("http://localhost:3000/api/cart/", {
       method: "POST",
       headers: Utils.getAuthHeaders(),
       body: JSON.stringify({
@@ -175,13 +198,13 @@ async function handleAddToCart() {
 
     Modal.open({
       message: "장바구니에 담았습니다.",
+      confirmText: "장바구니 이동",
       cancelText: "",
       onConfirm: () => {
         window.location.href = "cart.html";
       },
     });
   } catch (error) {
-    console.error(error);
     Modal.open({
       message: "장바구니 처리 중 오류가 발생했습니다.",
       cancelText: "",
@@ -191,13 +214,17 @@ async function handleAddToCart() {
 
 // 버튼 이벤트 리스너 등록
 // 바로 구매 버튼
-purchaseButton?.addEventListener("click", () => {
+purchaseButton.addEventListener("click", () => {
+  console.log("👉 바로 구매 버튼 클릭됨");
+
   if (!validateBeforeAction()) return;
   handleDirectOrder();
 });
 
 // 장바구니 버튼
-addCartButton?.addEventListener("click", () => {
+addCartButton.addEventListener("click", () => {
+  console.log("👉 장바구니 버튼 클릭됨");
+
   if (!validateBeforeAction()) return;
   handleAddToCart();
 });
