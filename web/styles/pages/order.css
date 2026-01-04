@@ -1,17 +1,14 @@
-/* 3. 주문/결제하기 */
 .page-title {
-  font-size: 36px; /* 피그마 크기 */
-  font-weight: 700; /* 피그마 굵기 */
+  font-size: 36px;
+  font-weight: 700;
   text-align: center;
-  margin-bottom: 50px; /* 상단/하단 여백 */
-  line-height: 44px; /* 행간 */
+  margin-bottom: 50px;
+  line-height: 44px;
 }
-/*----------------------------------------------------------------------------
-
 
 /* 섹션 전체 너비 및 상단 간격 */
 .form-section {
-  width: 1280px; /* 피그마 박스 너비 */
+  width: 1280px;
   margin: 0 auto;
   padding-bottom: 60px;
 }
@@ -58,7 +55,6 @@ input[type="text"],
 input[type="email"] {
   height: 40px;
   border: 1px solid var(--main-border-color);
-  border-radius: 4px;
   padding: 0 12px;
   font-size: 15px;
   outline: none;
@@ -82,7 +78,18 @@ input[type="email"] {
   width: 80px;
   text-align: center;
 }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* 스피너 제거 */
+  margin: 0; /* 불필요한 여백 제거 */
+}
 
+.phone-inputs input {
+  border: 1px solid var(--main-border-color);
+  height: 36px;
+  width: 101px;
+  text-align: center;
+}
 /* 주소 입력 그룹: 세로로 쌓기 */
 .address-inputs {
   display: flex;
@@ -105,7 +112,6 @@ input[type="email"] {
   background-color: var(--main-btn-color); /* #21bf48 */
   color: var(--white-text-color);
   border: none;
-  border-radius: 4px; /* 시안의 둥근 모서리 반영 */
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -124,20 +130,20 @@ input[type="email"] {
    결제수단
 ========================= */
 .payment-method {
-  border: 1px solid #ffffff;
-  background: #fff;
+  border: 1px solid var(--white-text-color);
+  background: var(--white-text-color);
 }
 
 .payment-options {
   display: flex;
-  gap: 20px; /* ← 결제수단 간격 */
+  gap: 20px;
   justify-content: center;
 }
 
 .payment-options label {
   display: flex;
   align-items: center;
-  gap: 10px; /* 라디오 버튼과 텍스트 사이 */
+  gap: 10px;
 }
 
 /* =========================
@@ -145,8 +151,8 @@ input[type="email"] {
 ========================= */
 .final-payment {
   border: 2px solid var(--positive-text-color);
+  border-radius: 4px;
   padding: 20px;
-  border-radius: 6px;
 }
 
 .final-payment h3 {
