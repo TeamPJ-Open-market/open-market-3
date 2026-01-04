@@ -7,88 +7,142 @@
     <!-- css -->
     <link rel="stylesheet" href="./styles/base/reset.css" />
     <link rel="stylesheet" href="./styles/base/variables.css" />
+    <link rel="stylesheet" href="styles/components/modal.css" />
     <link rel="stylesheet" href="./styles/pages/detail.css" />
     <!-- js -->
     <script defer src="./js/layout.js"></script>
-    <script defer src="./js/common/validation.js"></script>
+    <script defer src="./js/header.js"></script>
+    <script defer type="module" src="./js/detail.js"></script>
   </head>
   <body>
-    <main class="detail-container">
-      <!-- 상품 정보 영역 -->
-      <section class="product-detail">
-        <!-- 상품 이미지 -->
-        <div class="product-image">
-          <img
-            src="./assets/images/product3.png"
-            alt="딥러닝 개발자 무릎 담요"
-          />
-          <!-- <img id="product-image" src="" alt="" /> -->
+    <main class="product-detail-page">
+      <!-- 상품 상세 상단 영역 -->
+      <section class="product-overview">
+        <!-- 상품 이미지 영역 -->
+        <div class="product-thumbnail">
+          <img class="product-image" id="product-image" src="" alt="" />
         </div>
-        <!-- 상품 정보 -->
-        <div class="product-summary">
-          <span class="product-brand">백엔드글로브</span>
-          <h2 class="product-name">딥러닝 개발자 무릎 담요</h2>
-          <!-- 회사 이름 -->
-          <!-- <span class="product-brand" id="product-brand"></span> -->
-          <!-- 상품 이름 -->
-          <!-- <h2 class="product-name" id="product-name"></h2> -->
-          <p class="product-price">
-            <strong>17,500</strong>
-            <!-- 상품 가격 -->
-            <!-- <strong id="product-price"></strong> -->
-            <span class="unit">원</span>
-          </p>
-          <p class="product-delivery">택배배송 / 무료배송</p>
-          <!-- 택배배송 / 무료배송 -->
-          <!-- <p class="product-delivery" id="product-delivery"></p> -->
-          <!-- 상품 수량 선택 -->
-          <div class="product-quantity">
-            <button class="btn-left minus" type="button">-</button>
-            <input type="number" value="1" min="1" aria-label="상품 수량" />
-            <!-- <span class="count">1</span> -->
-            <button class="btn-right plus" type="button">+</button>
-          </div>
-          <!-- 총 상품 금액 -->
-          <div class="total-price">
-            <span class="total-label">총 상품 금액</span>
-            <p class="order-total">
-              총 수량 <strong id="total-quantity">1</strong>개
-              <span class="order-price">
-                <strong class="price">17,500</strong>
-                <!-- <strong class="price" id="total-price"></strong> -->
-                <span class="unit">원</span>
-              </span>
+
+        <!-- 상품 정보 영역 -->
+        <article class="product-info-panel">
+          <div class="product-meta">
+            <!-- 회사 이름 -->
+            <span class="product-brand text-size-md" id="product-brand"></span>
+            <!-- 상품 이름 -->
+            <h2
+              class="product-title text-size-xl font-base"
+              id="product-title"
+            ></h2>
+            <p class="product-price-info">
+              <!-- 상품 가격 -->
+              <strong
+                class="product-price text-size-xl font-bold"
+                id="product-price"
+              ></strong>
+              <span class="price-unit text-size-md">원</span>
             </p>
           </div>
-          <!-- 상품 정보 버튼 영역 -->
-          <div class="product-actions">
-            <button class="btn btn-buy">바로 구매</button>
-            <button class="btn btn-cart">장바구니</button>
+
+          <div class="purchase-info">
+            <!-- 택배배송 / 무료배송 -->
+            <p class="delivery-info text-size-base" id="delivery-info">
+              택배배송 / 무료배송
+            </p>
+            <!-- 상품 수량 선택 -->
+            <div class="quantity-selector">
+              <button
+                class="quantity-decrease"
+                id="quantity-decrease"
+                type="button"
+              >
+                -
+              </button>
+              <input
+                class="quantity-input text-size-md"
+                id="quantity-input"
+                type="text"
+                value="1"
+                min="1"
+                aria-label="상품 수량"
+              />
+              <button
+                class="quantity-increase"
+                id="quantity-increase"
+                type="button"
+              >
+                +
+              </button>
+            </div>
+
+            <!-- 총 상품 금액 -->
+            <div class="order-summary">
+              <p class="order-summary-title text-size-md font-medium">
+                총 상품 금액
+              </p>
+              <p class="order-summary-content text-size-md">
+                총 수량
+                <strong class="total-quantity font-bold" id="total-quantity">
+                  1
+                </strong>
+                개
+                <span class="order-total-price">
+                  <strong
+                    class="total-price text-size-xl font-bold"
+                    id="total-price"
+                  ></strong>
+                  <span class="price-unit text-size-md">원</span>
+                </span>
+              </p>
+            </div>
+
+            <!-- 상품 정보 버튼 영역 -->
+            <div class="product-actions">
+              <button class="btn btn-purchase text-size-md" id="btn-purchase">
+                바로 구매
+              </button>
+              <button class="btn btn-add-cart text-size-md" id="btn-add-cart">
+                장바구니
+              </button>
+            </div>
           </div>
-        </div>
+        </article>
       </section>
 
-      <!-- 상품 상세 탭 영역 -->
       <section class="product-content">
+        <!-- 상품 상세 탭 영역 -->
         <nav class="product-tab-menu">
-          <button class="product-tab active" aria-selected="true">
+          <button
+            class="btn-tab active text-size-md font-medium"
+            aria-selected="true"
+          >
             상세정보
           </button>
-          <button class="product-tab" aria-selected="false">리뷰</button>
-          <button class="product-tab" aria-selected="false">Q&A</button>
-          <button class="product-tab" aria-selected="false">
-            반품/교환정보
+          <button
+            class="btn-tab text-size-md font-medium"
+            aria-selected="false"
+          >
+            리뷰
+          </button>
+          <button
+            class="btn-tab text-size-md font-medium"
+            aria-selected="false"
+          >
+            Q&A
+          </button>
+          <button
+            class="btn-tab text-size-md font-medium"
+            aria-selected="false"
+          >
+            반품/<span>교환정보</span>
           </button>
         </nav>
 
-        <!-- 상세 페이지 내용 영역 -->
+        <!-- 상품 상세 내용 영역 -->
         <section class="product-description"></section>
         <section class="product-review"></section>
         <section class="product-qna"></section>
         <section class="product-policy"></section>
       </section>
     </main>
-
-    <script defer src="./js/detail.js"></script>
   </body>
 </html>

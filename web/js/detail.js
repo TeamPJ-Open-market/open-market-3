@@ -1,21 +1,43 @@
+import { Utils } from "./api/config.js";
+import { Modal } from "./common/modal.js";
+
+console.log("🔥 detail.js 실행됨");
+
+// 회사 이름 -> UI 상수 (기획 고정값)
+const BRAND_NAME = "백엔드글로벌";
+
 // URL에서 product_id 추출 (장바구니에 넣을 상품 = 이 id의 상품)
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get("id");
 
+console.log("🟡 productId:", productId);
+
 // 상품 정보 표시를 위한 DOM 요소들
 const productImage = document.getElementById("product-image");
 const productBrand = document.getElementById("product-brand");
-const productName = document.getElementById("product-name");
+const productTitle = document.getElementById("product-title");
 const productPrice = document.getElementById("product-price");
-const productDelivery = document.getElementById("product-delivery");
 
-const quantityInput = document.querySelector(".product-quantity input");
+// 수량 선택 및 총 금액 표시 DOM 요소들
+const quantityInput = document.getElementById("quantity-input");
+const quantityDecreaseBtn = document.getElementById("quantity-decrease");
+const quantityIncreaseBtn = document.getElementById("quantity-increase");
+const totalQuantityEl = document.getElementById("total-quantity");
+const totalPriceEl = document.getElementById("total-price");
+
+// 버튼들
+const purchaseButton = document.getElementById("btn-purchase");
+const addCartButton = document.getElementById("btn-add-cart");
+
+console.log("🟡 버튼 DOM 확인:", purchaseButton, addCartButton);
 
 // API에서 한 번 받아온 데이터 저장
 let currentProduct = null;
 
 // 상품 정보, 상세 조회 + 화면 렌더링
 async function loadProduct() {
+  console.log("🟡 loadProduct 실행");
+
   try {
     const response = await fetch(
       `http://localhost:3000/api/products/${productId}`
@@ -26,54 +48,126 @@ async function loadProduct() {
     }
 
     const data = await response.json();
+    console.log("🟢 상품 데이터:", data);
+
     currentProduct = data;
 
     // 화면 렌더링
     productImage.src = data.image;
     productImage.alt = data.name;
-    productBrand.textContent = data.brand;
-    productName.textContent = data.name;
-    productPrice.textContent = data.price.toLocaleString();
-    productDelivery.textContent = data.delivery;
+    // 회사 이름은 API가 아닌 기획 고정값
+    productBrand.textContent = BRAND_NAME;
+    productTitle.textContent = data.name;
+    productPrice.textContent = `${Utils.formatNumber(data.price)}원`;
+
+    // 최초 총 수량 / 총 금액 계산
+    updateOrderSummary();
   } catch (error) {
-    console.error(error);
-    alert("상품 정보를 불러오는 중 오류가 발생했습니다.");
+    console.error("🔴 loadProduct 에러:", error);
+    Modal.open({
+      message: "상품 정보를 불러오는 중 오류가 발생했습니다.",
+      cancelText: "",
+    });
   }
 }
 
 // 페이지 진입 시 실행
 loadProduct();
+/**
+ * 최초 총 수량 / 총 금액 계산 함수
+ * updateOrderSummary()
+ *
+ * - 현재 수량을 읽는다
+ * - 총 수량 표시를 업데이트한다
+ * - 상품 단가 × 수량으로 총 금액을 계산한다
+ * - 화면에 총 상품 금액을 표시한다
+ *
+ * 👉 총 상품 금액과 관련된
+ *    모든 책임은 이 함수 하나가 가진다
+ */
 
-// 로그인 여부 판단 함수
-function isLoggedIn() {
-  return !!localStorage.getItem("accessToken");
-}
-
-// 수량 관리
+// 수량 가져오는 공통 함수
 function getQuantity() {
-  return Number(quantityInput.value);
+  return Math.max(1, Number(quantityInput.value) || 1);
 }
 
-// GET /api/products/:product_id 호출하여 상세 정보 표시
-// 장바구니 및 주문에 사용되는 데이터의 신뢰성을 위해
-// URL에서 받은 id로 서버에서 상품 정보를 다시 조회하는 것.
-async function fetchProduct() {
-  const response = await fetch(
-    `http://localhost:3000/api/products/${productId}`
-  );
-  return response.json();
+function updateOrderSummary() {
+  if (!currentProduct) return;
+
+  const quantity = getQuantity();
+  const totalPrice = currentProduct.price * quantity;
+
+  // 총 수량 표시
+  totalQuantityEl.textContent = quantity;
+
+  // 총 금액 표시
+  totalPriceEl.textContent = Utils.formatNumber(totalPrice);
 }
 
-// "바로 구매" 클릭 시
+// 수량 변경 이벤트 핸들러
+// - 버튼
+quantityDecreaseBtn.addEventListener("click", () => {
+  const quantity = getQuantity();
+  if (quantity > 1) {
+    quantityInput.value = quantity - 1;
+    updateOrderSummary();
+  }
+});
+
+// + 버튼
+quantityIncreaseBtn.addEventListener("click", () => {
+  quantityInput.value = quantity + 1;
+  updateOrderSummary();
+});
+
+// input 직접 수정 시
+// quantityInput.addEventListener("input", updateOrderSummary);
+quantityInput.addEventListener("input", () => {
+  updateOrderSummary();
+});
+
+// 버튼 클릭시 로그인 여부 판단 함수 (공통 검증 함수 활용: Utils)
+function validateBeforeAction() {
+  console.log("🟡 validateBeforeAction 실행");
+
+  if (!Utils.isLoggedIn()) {
+    console.log("🔴 로그인 안 됨");
+
+    // 돌아올 페이지 저장
+    localStorage.setItem("redirect_after_login", window.location.href);
+
+    Modal.open({
+      message: "로그인이 필요합니다. 로그인 페이지로 이동할까요?",
+      confirmText: "로그인",
+      cancelText: "취소",
+      onConfirm: () => {
+        window.location.href = "signin.html";
+      },
+    });
+    return false;
+  }
+
+  // 상품 정보 로드 여부 확인
+  if (!currentProduct) {
+    Modal.open({
+      message: "상품 정보가 아직 로드되지 않았습니다.",
+      cancelText: "",
+    });
+    return false;
+  }
+
+  return true;
+}
+
+// "바로 구매" 클릭 시 로직
 function handleDirectOrder() {
+  console.log("🟢 handleDirectOrder 실행");
+
   const orderData = [
     {
       order_type: "direct_order",
-      product_id: product.id,
-      quantity: quantity,
-
-      // product_id: currentProduct.id,
-      // quantity: getQuantity(),
+      product_id: currentProduct.id,
+      quantity: getQuantity(),
       // ... 기타 정보
     },
   ];
@@ -86,47 +180,52 @@ function handleDirectOrder() {
 // "장바구니" 클릭 시
 // 1. POST /api/cart/ 호출
 // 2. 성공 시 sessionStorage에도 저장
-// 3. 모달 표시 ("장바구니에 담았습니다")
+// 3. 모달 표시 ("장바구니에 담았습니다") 후 cart.html 이동
 
-// "장바구니" 클릭 시
+// "장바구니" 클릭 시 로직
 async function handleAddToCart() {
-  await fetch("http://localhost:3000/api/cart/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    },
-    body: JSON.stringify({
-      product_id: product.id,
-      quantity: quantity,
+  console.log("🟢 handleAddToCart 실행");
 
-      // product_id: currentProduct.id,
-      // quantity: getQuantity(),
-      // ... 기타 정보
-    }),
-  });
+  try {
+    await fetch("http://localhost:3000/api/cart/", {
+      method: "POST",
+      headers: Utils.getAuthHeaders(),
+      body: JSON.stringify({
+        product_id: currentProduct.id,
+        quantity: getQuantity(),
+      }),
+    });
 
-  alert("장바구니에 담았습니다");
-  window.location.href = "cart.html";
+    Modal.open({
+      message: "장바구니에 담았습니다.",
+      confirmText: "장바구니 이동",
+      cancelText: "",
+      onConfirm: () => {
+        window.location.href = "cart.html";
+      },
+    });
+  } catch (error) {
+    Modal.open({
+      message: "장바구니 처리 중 오류가 발생했습니다.",
+      cancelText: "",
+    });
+  }
 }
 
-// 이벤트 리스너 등록
+// 버튼 이벤트 리스너 등록
 // 바로 구매 버튼
-document.querySelector(".btn-buy").addEventListener("click", () => {
-  if (!isLoggedIn()) {
-    window.location.href = "signin.html";
-    return;
-  }
+purchaseButton.addEventListener("click", () => {
+  console.log("👉 바로 구매 버튼 클릭됨");
 
+  if (!validateBeforeAction()) return;
   handleDirectOrder();
 });
-// 장바구니 버튼
-document.querySelector(".btn-cart").addEventListener("click", () => {
-  if (!isLoggedIn()) {
-    window.location.href = "signin.html";
-    return;
-  }
 
+// 장바구니 버튼
+addCartButton.addEventListener("click", () => {
+  console.log("👉 장바구니 버튼 클릭됨");
+
+  if (!validateBeforeAction()) return;
   handleAddToCart();
 });
 
@@ -144,12 +243,6 @@ document.querySelector(".btn-cart").addEventListener("click", () => {
 // 9. 에러 핸들링 추가 고려 (네트워크 오류, 서버 오류 등)
 // 10. 수량 변경 기능 추가 고려 (현재는 고정된 수량 1로 설정)
 // 11. 모달 창 구현 고려 (장바구니에 담았습니다 메시지 등)
-
-// 12. CSS 변수 이름 오타 수정 (positive-text-colo -> positive-text-color)
-// 13. 버튼 스타일 개선 (배경색 및 테두리 색상 변경, 좌우 버튼 모서리 둥글게 처리)
-// 14. 불필요한 CSS 속성 제거 (배경색 #fff 제거)
-// 15. CSS 변수 사용으로 일관된 테마 적용
-// 16. CSS 클래스명 명확화 (btn-left, btn-right)
 
 // 로그인 여부를 판단하는 기준이 필요해 accessToken 존재 여부를 체크하는 공통 함수를 정의했다.
 // 이후 모든 버튼 액션에서 동일한 기준으로 로그인 상태를 판단한다.
