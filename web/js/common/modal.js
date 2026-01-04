@@ -1,7 +1,7 @@
 /**
  * 공통 모달 제어 시스템
  */
-export const Modal = {
+const Modal = {
   // 모달에 필요한 HTML 구조를 페이지에 자동 주입
   init() {
     if (document.getElementById("modal-overlay")) return;
