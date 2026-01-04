@@ -1,9 +1,6 @@
 // header.js
-document.addEventListener("DOMContentLoaded", () => {
-  // layout.js의 비동기 작업 시간을 고려해 0.1초 뒤에 실행
-  setTimeout(() => {
-    renderHeader();
-  }, 100);
+window.addEventListener("headerRendered", () => {
+  renderHeader();
 });
 
 function renderHeader() {
@@ -28,7 +25,6 @@ function renderHeader() {
       </button>
     `;
 
-    // 36번 줄 근처에서 에러가 났던 부분: 안전하게 옵셔널 체이닝(?.) 사용
     if (user.user_type === "SELLER") {
       console.warn("판매자 계정 안내 모달 실행");
       Modal.open({

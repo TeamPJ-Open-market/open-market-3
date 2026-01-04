@@ -97,6 +97,7 @@
   min-width: 60px;
   background-color: white;
   border: none;
+  cursor: pointer;
 }
 
 .action-text {
