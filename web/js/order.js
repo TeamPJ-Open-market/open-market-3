@@ -1,32 +1,55 @@
-loadHTMLToBody("../header.html", false);
-loadHTMLToBody("../footer.html", true);
+function getCartData() {
+  const cartData = sessionStorage.getItem("cart");
 
-loadCSS("../styles/pages/header.css");
-loadCSS("../styles/pages/footer.css");
-
-async function loadHTMLToBody(url, append) {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("HTML 불러오기 실패");
-
-    const text = await res.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(text, "text/html");
-
-    const body = document.body;
-    append
-      ? body.append(...doc.body.children)
-      : body.prepend(...doc.body.children);
-  } catch (err) {
-    console.error(err);
+  if (!cartData) {
+    return [];
   }
+
+  return JSON.parse(cartData);
 }
 
-// async/await 불필요
-// css는 브라우저에서 link 태그를 비동기로 로드함
-function loadCSS(url) {
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = url;
-  document.head.appendChild(link);
+function renderCart(cart) {
+  const orderList = document.getElementById("order-list");
+  const totalPriceEl = document.getElementById("total-price");
+
+  orderList.innerHTML = "";
+  let totalPrice = 0;
+
+  if (cart.length === 0) {
+    orderList.innerHTML = "<p>장바구니가 비어 있습니다.</p>";
+    totalPriceEl.textContent = "0원";
+    return;
+  }
+
+  cart.forEach((item) => {
+    const itemTotal = item.price * item.quantity;
+    totalPrice += itemTotal;
+
+    const row = document.createElement("div");
+    row.className = "order-item";
+
+    row.innerHTML = `
+      <div class="product-info">
+        <img src="${item.image}" />
+        <div>
+          <p class="name">${item.name}</p>
+          <p class="qty">수량: ${item.quantity}개</p>
+        </div>
+      </div>
+      <div class="discount">-</div>
+      <div class="shipping">무료배송</div>
+      <div class="price">${itemTotal.toLocaleString()}원</div>
+    `;
+
+    orderList.appendChild(row);
+  });
+
+  totalPriceEl.textContent = totalPrice.toLocaleString() + "원";
 }
+
+function init() {
+  const cart = getCartData();
+  renderCart(cart);
+}
+
+init();

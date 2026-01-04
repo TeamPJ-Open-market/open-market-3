@@ -195,3 +195,29 @@ input[type="number"]::-webkit-outer-spin-button {
   border-radius: 4px;
   font-size: 16px;
 }
+/* =========================
+   상품 정보
+========================= */
+.order-header,
+.order-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  align-items: center;
+}
+
+.product-info {
+  display: flex;
+  gap: 12px;
+}
+
+.product-info img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}
+
+.order-total {
+  text-align: right;
+  margin-top: 20px;
+  font-size: 16px;
+}
