@@ -1,5 +1,5 @@
 function getCartData() {
-  const cartData = sessionStorage.getItem("cart");
+  const cartData = sessionStorage.getItem("orderData");
 
   if (!cartData) {
     return [];
