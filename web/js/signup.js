@@ -1,6 +1,3 @@
-import { Validation } from "./common/validation.js";
-import { Utils } from "./api/config.js";
-
 //로그인 유무확인
 window.onload = function () {
   if (Utils.isLoggedIn()) {

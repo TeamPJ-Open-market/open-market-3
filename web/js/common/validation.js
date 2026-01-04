@@ -1,5 +1,5 @@
 // Validation 공통 모듈
-export const Validation = {
+const Validation = {
   showMessage(inputElement, messageElement, message, type) {
     inputElement.classList.remove("error", "success");
     messageElement.classList.remove("error", "success");
