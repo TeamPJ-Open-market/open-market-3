@@ -5,7 +5,7 @@ const STORAGE_KEYS = {
   USER: "user",
 };
 
-const Utils = {
+export const Utils = {
   getUser() {
     const user = localStorage.getItem(STORAGE_KEYS.USER);
     return user ? JSON.parse(user) : null;

@@ -1,4 +1,12 @@
 import { Validation } from "./common/validation.js";
+import { Utils } from "./api/config.js";
+
+//로그인 유무확인
+window.onload = function () {
+  if (Utils.isLoggedIn()) {
+    location.replace("/index.html");
+  }
+};
 
 // 탭 전환 (구매회원/판매회원)
 
@@ -184,6 +192,23 @@ function validatePhone() {
   }
   return true;
 }
+
+["phone2", "phone3"].forEach((id) => {
+  const input = document.getElementById(id);
+  //event 전화번호에 숫자 이외의 입력을 막음
+  input.addEventListener("keydown", function (e) {
+    if (["e", "E", "+", "-"].includes(e.key)) {
+      e.preventDefault();
+    } else if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      e.preventDefault();
+    }
+  });
+
+  //event 숫자이외는 공백처리 , 4글자 제한
+  input.addEventListener("input", function () {
+    this.value = this.value.replace(/[^0-9]/g, "").slice(0, 4);
+  });
+});
 
 //동의 체크박스
 
