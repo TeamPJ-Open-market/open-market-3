@@ -1,6 +1,3 @@
-import { Utils } from "./api/config.js";
-import { Modal } from "./common/modal.js";
-
 console.log("🔥 detail.js 실행됨");
 
 // 회사 이름 -> UI 상수 (기획 고정값)
