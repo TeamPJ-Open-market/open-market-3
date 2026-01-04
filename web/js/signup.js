@@ -199,6 +199,8 @@ function validatePhone() {
   input.addEventListener("keydown", function (e) {
     if (["e", "E", "+", "-"].includes(e.key)) {
       e.preventDefault();
+    } else if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      e.preventDefault();
     }
   });
 

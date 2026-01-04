@@ -65,6 +65,19 @@
   gap: 12px;
 }
 
+.input-pw-group,
+.input-confirm-pw-group {
+  position: relative;
+}
+
+.pw-check-icon,
+.pw-confirm-check-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  color: var(--checkbox-disabled-color);
+}
+
 .id-check-btn {
   border: none;
   border-radius: 5px;
@@ -76,45 +89,43 @@
   cursor: pointer;
 }
 
+/* 공통 input */
+input,
+.number-select {
+  height: 54px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid var(--main-border-color);
+  border-radius: 5px;
+  padding-left: 16px;
+}
+
+/* 아이디 입력칸 크기지정 */
 .input-id-group > input {
   width: 346px;
-  border: 1px solid var(--main-border-color);
-  border-radius: 5px;
-  height: 54px;
 }
 
-.input-pw-group > input {
-  width: 100%;
-  border: 1px solid var(--main-border-color);
-  border-radius: 5px;
-  height: 54px;
-}
-
+/* 그외 입력칸 크기지정 */
+.input-pw-group > input,
+.input-confirm-pw-group > input,
 .input-name-group > input {
   width: 100%;
-  border: 1px solid var(--main-border-color);
-  border-radius: 5px;
-  height: 54px;
 }
 
+/* 전화번호 그룹 */
 .input-phone-number-group {
   display: flex;
-  flex-direction: row;
   gap: 10px;
 }
+
+.input-phone-number-group > input,
 .number-select {
   width: 100%;
   text-align: center;
-  font-size: 16px;
 }
 
 .input-phone-number-group > input {
-  width: 100%;
-  border: 1px solid var(--main-border-color);
-  border-radius: 5px;
-  height: 54px;
-  text-align: center;
-  font-size: 16px;
+  padding: 0;
 }
 
 input:focus {
@@ -177,16 +188,49 @@ button:disabled {
   background-color: var(--main-btn-color);
 }
 
-.error {
-  border-color: var(--negative-border-color);
-}
-
-.success {
-  border-color: var(--positive-border-color);
-}
-
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none; /* 스피너 제거 */
   margin: 0; /* 불필요한 여백 제거 */
+}
+
+/* 에러 메세지 스타일 */
+.error {
+  color: var(--negative-text-color);
+  border-color: var(--negative-border-color);
+}
+
+input.error {
+  color: unset;
+  border-color: var(--negative-text-color);
+}
+
+span.error {
+  display: block;
+  margin: 7px 0;
+}
+
+.input-pw-group input.success ~ .pw-check-icon {
+  color: var(--checkbox-bg-color);
+}
+
+/* 비밀번호 확인 input이 error일 때 아이콘 빨강 */
+.input-confirm-pw-group input.success ~ .pw-confirm-check-icon {
+  color: var(--checkbox-bg-color);
+}
+
+/* 통과 메세지 스타일 */
+.success {
+  color: var(--positive-text-color);
+  border-color: var(--positive-border-color);
+}
+
+input.success {
+  color: unset;
+  border-color: var(--positive-text-color);
+}
+
+.input-pw-group.success .pw-check-icon,
+.input-confirm-pw-group.success .pw-confirm-check-icon {
+  color: #4caf50; /* 초록 */
 }
