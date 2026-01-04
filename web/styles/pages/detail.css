@@ -89,20 +89,20 @@ html {
 
 /* 택배배송 / 무료배송 */
 .delivery-info {
-  margin-bottom: 1.43rem;
+  margin-bottom: 0.5rem;
   color: var(--sub-text-color);
 }
 /* 상품 수량 선택 */
 .quantity-selector {
   display: flex;
   align-items: center;
-  padding: 2.14rem 0;
+  padding: 1rem 0;
   border-top: 2px solid var(--disabled-btn-color);
   border-bottom: 2px solid var(--disabled-btn-color);
 }
 .quantity-selector button {
-  width: 50px;
-  height: 52px;
+  width: 40px;
+  height: 42px;
   background-color: var(--main-bg-color);
   border: 1px solid var(--main-border-color);
   cursor: pointer;
@@ -116,8 +116,8 @@ html {
   border-bottom-right-radius: 4px;
 }
 .quantity-input {
-  width: 52px;
-  height: 50px;
+  width: 42px;
+  height: 40px;
   text-align: center;
   border-top: 1px solid var(--main-border-color);
   border-bottom: 1px solid var(--main-border-color);
@@ -187,7 +187,7 @@ html {
 /*                         미디어쿼리                         */
 /* ========================================================= */
 
-/* 모바일 버전  */
+/* mobile */
 @media (max-width: 739px) {
   /* 탭 줄바꿈 */
   .btn-tab span {
@@ -197,7 +197,7 @@ html {
 @media (max-width: 767px) {
 }
 
-/* 모바일&테블릿 버전  */
+/* mobile & tablet */
 @media (max-width: 1089px) {
   /* 택배배송 / 무료배송 */
   .delivery-info {
@@ -205,7 +205,7 @@ html {
   }
 }
 
-/* 테블릿 버전  */
+/* tablet */
 @media (min-width: 768px) and (max-width: 1089px) {
   /* 상품 이미지 영역 */
   .product-thumbnail {
@@ -214,7 +214,27 @@ html {
   }
 }
 
-/* PC 버전  */
+/* tablet & pc */
+@media (min-width: 768px) {
+  /* 택배배송 / 무료배송 */
+  .delivery-info {
+    margin-bottom: 1.43rem;
+  }
+  /* 상품 수량 선택 */
+  .quantity-selector {
+    padding: 2.14rem 0;
+  }
+  .quantity-selector button {
+    width: 50px;
+    height: 52px;
+  }
+  .quantity-input {
+    width: 52px;
+    height: 50px;
+  }
+}
+
+/* PC */
 @media (min-width: 1090px) {
   /* 상품 상세 상단 영역*/
   .product-overview {
