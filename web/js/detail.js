@@ -1,13 +1,26 @@
 console.log("🔥 detail.js 실행됨");
 
+// ====================
+// 1. 상수 / 환경 설정
+
 // 회사 이름 -> UI 상수 (기획 고정값)
 const BRAND_NAME = "백엔드글로벌";
+
+// API Base URL (로컬 / 배포 분기)
+const API_BASE_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:3000/api"
+    : "https://open-market-jade.vercel.app/api";
+
+// ====================
+// 2. URL 파라미터
 
 // URL에서 product_id 추출 (장바구니에 넣을 상품 = 이 id의 상품)
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get("id");
 
-console.log("🟡 productId:", productId);
+// ====================
+// 3. DOM 요소
 
 // 상품 정보 표시를 위한 DOM 요소들
 const productImage = document.getElementById("product-image");
@@ -26,10 +39,14 @@ const totalPriceEl = document.getElementById("total-price");
 const purchaseButton = document.getElementById("btn-purchase");
 const addCartButton = document.getElementById("btn-add-cart");
 
-console.log("🟡 버튼 DOM 확인:", purchaseButton, addCartButton);
+// ====================
+// 4. 상태 변수
 
 // API에서 한 번 받아온 데이터 저장
 let currentProduct = null;
+
+// ====================
+// 5. 상품 상세 조회
 
 // 상품 정보, 상세 조회 + 화면 렌더링
 async function loadProduct() {
@@ -39,10 +56,6 @@ async function loadProduct() {
     const response = await fetch(
       `http://localhost:3000/api/products/${productId}`
     );
-
-    if (!response.ok) {
-      throw new Error("상품 정보를 불러오지 못했습니다.");
-    }
 
     const data = await response.json();
     console.log("🟢 상품 데이터:", data);
@@ -70,18 +83,9 @@ async function loadProduct() {
 
 // 페이지 진입 시 실행
 loadProduct();
-/**
- * 최초 총 수량 / 총 금액 계산 함수
- * updateOrderSummary()
- *
- * - 현재 수량을 읽는다
- * - 총 수량 표시를 업데이트한다
- * - 상품 단가 × 수량으로 총 금액을 계산한다
- * - 화면에 총 상품 금액을 표시한다
- *
- * 👉 총 상품 금액과 관련된
- *    모든 책임은 이 함수 하나가 가진다
- */
+
+// ====================
+// 6. 수량 / 총 금액
 
 // 수량 가져오는 공통 함수
 function getQuantity() {
@@ -92,36 +96,32 @@ function updateOrderSummary() {
   if (!currentProduct) return;
 
   const quantity = getQuantity();
-  const totalPrice = currentProduct.price * quantity;
-
-  // 총 수량 표시
   totalQuantityEl.textContent = quantity;
-
-  // 총 금액 표시
-  totalPriceEl.textContent = Utils.formatNumber(totalPrice);
+  totalPriceEl.textContent = Utils.formatNumber(
+    currentProduct.price * quantity
+  );
 }
 
 // 수량 변경 이벤트 핸들러
 // - 버튼
 quantityDecreaseBtn.addEventListener("click", () => {
-  const quantity = getQuantity();
-  if (quantity > 1) {
-    quantityInput.value = quantity - 1;
+  if (getQuantity() > 1) {
+    quantityInput.value = getQuantity() - 1;
     updateOrderSummary();
   }
 });
 
 // + 버튼
 quantityIncreaseBtn.addEventListener("click", () => {
-  quantityInput.value = quantity + 1;
+  quantityInput.value = getQuantity() + 1;
   updateOrderSummary();
 });
 
 // input 직접 수정 시
-// quantityInput.addEventListener("input", updateOrderSummary);
-quantityInput.addEventListener("input", () => {
-  updateOrderSummary();
-});
+quantityInput.addEventListener("input", updateOrderSummary);
+
+// ====================
+// 7. 공통 검증
 
 // 버튼 클릭시 로그인 여부 판단 함수 (공통 검증 함수 활용: Utils)
 function validateBeforeAction() {
@@ -183,16 +183,46 @@ function handleDirectOrder() {
 async function handleAddToCart() {
   console.log("🟢 handleAddToCart 실행");
 
+  // 장바구니는 DB 기준이니까
+  // 상세 페이지에서 중복 체크 후 PUT/POST 분기가 필요
   try {
-    await fetch("http://localhost:3000/api/cart/", {
-      method: "POST",
+    // 1️⃣ 내 장바구니 조회
+    const res = await fetch("http://localhost:3000/api/cart", {
       headers: Utils.getAuthHeaders(),
-      body: JSON.stringify({
-        product_id: currentProduct.id,
-        quantity: getQuantity(),
-      }),
     });
+    const data = await res.json();
+    const cartItems = data.results;
 
+    // 2️⃣ 같은 상품 있는지 확인
+    const existItem = cartItems.find(
+      (item) => item.product.id === currentProduct.id
+    );
+
+    // 3️⃣ 있으면 → PUT (수량 증가)
+    if (existItem) {
+      await fetch(`http://localhost:3000/api/cart/${existItem.id}/`, {
+        method: "PUT",
+        headers: Utils.getAuthHeaders(),
+        body: JSON.stringify({
+          product_id: currentProduct.id,
+          quantity: existItem.quantity + getQuantity(),
+          is_active: true,
+        }),
+      });
+    }
+    // 4️⃣ 없으면 → POST
+    else {
+      await fetch("http://localhost:3000/api/cart/", {
+        method: "POST",
+        headers: Utils.getAuthHeaders(),
+        body: JSON.stringify({
+          product_id: currentProduct.id,
+          quantity: getQuantity(),
+        }),
+      });
+    }
+
+    // 5️⃣ 모달 표시
     Modal.open({
       message: "장바구니에 담았습니다.",
       confirmText: "장바구니 이동",
