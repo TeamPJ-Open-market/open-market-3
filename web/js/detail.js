@@ -18,13 +18,13 @@ const productId = urlParams.get("id");
 // ====================
 // 3. DOM 요소
 
-// 상품 정보 표시를 위한 DOM 요소들
+// 상품 정보 표시
 const productImage = document.getElementById("product-image");
 const productBrand = document.getElementById("product-brand");
 const productTitle = document.getElementById("product-title");
 const productPrice = document.getElementById("product-price");
 
-// 수량 선택 및 총 금액 표시 DOM 요소들
+// 수량 선택 및 총 금액 표시
 const quantityInput = document.getElementById("quantity-input");
 const quantityDecreaseBtn = document.getElementById("quantity-decrease");
 const quantityIncreaseBtn = document.getElementById("quantity-increase");
@@ -34,6 +34,10 @@ const totalPriceEl = document.getElementById("total-price");
 // 버튼들
 const purchaseButton = document.getElementById("btn-purchase");
 const addCartButton = document.getElementById("btn-add-cart");
+
+// 상품 상세 탭 영역 표시
+const tabButtons = document.querySelectorAll(".tab-button");
+const tabContents = document.querySelectorAll(".tab-content");
 
 // ====================
 // 4. 상태 변수
@@ -55,8 +59,9 @@ function getJsonAuthHeaders() {
 // ====================
 // 6. fetch 응답 체크 공통 함수
 
-// ✔ PUT / POST / GET 모두에서 재사용
-// ✔ 응답 실패 시 바로 catch로 떨어지게 함
+// PUT / POST / GET 모두에서 재사용
+// 응답 실패 시 바로 catch로 떨어지게 함
+
 async function fetchWithCheck(url, options = {}) {
   const res = await fetch(url, options);
 
@@ -73,6 +78,74 @@ async function fetchWithCheck(url, options = {}) {
 
   return res;
 }
+
+// ====================
+// 6-1. 탭 UI 로직
+
+// 상품 로직과 완전히 독립
+// 화면 전환 + 접근성만 담당
+
+function activateTab(button) {
+  const tabName = button.getAttribute("data-tab");
+
+  // 모든 탭 비활성화
+  tabButtons.forEach((btn) => {
+    btn.classList.remove("active");
+    btn.setAttribute("aria-selected", "false");
+    btn.setAttribute("tabindex", "-1");
+  });
+
+  tabContents.forEach((content) => {
+    content.classList.remove("active");
+    content.setAttribute("hidden", "");
+  });
+
+  // 선택된 탭 활성화
+  button.classList.add("active");
+  button.setAttribute("aria-selected", "true");
+  button.setAttribute("tabindex", "0");
+  button.focus();
+
+  const targetContent = document.getElementById(`${tabName}-content`);
+  targetContent.classList.add("active");
+  targetContent.removeAttribute("hidden");
+}
+
+// 클릭 이벤트
+tabButtons.forEach((button) => {
+  button.addEventListener("click", () => activateTab(button));
+});
+
+// 키보드 네비게이션
+tabButtons.forEach((button, index) => {
+  button.addEventListener("keydown", (e) => {
+    let targetIndex;
+
+    switch (e.key) {
+      case "ArrowLeft":
+        e.preventDefault();
+        targetIndex = index === 0 ? tabButtons.length - 1 : index - 1;
+        activateTab(tabButtons[targetIndex]);
+        break;
+
+      case "ArrowRight":
+        e.preventDefault();
+        targetIndex = index === tabButtons.length - 1 ? 0 : index + 1;
+        activateTab(tabButtons[targetIndex]);
+        break;
+
+      case "Home":
+        e.preventDefault();
+        activateTab(tabButtons[0]);
+        break;
+
+      case "End":
+        e.preventDefault();
+        activateTab(tabButtons[tabButtons.length - 1]);
+        break;
+    }
+  });
+});
 
 // ====================
 // 7. 상품 상세 조회
@@ -135,7 +208,7 @@ function updateOrderSummary() {
   );
 }
 
-// 수량 변경 이벤트 핸들러
+// 8-1. 수량 변경 이벤트 핸들러
 // - 버튼
 quantityDecreaseBtn.addEventListener("click", () => {
   if (getQuantity() > 1) {
@@ -192,8 +265,9 @@ function validateBeforeAction() {
 // ====================
 // 10. sessionStorage 저장 함수
 
-// ⚠️ DB가 source of truth
+// DB가 source of truth
 // sessionStorage는 화면 표시 / 페이지 이동용만 담당
+
 function saveCartDataToSession(product, quantity) {
   const key = "cartData";
   const prev = JSON.parse(sessionStorage.getItem(key)) || [];

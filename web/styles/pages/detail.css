@@ -15,7 +15,7 @@
 /* MAIN */
 .product-detail-page {
   max-width: 1200px;
-  margin: 10rem auto;
+  margin: 5rem auto;
   padding: 0 1.4rem;
 }
 
@@ -148,6 +148,12 @@
 .tab-button.active {
   border-bottom: 6px solid var(--main-btn-color);
   color: var(--positive-text-color);
+}
+
+/* 상품 상세 내용 영역 */
+.tab-content {
+  padding: 5rem;
+  text-align: center;
 }
 
 /* ========================================================= */
