@@ -35,38 +35,30 @@ async function loadCart() {
     return;
   }
   try {
-    // 1. 서버(API) 호출을 무조건 먼저 시도합니다.
-    console.log(" 서버에 최신 데이터를 요청합니다...");
     const res = await fetch(`${API_URL}/cart/`, {
       headers: Utils.getAuthHeaders(),
     });
+    const data = await res.json();
 
-    if (res.ok) {
-      const data = await res.json();
-      cartItems = data.results || [];
+    // [핵심 수정] 데이터베이스 구조(image_5817b0.png)에 맞춰 'cart' 키를 먼저 확인합니다.
+    // 만약 'cart'가 없으면 이전 구조인 'results'를 확인합니다.
+    cartItems = data.cart || data.results || [];
 
-      // 서버에서 가져온 따끈따끈한 최신 데이터를 세션에 동기화합니다.
-      sessionStorage.setItem("cartData", JSON.stringify(cartItems));
-      console.log("✅ 서버 데이터 동기화 완료:", cartItems.length, "개");
+    console.log("📡 서버 최신 데이터 동기화 완료:", cartItems.length, "개");
+
+    sessionStorage.setItem("cartData", JSON.stringify(cartItems));
+
+    containerEl.classList.remove("is-hidden");
+
+    // 데이터가 0개보다 많아야 리스트를 그립니다.
+    if (cartItems.length > 0) {
+      renderCartList();
     } else {
-      // 서버 응답이 실패(예: 500 에러 등)했을 때만 세션에서 꺼내옵니다.
-      throw new Error("서버 응답 실패");
+      renderEmpty();
     }
   } catch (err) {
-    console.warn("⚠️ 서버 호출 실패, 세션 데이터를 확인합니다.", err);
-    const savedCart = sessionStorage.getItem("cartData");
-    if (savedCart) {
-      cartItems = JSON.parse(savedCart);
-    } else {
-      cartItems = [];
-    }
-  }
-
-  // 2. 최종 결정된 cartItems로 화면을 그립니다.
-  containerEl.classList.remove("is-hidden");
-  if (cartItems.length > 0) {
-    renderCartList();
-  } else {
+    console.error("로딩 실패:", err);
+    containerEl.classList.remove("is-hidden");
     renderEmpty();
   }
 }
@@ -197,21 +189,60 @@ function bindEvents() {
 async function updateQuantity(id, newQuantity) {
   try {
     const response = await fetch(`${API_URL}/cart/${id}/`, {
-      method: "PUT",
-      headers: Utils.getAuthHeaders(),
-      body: JSON.stringify({ quantity: newQuantity }),
+      method: "PUT", // 수량 수정은 PUT 방식
+      headers: Utils.getAuthHeaders(), // Authorization: Bearer {token} 필수
+      body: JSON.stringify({
+        quantity: newQuantity, // 명세서 요구 필드
+      }),
     });
 
+    // 1. 성공 처리 (200 OK)
     if (response.ok) {
       console.log("✅ 수량 수정 완료");
-      sessionStorage.removeItem("cartData"); // 세션 삭제 후
-      await loadCart(); // 새로고침
+
+      // 정석: 세션 데이터를 비우고 서버에서 최신 목록을 다시 가져옴
+      sessionStorage.removeItem("cartData");
+      await loadCart();
+      return;
+    }
+
+    // 2. HTTP 상태 코드별 상세 오류 처리
+    switch (response.status) {
+      case 401: // 인증되지 않은 사용자
+        Modal.open({
+          message: "로그인이 필요합니다.",
+          onConfirm: () => (location.href = "signin.html"),
+          cancelText: "",
+        });
+        break;
+
+      case 403: // 접근 권한 없음
+        Modal.open({ message: "수정 권한이 없습니다.", cancelText: "" });
+        break;
+
+      case 404: // 상품을 찾을 수 없음
+        Modal.open({
+          message: "해당 상품 정보를 찾을 수 없습니다.",
+          cancelText: "",
+        });
+        await loadCart();
+        break;
+
+      default:
+        const errorData = await response.json();
+        Modal.open({
+          message: errorData.detail || "수정 중 오류가 발생했습니다.",
+          cancelText: "",
+        });
     }
   } catch (err) {
-    console.error("수량 수정 오류:", err);
+    console.error("수량 수정 통신 에러:", err);
+    Modal.open({
+      message: "서버와의 연결이 원활하지 않습니다.",
+      cancelText: "",
+    });
   }
 }
-
 // [+] 버튼 클릭 시
 function onIncrease(e) {
   const li = e.target.closest("li");
@@ -259,82 +290,81 @@ async function onDelete(id) {
           headers: Utils.getAuthHeaders(),
         });
 
+        // 1. 성공 처리 (200 OK)
         if (response.ok) {
           console.log("✅ 서버 삭제 성공");
-
-          // 1. [가장 중요] 세션 스토리지를 즉시 비웁니다.
-          // 그래야 loadCart()가 실행될 때 옛날 데이터를 가져오지 않습니다.
           sessionStorage.removeItem("cartData");
-
-          // 2. UI에서 해당 아이템을 즉시 제거 (서버 응답을 기다리지 않고 사용자에게 보여줌)
-          cartItems = cartItems.filter(
-            (item) => String(item.id) !== String(id)
-          );
-
-          // 3. 다시 로드하여 데이터 정합성 확인
           await loadCart();
+          return;
+        }
 
-          console.log("🔄 목록 갱신 완료");
-        } else {
-          console.error("❌ 삭제 실패:", response.status);
+        // 2. HTTP 상태 코드별 상세 오류 처리
+        switch (response.status) {
+          case 401: // 인증되지 않은 사용자
+            Modal.open({
+              message: "로그인이 만료되었습니다. 다시 로그인해주세요.",
+              onConfirm: () => (location.href = "signin.html"),
+              cancelText: "",
+            });
+            break;
+
+          case 403: // 접근 권한 없음
+            Modal.open({
+              message: "본인의 장바구니 상품만 삭제할 수 있습니다.",
+              cancelText: "",
+            });
+            break;
+
+          case 404: // 장바구니 상품을 찾을 수 없음
+            Modal.open({
+              message: "이미 삭제되었거나 존재하지 않는 상품입니다.",
+              cancelText: "",
+            });
+            // 목록에 없으므로 데이터 동기화 시도
+            await loadCart();
+            break;
+
+          default:
+            const errorData = await response.json();
+            Modal.open({
+              message: errorData.detail || "삭제 중 오류가 발생했습니다.",
+              cancelText: "",
+            });
         }
       } catch (err) {
-        console.error("삭제 요청 중 에러:", err);
+        console.error("네트워크 에러:", err);
+        Modal.open({
+          message: "서버와의 연결이 원활하지 않습니다.",
+          cancelText: "",
+        });
       }
     },
   });
 }
 /**
  * 7. "주문하기" 클릭 시 실행되는 함수
- * 예시 코드의 'selectedItems' 추출 방식을 우리 구조에 맞게 적용했습니다.
  */
-async function moveToOrder() {
-  // [STEP 1] 체크박스가 선택된 상품 리스트만 필터링 (예시 코드의 의도 반영)
+function moveToOrder() {
+  // 1. 체크박스가 선택된 상품들만 필터링
   const selectedCartItems = cartItems.filter((item, index) => {
-    // 렌더링된 리스트 중 해당 순서의 체크박스가 체크되었는지 확인
     const checkBoxes = itemsEl.querySelectorAll(".item-check");
     return checkBoxes[index] && checkBoxes[index].checked;
   });
 
-  // [STEP 2] 선택된 상품이 없는 경우 방어 로직
+  // 2. 선택된 상품이 없는 경우 방어 로직을 실행
   if (selectedCartItems.length === 0) {
     Modal.open({ message: "주문할 상품을 선택해주세요.", cancelText: "" });
     return;
   }
 
-  try {
-    // [STEP 3] 서버에 주문 생성 요청 (POST)
-    // 서버 DB에도 "이 사용자가 주문을 시작했다"는 것을 알려야 합니다.
-    const response = await fetch(`${API_URL}/order/`, {
-      method: "POST",
-      headers: Utils.getAuthHeaders(),
-      body: JSON.stringify({
-        // 선택된 상품들의 ID만 모아서 전달
-        order_items: selectedCartItems.map((item) => item.id),
-        order_kind: "cart_order",
-      }),
-    });
+  // 3.  서버 호출 없이 선택된 데이터를 세션에 즉시 저장
+  // 이렇게 하면 order.html에서 데이터를 꺼내 화면을 그릴 수 있다.
+  sessionStorage.setItem("orderData", JSON.stringify(selectedCartItems));
 
-    const data = await response.json();
+  // 4. 주문 종류를 저장하여 order.html에서 참조
+  sessionStorage.setItem("order_kind", "cart_order");
 
-    if (response.ok) {
-      // [STEP 4] sessionStorage 활용 (예시 코드 핵심 반영)
-      // 1) 서버에서 준 주문 고유 ID 저장
-      sessionStorage.setItem("pending_order_id", data.id);
-
-      // 2) 선택된 상품 정보를 통째로 저장 (주문서 페이지에서 다시 API 안 불러와도 되게끔!)
-      // 이렇게 하면 order.html에서 훨씬 빠르게 화면을 그릴 수 있습니다.
-      sessionStorage.setItem("orderData", JSON.stringify(selectedCartItems));
-
-      // [STEP 5] 페이지 이동
-      location.href = "order.html";
-    } else {
-      Modal.open({
-        message: "주문 생성 실패: " + (data.message || "다시 시도해주세요."),
-        cancelText: "",
-      });
-    }
-  } catch (err) {
-    console.error("주문 생성 중 에러 발생:", err);
-  }
+  // 5. 주문서 페이지로 즉시 이동
+  console.log("🚚 데이터 저장 완료, 주문서로 이동합니다.");
+  location.href = "order.html";
 }
