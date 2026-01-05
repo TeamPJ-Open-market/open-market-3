@@ -33,7 +33,7 @@
   border-bottom: none;
   background-color: var(--disabled-tab-color);
   cursor: pointer;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 500;
   border-radius: 10px 10px 0 0;
 }
@@ -76,7 +76,7 @@ span.error {
   border: none;
   border-bottom: 1px solid var(--main-border-color);
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 /* 초록색 로그인 버튼 */
@@ -88,7 +88,7 @@ span.error {
   color: var(--white-text-color);
   border: none;
   border-radius: 5px;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   margin-top: 36px;
   cursor: pointer;
