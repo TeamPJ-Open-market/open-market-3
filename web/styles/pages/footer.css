@@ -19,17 +19,17 @@
   padding: 18px 0;
 }
 
-/* 텍스트 링크 */
+/* ================= 텍스트 링크 ================= */
 .footer-links {
   display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  flex-wrap: wrap; /* ✅ 줄바꿈 허용 */
+  gap: 12px;
 }
 
 .footer-links a {
   text-decoration: none;
   color: var(--main-text-color);
+  font-size: clamp(12px, 2.5vw, 14px);
 }
 
 .footer-links a:hover {
@@ -41,21 +41,24 @@
   color: #222;
 }
 
-.footer-links li {
-  display: flex;
-  align-items: center;
-}
-
 /* | 구분선 */
 .footer-links li:not(:last-child)::after {
   content: "|";
   margin: 0 12px;
+  color: #aaa;
 }
 
-/* SNS 아이콘 */
+/* ================= SNS 아이콘 =================== */
 .footer-sns {
-  display: flex;
-  gap: 12px;
+  display: grid;
+  grid-auto-flow: column;
+  column-gap: 12px;
+  align-items: center;
+}
+
+.footer-sns a {
+  display: grid;
+  place-items: center;
 }
 
 .footer-sns img {
@@ -64,7 +67,7 @@
   display: block;
 }
 
-/* 하단 회사 정보 */
+/* ================= 하단 회사 정보 ================= */
 .footer-bottom {
   padding: 32px 0;
 }
@@ -82,7 +85,6 @@
 /* ================================================= */
 /* ================= Footer Responsive ============= */
 /* ================================================= */
-
 @media (max-width: 640px) {
   .footer-top-inner {
     flex-direction: column;
@@ -90,17 +92,10 @@
     align-items: flex-start;
   }
 
-  .footer-links {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .footer-links li::after {
-    margin: 0 6px;
-  }
-
+  /* 모바일에서 SNS 아이콘은 오른쪽 정렬 유지 */
   .footer-sns {
-    align-self: flex-end;
+    justify-self: end;
+    margin-top: 6px;
   }
 
   .footer-bottom {
@@ -109,5 +104,9 @@
 
   .footer-inner p {
     font-size: 12px;
+  }
+
+  .footer-links li:not(:last-child)::after {
+    margin: 0 6px;
   }
 }
