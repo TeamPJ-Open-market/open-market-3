@@ -1,7 +1,6 @@
 console.log("index.js loaded");
 
-const API_ORIGIN = "http://localhost:3000";
-const API_BASE = `${API_ORIGIN}/api`;
+
 
 const path = window.location.pathname;
 
@@ -32,7 +31,7 @@ async function loadProducts() {
   if (!grid) return;
 
   try {
-    const res = await fetch(`${API_BASE}/products`);
+    const res = await fetch(`${API_URL}/products`);
     if (!res.ok) throw new Error("products fetch failed");
 
     const data = await res.json();
