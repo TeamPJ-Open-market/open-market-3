@@ -5,12 +5,8 @@ console.log("🔥 detail.js 실행됨");
 
 // 회사 이름 -> UI 상수 (기획 고정값)
 const BRAND_NAME = "백엔드글로벌";
-
-// API Base URL (로컬 / 배포 분기)
-const API_BASE_URL =
-  window.location.hostname === "localhost"
-    ? "http://localhost:3000/api"
-    : "https://open-market-jade.vercel.app/api";
+// 최대 구매 가능 상품 수량
+const MAX_QUANTITY = 99;
 
 // ====================
 // 2. URL 파라미터
@@ -45,9 +41,6 @@ const addCartButton = document.getElementById("btn-add-cart");
 // API에서 한 번 받아온 데이터 저장
 let currentProduct = null;
 
-// 최대 구매 가능 상품 수량
-const MAX_QUANTITY = 99;
-
 // ====================
 // 5. 공통 Header 함수
 
@@ -67,7 +60,7 @@ async function loadProduct() {
   console.log("🟡 loadProduct 실행");
 
   try {
-    const response = await fetch(`${API_BASE_URL}/products/${productId}`);
+    const response = await fetch(`${API_URL}/products/${productId}`);
     if (!response.ok) throw new Error("상품 조회 실패");
 
     const data = await response.json();
@@ -81,7 +74,7 @@ async function loadProduct() {
     // 회사 이름은 API가 아닌 기획 고정값
     productBrand.textContent = BRAND_NAME;
     productTitle.textContent = data.name;
-    productPrice.textContent = `${Utils.formatNumber(data.price)}`;
+    productPrice.textContent = Utils.formatNumber(data.price);
 
     // 최초 총 수량 / 총 금액 계산
     updateOrderSummary();
@@ -237,7 +230,7 @@ async function handleAddToCart() {
   // 상세 페이지에서 중복 체크 후 PUT/POST 분기가 필요
   try {
     // 1️⃣ DB 장바구니 조회
-    const res = await fetch(`${API_BASE_URL}/cart`, {
+    const res = await fetch(`${API_URL}/cart`, {
       headers: Utils.getAuthHeaders(),
     });
 
@@ -258,7 +251,7 @@ async function handleAddToCart() {
     // DB 기준 저장
     // 3️⃣ 있으면 → PUT (수량 증가)
     if (existItem) {
-      await fetch(`${API_BASE_URL}/cart/${existItem.id}/`, {
+      await fetch(`${API_URL}/cart/${existItem.id}/`, {
         method: "PUT",
         headers: getJsonAuthHeaders(),
         body: JSON.stringify({
@@ -268,7 +261,7 @@ async function handleAddToCart() {
     }
     // 4️⃣ 없으면 → POST
     else {
-      await fetch(`${API_BASE_URL}/cart/`, {
+      await fetch(`${API_URL}/cart/`, {
         method: "POST",
         headers: getJsonAuthHeaders(),
         body: JSON.stringify({
