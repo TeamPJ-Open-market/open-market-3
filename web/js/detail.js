@@ -53,17 +53,38 @@ function getJsonAuthHeaders() {
 }
 
 // ====================
-// 6. 상품 상세 조회
+// 6. fetch 응답 체크 공통 함수
+
+// ✔ PUT / POST / GET 모두에서 재사용
+// ✔ 응답 실패 시 바로 catch로 떨어지게 함
+async function fetchWithCheck(url, options = {}) {
+  const res = await fetch(url, options);
+
+  if (!res.ok) {
+    let message = "서버 요청 실패";
+
+    try {
+      const errorData = await res.json();
+      message = errorData.message || message;
+    } catch (e) {}
+
+    throw new Error(message);
+  }
+
+  return res;
+}
+
+// ====================
+// 7. 상품 상세 조회
 
 // 상품 정보, 상세 조회 + 화면 렌더링
 async function loadProduct() {
   console.log("🟡 loadProduct 실행");
 
   try {
-    const response = await fetch(`${API_URL}/products/${productId}`);
-    if (!response.ok) throw new Error("상품 조회 실패");
-
+    const response = await fetchWithCheck(`${API_URL}/products/${productId}`);
     const data = await response.json();
+
     console.log("🟢 상품 데이터:", data);
 
     currentProduct = data;
@@ -91,7 +112,7 @@ async function loadProduct() {
 loadProduct();
 
 // ====================
-// 7. 수량 / 총 금액
+// 8. 수량 / 총 금액
 
 // 수량 가져오는 공통 함수 (최소/최대 제한)
 function getQuantity() {
@@ -136,7 +157,7 @@ quantityInput.addEventListener("input", () => {
 });
 
 // ====================
-// 8. 공통 검증
+// 9. 공통 검증
 
 // 버튼 클릭시 로그인 여부 판단 함수 (공통 검증 함수 활용: Utils)
 function validateBeforeAction() {
@@ -169,7 +190,7 @@ function validateBeforeAction() {
 }
 
 // ====================
-// 9. sessionStorage 저장 함수
+// 10. sessionStorage 저장 함수
 
 // ⚠️ DB가 source of truth
 // sessionStorage는 화면 표시 / 페이지 이동용만 담당
@@ -198,7 +219,7 @@ function saveCartDataToSession(product, quantity) {
 }
 
 // ====================
-// 10. "바로 구매" 클릭 시 로직
+// 11. "바로 구매" 클릭 시 로직
 
 function handleDirectOrder() {
   console.log("🟢 handleDirectOrder 실행");
@@ -222,7 +243,7 @@ function handleDirectOrder() {
 // 2. 성공 시 sessionStorage에도 저장
 // 3. 모달 표시 ("장바구니에 담았습니다") 후 cart.html 이동
 
-// 11. "장바구니" 클릭 시 로직
+// 12. "장바구니" 클릭 시 로직
 async function handleAddToCart() {
   console.log("🟢 handleAddToCart 실행");
 
@@ -230,15 +251,9 @@ async function handleAddToCart() {
   // 상세 페이지에서 중복 체크 후 PUT/POST 분기가 필요
   try {
     // 1️⃣ DB 장바구니 조회
-    const res = await fetch(`${API_URL}/cart`, {
+    const res = await fetchWithCheck(`${API_URL}/cart`, {
       headers: Utils.getAuthHeaders(),
     });
-
-    // 응답 검증
-    if (!res.ok) {
-      console.error("cart fetch error", res);
-      throw new Error("🔴 장바구니 조회 실패:");
-    }
 
     const data = await res.json();
     const cartItems = data.results;
@@ -251,7 +266,7 @@ async function handleAddToCart() {
     // DB 기준 저장
     // 3️⃣ 있으면 → PUT (수량 증가)
     if (existItem) {
-      await fetch(`${API_URL}/cart/${existItem.id}/`, {
+      await fetchWithCheck(`${API_URL}/cart/${existItem.id}/`, {
         method: "PUT",
         headers: getJsonAuthHeaders(),
         body: JSON.stringify({
@@ -261,7 +276,7 @@ async function handleAddToCart() {
     }
     // 4️⃣ 없으면 → POST
     else {
-      await fetch(`${API_URL}/cart/`, {
+      await fetchWithCheck(`${API_URL}/cart/`, {
         method: "POST",
         headers: getJsonAuthHeaders(),
         body: JSON.stringify({
@@ -284,14 +299,15 @@ async function handleAddToCart() {
       },
     });
   } catch (error) {
+    console.error(error);
     Modal.open({
-      message: "장바구니 처리 중 오류가 발생했습니다.",
+      message: error.message || "장바구니 처리 중 오류가 발생했습니다.",
       cancelText: "",
     });
   }
 }
 
-// 12. 버튼 이벤트 리스너 등록
+// 13. 버튼 이벤트 리스너 등록
 // 바로 구매 버튼
 purchaseButton.addEventListener("click", () => {
   console.log("👉 바로 구매 버튼 클릭됨");
