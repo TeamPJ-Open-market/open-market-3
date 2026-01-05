@@ -33,12 +33,12 @@ function renderCart(cart) {
         <img src="${item.image}" />
         <div>
           <p class="name">${item.name}</p>
-          <p class="qty">수량: ${item.quantity}개</p>
+          <p>수량: ${item.quantity}개</p>
         </div>
       </div>
-      <div class="discount">-</div>
-      <div class="shipping">무료배송</div>
-      <div class="price">${itemTotal.toLocaleString()}원</div>
+      <div>-</div>
+      <div>무료배송</div>
+      <div>${itemTotal.toLocaleString()}원</div>
     `;
 
     orderList.appendChild(row);
@@ -47,9 +47,35 @@ function renderCart(cart) {
   totalPriceEl.textContent = totalPrice.toLocaleString() + "원";
 }
 
-function init() {
-  const cart = getCartData();
-  renderCart(cart);
-}
+const agreeCheckbox = document.querySelector(".agree input");
+const payBtn = document.querySelector(".pay-btn");
 
-init();
+/* 처음엔 비활성화 */
+payBtn.disabled = true;
+
+/* 체크박스 클릭 시 */
+agreeCheckbox.addEventListener("change", () => {
+  if (agreeCheckbox.checked) {
+    payBtn.disabled = false;
+    payBtn.classList.add("active");
+  } else {
+    payBtn.disabled = true;
+    payBtn.classList.remove("active");
+  }
+});
+
+/* 결제 버튼 클릭 */
+payBtn.addEventListener("click", () => {
+  if (!agreeCheckbox.checked) return;
+
+  alert("결제되었습니다.");
+
+  // 실제 흐름처럼 처리
+  sessionStorage.setItem("paymentComplete", "true");
+  sessionStorage.removeItem("orderData");
+});
+const postBtn = document.querySelector(".btn-post");
+
+postBtn.addEventListener("click", () => {
+  alert("우편번호 조회 입니다.");
+});
