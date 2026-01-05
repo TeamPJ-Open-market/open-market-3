@@ -1,25 +1,16 @@
-/* 기본 폰트 사이즈 */
-html {
-  font-size: 14px;
-  transition: all 0.5s;
-}
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-/* 36px */
+/* 14px일 때 - 36px */
 .text-size-xl {
   font-size: 2.57rem;
 }
-/* 18px */
+/* 14px일 때 - 18px */
 .text-size-md {
   font-size: 1.3rem;
 }
-/* 16px */
+/* 14px일 때 - 16px */
 .text-size-base {
   font-size: 1rem;
 }
+
 /* 폰트 스타일 */
 .font-bold {
   font-weight: 700;
@@ -34,11 +25,11 @@ html {
 /* 기본 버튼 스타일 */
 .btn {
   padding: 1.36rem 0;
-  box-sizing: border-box;
   font-weight: 700;
   text-align: center;
   border-radius: 4px;
   border: none;
+  box-sizing: border-box;
   transition: all 0.5s;
   cursor: pointer;
 }

@@ -53,9 +53,8 @@ async function loadProduct() {
   console.log("🟡 loadProduct 실행");
 
   try {
-    const response = await fetch(
-      `http://localhost:3000/api/products/${productId}`
-    );
+    const response = await fetch(`${API_BASE_URL}/products/${productId}`);
+    if (!response.ok) throw new Error("상품 조회 실패");
 
     const data = await response.json();
     console.log("🟢 상품 데이터:", data);
@@ -118,7 +117,10 @@ quantityIncreaseBtn.addEventListener("click", () => {
 });
 
 // input 직접 수정 시
-quantityInput.addEventListener("input", updateOrderSummary);
+quantityInput.addEventListener("input", () => {
+  quantityInput.value = getQuantity();
+  updateOrderSummary();
+});
 
 // ====================
 // 7. 공통 검증
@@ -147,7 +149,7 @@ function validateBeforeAction() {
   // 상품 정보 로드 여부 확인
   if (!currentProduct) {
     Modal.open({
-      message: "상품 정보가 아직 로드되지 않았습니다.",
+      message: "상품 정보를 받지 못했습니다.",
       cancelText: "",
     });
     return false;
@@ -156,7 +158,40 @@ function validateBeforeAction() {
   return true;
 }
 
-// "바로 구매" 클릭 시 로직
+// ====================
+// 8. sessionStorage 저장 함수
+
+// ⚠️ DB가 source of truth
+// sessionStorage는 화면 표시 / 페이지 이동용만 담당
+function saveCartDataToSession(product, quantity) {
+  const key = "cartData";
+  const stored = sessionStorage.getItem(key);
+  const cartData = stored ? JSON.parse(stored) : [];
+
+  const existItem = cartData.find((item) => item.product_id === product.id);
+
+  if (existItem) {
+    // 누적 X → 현재 선택 수량만 반영
+    existItem.quantity = quantity;
+    existItem.total_price = existItem.quantity * existItem.price;
+  } else {
+    cartData.push({
+      product_id: product.id,
+      product_name: product.name,
+      product_image: product.image,
+      quantity,
+      price: product.price,
+      shipping_fee: 0,
+      total_price: product.price * quantity,
+    });
+  }
+
+  sessionStorage.setItem(key, JSON.stringify(cartData));
+}
+
+// ====================
+// 9. "바로 구매" 클릭 시 로직
+
 function handleDirectOrder() {
   console.log("🟢 handleDirectOrder 실행");
 
@@ -187,7 +222,7 @@ async function handleAddToCart() {
   // 상세 페이지에서 중복 체크 후 PUT/POST 분기가 필요
   try {
     // 1️⃣ 내 장바구니 조회
-    const res = await fetch("http://localhost:3000/api/cart", {
+    const res = await fetch(`${API_BASE_URL}/cart`, {
       headers: Utils.getAuthHeaders(),
     });
     const data = await res.json();
@@ -198,21 +233,20 @@ async function handleAddToCart() {
       (item) => item.product.id === currentProduct.id
     );
 
+    // DB 기준 저장
     // 3️⃣ 있으면 → PUT (수량 증가)
     if (existItem) {
-      await fetch(`http://localhost:3000/api/cart/${existItem.id}/`, {
+      await fetch(`${API_BASE_URL}/cart/${existItem.id}/`, {
         method: "PUT",
         headers: Utils.getAuthHeaders(),
         body: JSON.stringify({
-          product_id: currentProduct.id,
           quantity: existItem.quantity + getQuantity(),
-          is_active: true,
         }),
       });
     }
     // 4️⃣ 없으면 → POST
     else {
-      await fetch("http://localhost:3000/api/cart/", {
+      await fetch(`${API_BASE_URL}/cart/`, {
         method: "POST",
         headers: Utils.getAuthHeaders(),
         body: JSON.stringify({
@@ -222,7 +256,10 @@ async function handleAddToCart() {
       });
     }
 
-    // 5️⃣ 모달 표시
+    // 5️⃣ sessionStorage 저장 (UI용)
+    saveCartDataToSession(currentProduct, getQuantity());
+
+    // 6️⃣ 모달 표시
     Modal.open({
       message: "장바구니에 담았습니다.",
       confirmText: "장바구니 이동",
@@ -256,24 +293,6 @@ addCartButton.addEventListener("click", () => {
   handleAddToCart();
 });
 
-// 1. 버튼 클릭 시 로그인 여부를 먼저 판단하고,
-// 2. 인증된 경우에만 로직 함수를 호출하도록 구조를 정리.
-// 3. 각 함수는 하나의 책임만 가지도록 분리.
-
-// 4. fetchProduct 함수를 만들어, 상품 정보를 서버에서 다시 조회하도록 변경.
-//    - 이는 장바구니 및 주문에 사용되는 데이터의 신뢰성을 높이기 위함.
-// 5. 불필요한 전역 변수를 제거하고, 함수 내에서 필요한 데이터를 처리하도록 수정.
-// 6. 주석을 추가하여 코드의 의도를 명확히 함.
-// 7. 중복된 로그인 체크 로직을 이벤트 리스너 내부로 이동하여 코드 중복 최소화.
-// 8. alert 대신 모달 창을 사용하는 방식으로 사용자 경험 개선 고려 가능.
-
-// 9. 에러 핸들링 추가 고려 (네트워크 오류, 서버 오류 등)
-// 10. 수량 변경 기능 추가 고려 (현재는 고정된 수량 1로 설정)
-// 11. 모달 창 구현 고려 (장바구니에 담았습니다 메시지 등)
-
-// 로그인 여부를 판단하는 기준이 필요해 accessToken 존재 여부를 체크하는 공통 함수를 정의했다.
-// 이후 모든 버튼 액션에서 동일한 기준으로 로그인 상태를 판단한다.
-
-// 버튼의 역할에 따라
-// 바로 구매는 order.html로,
-// 장바구니는 cart.html로 분기 처리한다.
+// ====================
+// 장바구니 추가 시 DB를 먼저 업데이트한 뒤 sessionStorage는 화면/이동용으로만 동기화.
+// 실제 수량의 최종 판단은 cart.html에서 DB 기준으로 다시 맞춘다.
