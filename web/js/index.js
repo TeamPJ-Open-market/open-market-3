@@ -5,7 +5,7 @@ const API_BASE = `${API_ORIGIN}/api`;
 
 const path = window.location.pathname;
 
-// // ===== 공통 레이아웃 로딩 =====
+// ===== 공통 레이아웃 로딩 =====
 async function loadLayout() {
   try {
     const headerRes = await fetch("./header.html");
