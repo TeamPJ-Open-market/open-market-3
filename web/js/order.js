@@ -1,24 +1,3 @@
-// const userData = localStorage.getItem("User");
-
-// if (!userData) {
-//   alert("로그인이 필요합니다.");
-//   location.href = "signin.html";
-// }
-
-// const user = JSON.parse(userData);
-
-// // 이름
-// document.getElementById("orderer-name").value = user.name;
-
-// // 전화번호
-// const phoneParts = user.phone.split("-");
-// document.getElementById("order-phone1").value = phoneParts[0];
-// document.getElementById("order-phone2").value = phoneParts[1];
-// document.getElementById("order-phone3").value = phoneParts[2];
-
-// // 이메일
-// document.getElementById("orderer-email").value = user.email;
-
 function getCartData() {
   const cartData = sessionStorage.getItem("orderData");
 
@@ -43,24 +22,28 @@ function renderCart(cart) {
   }
 
   cart.forEach((item) => {
-    const itemTotal = item.price * item.quantity;
+    const itemTotal = Number(item.product.price) * Number(item.quantity);
+
     totalPrice += itemTotal;
 
     const row = document.createElement("div");
     row.className = "order-item";
 
+    /* 수정된 renderCart 내부 row.innerHTML 부분 */
     row.innerHTML = `
-      <div class="product-info">
-        <img src="${item.image}" />
-        <div>
-          <p class="name">${item.name}</p>
-          <p>수량: ${item.quantity}개</p>
+    <div class="col-info">
+      <div class="product-box">
+        <img src="${item.product.image}" class="product-img" />
+        <div class="product-text">
+          <p class="name">${item.product.name}</p>
+          <span class="qty">수량 : ${item.quantity}개</span>
         </div>
       </div>
-      <div>-</div>
-      <div>무료배송</div>
-      <div>${itemTotal.toLocaleString()}원</div>
-    `;
+    </div>
+    <div class="col-discount">-</div>
+    <div class="col-delivery">무료배송</div>
+    <div class="col-price">${itemTotal.toLocaleString()}원</div>
+  `;
 
     orderList.appendChild(row);
   });
@@ -98,4 +81,9 @@ const postBtn = document.querySelector(".btn-post");
 
 postBtn.addEventListener("click", () => {
   alert("우편번호 조회 입니다.");
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const cartData = getCartData();
+  renderCart(cartData);
 });
