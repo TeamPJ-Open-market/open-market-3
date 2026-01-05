@@ -44,6 +44,8 @@
   border: 2px solid var(--positive-text-color);
   border-radius: 999px;
   padding: 0.01rem 0.5rem;
+  margin-left: 0;
+  margin-right: auto;
 }
 
 .search-input {
@@ -121,18 +123,10 @@
 /* ================= Header Responsive ============= */
 /* ================================================= */
 
-/* Tablet: 검색만 살짝 줄이기 */
 @media (max-width: 1024px) {
-  .search {
-    flex-basis: 360px;
-  }
-}
-
-/* Mobile: 2줄로 확실히 분리 */
-@media (max-width: 640px) {
   .header-inner {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto; /* ✅ 핵심 */
     grid-template-areas:
       "brand actions"
       "search search";
@@ -140,6 +134,8 @@
     padding: 14px 0;
   }
 
+
+  /* 영역 매핑 */
   .brand {
     grid-area: brand;
   }
@@ -149,7 +145,7 @@
     gap: 14px;
   }
 
-  /* 모바일에서는 텍스트 숨겨서 높이/겹침 방지 */
+  /* 액션 아이콘: 텍스트 숨기고 아이콘 유지 */
   .action {
     min-width: auto;
     gap: 0;
@@ -159,10 +155,18 @@
     display: none;
   }
 
+  /* 검색창 */
   .search {
     grid-area: search;
     justify-self: center;
-    width: clamp(260px, 92vw, 400px); /* ✅ 400 유지 목표 + 작은 폰만 줄어듦 */
+    width: clamp(260px, 92vw, 400px);
     flex: none;
+    max-width: 100%;
+  }
+
+  /* 500px 이하에서도 아이콘 영역 유지 */
+  .header-left {
+    min-width: 0;
   }
 }
+
