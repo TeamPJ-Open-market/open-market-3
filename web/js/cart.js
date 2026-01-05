@@ -34,31 +34,42 @@ async function loadCart() {
     });
     return;
   }
-
   try {
-    // [GET 요청] 서버에 현재 사용자의 장바구니 목록을 요청합니다.
-    const res = await fetch(`${API_URL}/cart`, {
-      headers: Utils.getAuthHeaders(), // 헤더에 Bearer 토큰을 실어 '나'임을 증명합니다.
+    // 1. 서버(API) 호출을 무조건 먼저 시도합니다.
+    console.log(" 서버에 최신 데이터를 요청합니다...");
+    const res = await fetch(`${API_URL}/cart/`, {
+      headers: Utils.getAuthHeaders(),
     });
-    const data = await res.json();
-    cartItems = data.results; // 서버 응답(배열)을 전역 변수에 할당합니다.
 
-    // 데이터가 준비되었으므로 로딩 표시용 CSS 클래스를 제거하여 화면을 공개합니다.
-    containerEl.classList.remove("is-hidden");
+    if (res.ok) {
+      const data = await res.json();
+      cartItems = data.results || [];
 
-    // 데이터 개수에 따라 빈 화면을 보여줄지, 리스트를 그릴지 결정(분기 처리)합니다.
-    if (cartItems && cartItems.length > 0) {
-      renderCartList();
+      // 서버에서 가져온 따끈따끈한 최신 데이터를 세션에 동기화합니다.
+      sessionStorage.setItem("cartData", JSON.stringify(cartItems));
+      console.log("✅ 서버 데이터 동기화 완료:", cartItems.length, "개");
     } else {
-      renderEmpty();
+      // 서버 응답이 실패(예: 500 에러 등)했을 때만 세션에서 꺼내옵니다.
+      throw new Error("서버 응답 실패");
     }
   } catch (err) {
-    console.error("데이터 로딩 실패:", err);
-    containerEl.classList.remove("is-hidden");
+    console.warn("⚠️ 서버 호출 실패, 세션 데이터를 확인합니다.", err);
+    const savedCart = sessionStorage.getItem("cartData");
+    if (savedCart) {
+      cartItems = JSON.parse(savedCart);
+    } else {
+      cartItems = [];
+    }
+  }
+
+  // 2. 최종 결정된 cartItems로 화면을 그립니다.
+  containerEl.classList.remove("is-hidden");
+  if (cartItems.length > 0) {
+    renderCartList();
+  } else {
     renderEmpty();
   }
 }
-
 /* ==========================================================
    3. UI 렌더링 (View Generation)
    ========================================================== */
@@ -90,7 +101,7 @@ function renderCartList() {
         </label>
         <img src="${item.product.image}" class="cart-img" />
         <div class="product-text">
-          <span class="seller">${item.product.seller_store}</span>
+          <span class="seller">${item.product.seller.store_name}</span>
           <strong class="name">${item.product.name}</strong>
           <span class="price">${Utils.formatNumber(item.product.price)}원</span>
         </div>
@@ -141,9 +152,14 @@ function bindEvents() {
   itemsEl
     .querySelectorAll(".qty-minus")
     .forEach((btn) => (btn.onclick = onDecrease));
-  itemsEl
-    .querySelectorAll(".item-delete-btn")
-    .forEach((btn) => (btn.onclick = onDelete));
+  itemsEl.querySelectorAll(".item-delete-btn").forEach((btn) => {
+    btn.onclick = (e) => {
+      // 클릭된 버튼에서 ID를 먼저 추출합니다.
+      const id = e.target.closest("li").dataset.id;
+      // 추출한 '숫자 ID'를 onDelete 함수에 던져줍니다.
+      onDelete(id);
+    };
+  });
 
   // [개별 체크 클릭] 모든 체크박스가 선택되면 전체 선택 버튼도 자동으로 체크합니다.
   itemChecks.forEach((chk) => {
@@ -178,49 +194,39 @@ function bindEvents() {
 /* ==========================================================
    5. 수량 변경 및 연산 (Business Logic)
    ========================================================== */
-
-async function updateQuantity(id, productId, newQuantity) {
+async function updateQuantity(id, newQuantity) {
   try {
-    // [PUT 요청] 특정 장바구니 항목의 수량을 서버 DB에 업데이트합니다.
     const response = await fetch(`${API_URL}/cart/${id}/`, {
       method: "PUT",
       headers: Utils.getAuthHeaders(),
-      body: JSON.stringify({
-        quantity: newQuantity,
-        product_id: productId, // 서버 검증을 위해 상품 ID가 함께 전달되어야 합니다.
-        is_active: true,
-      }),
+      body: JSON.stringify({ quantity: newQuantity }),
     });
 
-    // 성공 시, 서버의 바뀐 데이터를 다시 불러오기 위해 loadCart()를 재실행합니다.
-    if (response.ok) loadCart();
-    else {
-      const errData = await response.json();
-      Modal.open({
-        message: "수량 수정 실패: " + (errData.message || "오류 발생"),
-        cancelText: "",
-      });
+    if (response.ok) {
+      console.log("✅ 수량 수정 완료");
+      sessionStorage.removeItem("cartData"); // 세션 삭제 후
+      await loadCart(); // 새로고침
     }
   } catch (err) {
-    console.error(err);
+    console.error("수량 수정 오류:", err);
   }
 }
 
-// [+] 버튼 클릭 시: dataset에서 ID를 뽑아 현재 수량 + 1을 서버에 요청
+// [+] 버튼 클릭 시
 function onIncrease(e) {
   const li = e.target.closest("li");
-  const item = cartItems.find((i) => i.id == li.dataset.id);
-  updateQuantity(li.dataset.id, li.dataset.productId, item.quantity + 1);
+  const id = li.dataset.id;
+  const item = cartItems.find((i) => String(i.id) === String(id));
+  if (item) updateQuantity(id, item.quantity + 1);
 }
 
-// [-] 버튼 클릭 시: 최소 1개 미만으로 내려가지 않도록 방어 로직 포함
+// [-] 버튼 클릭 시
 function onDecrease(e) {
   const li = e.target.closest("li");
-  const item = cartItems.find((i) => i.id == li.dataset.id);
-  if (item.quantity === 1) return;
-  updateQuantity(li.dataset.id, li.dataset.productId, item.quantity - 1);
+  const id = li.dataset.id;
+  const item = cartItems.find((i) => String(i.id) === String(id));
+  if (item && item.quantity > 1) updateQuantity(id, item.quantity - 1);
 }
-
 // [합계 계산] 체크박스가 켜진 상품들만 골라서 (가격 * 수량)을 더합니다.
 function updateTotalPrice() {
   let total = 0;
@@ -241,20 +247,43 @@ function updateTotalPrice() {
 /* ==========================================================
    6. 주문 및 삭제 (Final Action)
    ========================================================== */
-function onDelete(e) {
-  const id = e.target.closest("li").dataset.id;
+async function onDelete(id) {
+  if (!id) return;
+
   Modal.open({
     message: "상품을 삭제하시겠습니까?",
-    onConfirm: () => {
-      // [DELETE 요청] 서버에서 해당 항목을 삭제한 후 리스트를 새로고침합니다.
-      fetch(`${API_URL}/cart/${id}`, {
-        method: "DELETE",
-        headers: Utils.getAuthHeaders(),
-      }).then(loadCart);
+    onConfirm: async () => {
+      try {
+        const response = await fetch(`${API_URL}/cart/${id}/`, {
+          method: "DELETE",
+          headers: Utils.getAuthHeaders(),
+        });
+
+        if (response.ok) {
+          console.log("✅ 서버 삭제 성공");
+
+          // 1. [가장 중요] 세션 스토리지를 즉시 비웁니다.
+          // 그래야 loadCart()가 실행될 때 옛날 데이터를 가져오지 않습니다.
+          sessionStorage.removeItem("cartData");
+
+          // 2. UI에서 해당 아이템을 즉시 제거 (서버 응답을 기다리지 않고 사용자에게 보여줌)
+          cartItems = cartItems.filter(
+            (item) => String(item.id) !== String(id)
+          );
+
+          // 3. 다시 로드하여 데이터 정합성 확인
+          await loadCart();
+
+          console.log("🔄 목록 갱신 완료");
+        } else {
+          console.error("❌ 삭제 실패:", response.status);
+        }
+      } catch (err) {
+        console.error("삭제 요청 중 에러:", err);
+      }
     },
   });
 }
-
 /**
  * 7. "주문하기" 클릭 시 실행되는 함수
  * 예시 코드의 'selectedItems' 추출 방식을 우리 구조에 맞게 적용했습니다.
