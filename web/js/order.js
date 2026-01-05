@@ -1,3 +1,24 @@
+// const userData = localStorage.getItem("User");
+
+// if (!userData) {
+//   alert("로그인이 필요합니다.");
+//   location.href = "signin.html";
+// }
+
+// const user = JSON.parse(userData);
+
+// // 이름
+// document.getElementById("orderer-name").value = user.name;
+
+// // 전화번호
+// const phoneParts = user.phone.split("-");
+// document.getElementById("order-phone1").value = phoneParts[0];
+// document.getElementById("order-phone2").value = phoneParts[1];
+// document.getElementById("order-phone3").value = phoneParts[2];
+
+// // 이메일
+// document.getElementById("orderer-email").value = user.email;
+
 function getCartData() {
   const cartData = sessionStorage.getItem("orderData");
 
@@ -33,12 +54,12 @@ function renderCart(cart) {
         <img src="${item.image}" />
         <div>
           <p class="name">${item.name}</p>
-          <p class="qty">수량: ${item.quantity}개</p>
+          <p>수량: ${item.quantity}개</p>
         </div>
       </div>
-      <div class="discount">-</div>
-      <div class="shipping">무료배송</div>
-      <div class="price">${itemTotal.toLocaleString()}원</div>
+      <div>-</div>
+      <div>무료배송</div>
+      <div>${itemTotal.toLocaleString()}원</div>
     `;
 
     orderList.appendChild(row);
@@ -47,9 +68,34 @@ function renderCart(cart) {
   totalPriceEl.textContent = totalPrice.toLocaleString() + "원";
 }
 
-function init() {
-  const cart = getCartData();
-  renderCart(cart);
-}
+const agreeCheckbox = document.querySelector(".agree input");
+const payBtn = document.querySelector(".pay-btn");
 
-init();
+/* 처음엔 비활성화 */
+payBtn.disabled = true;
+
+/* 체크박스 클릭 시 */
+agreeCheckbox.addEventListener("change", () => {
+  if (agreeCheckbox.checked) {
+    payBtn.disabled = false;
+    payBtn.classList.add("active");
+  } else {
+    payBtn.disabled = true;
+    payBtn.classList.remove("active");
+  }
+});
+
+/* 결제 버튼 클릭 */
+payBtn.addEventListener("click", () => {
+  if (!agreeCheckbox.checked) return;
+
+  alert("결제되었습니다.");
+
+  sessionStorage.setItem("paymentComplete", "true");
+  sessionStorage.removeItem("orderData");
+});
+const postBtn = document.querySelector(".btn-post");
+
+postBtn.addEventListener("click", () => {
+  alert("우편번호 조회 입니다.");
+});
