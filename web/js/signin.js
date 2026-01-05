@@ -80,9 +80,8 @@ async function handleSignin(event) {
     return;
   }
 
-  //config.js를 활용했을때 fetch(`${API_URL}/accounts/signin/`, 수정
   try {
-    const response = await fetch("http://localhost:3000/api/accounts/signin", {
+    const response = await fetch(`${API_URL}/accounts/signin/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
