@@ -116,7 +116,7 @@ function initBanner() {
 
 // ✅ 실행 순서 보장
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadLayout(); // header/footer 먼저
+  // await loadLayout(); // header/footer 먼저
   initBanner(); // 배너는 DOM 있어야 함
   loadProducts(); // 상품 렌더링
 });
