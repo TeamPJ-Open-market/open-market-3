@@ -40,7 +40,6 @@ async function loadCart() {
     });
     const data = await res.json();
 
-    // [핵심 수정] 데이터베이스 구조(image_5817b0.png)에 맞춰 'cart' 키를 먼저 확인합니다.
     // 만약 'cart'가 없으면 이전 구조인 'results'를 확인합니다.
     cartItems = data.cart || data.results || [];
 
@@ -175,7 +174,7 @@ function bindEvents() {
 
       // 이 상품 하나만 담긴 배열을 만듦
       sessionStorage.setItem("orderData", JSON.stringify([singleItem]));
-
+      sessionStorage.setItem("order_kind", "cart_order");
       // 주의: 개별 주문도 서버 API를 거쳐 pending_order_id를 받는 것이 정석이나,
       // 간단한 구현을 위해 바로 이동 후 order.html에서 처리하게 할 수도 있습니다.
       location.href = "order.html";

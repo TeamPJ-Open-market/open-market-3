@@ -6,7 +6,6 @@
   margin: 0;
   padding: 0;
   color: var(--main-text-color);
-  font-family: Arial, sans-serif;
 }
 
 body {
@@ -86,30 +85,27 @@ body {
   font-size: 14px;
   color: var(--sub-text-color);
 }
-
 .cart-item {
   display: flex;
-  flex-direction: row; /* 기존대로 가로 유지 */
+  flex-direction: column; /* 요소들을 세로로 층층이 쌓음 */
   background-color: var(--main-bg-color);
   border: 1px solid var(--main-border-color);
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 15px;
-  align-items: center;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
   position: relative;
 }
-
 .col-info {
   display: flex;
+  flex-direction: row; /* 이미지와 텍스트는 가로 */
   align-items: center;
-  gap: 15px;
-  width: 100%;
+  gap: 20px; /* 간격 확장 */
+  margin-bottom: 20px;
 }
-
 .cart-img {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
+  width: 110px; /* 이미지 크기 대폭 확대 */
+  height: 110px;
+  border-radius: 12px;
   object-fit: cover;
 }
 
@@ -119,25 +115,29 @@ body {
   gap: 4px;
   flex: 1;
 }
-
 .product-text .name {
-  font-size: 16px;
-  line-height: 1.2;
+  font-size: 18px; /* 상품명 크기 확대 */
+  font-weight: bold;
+  margin-bottom: 5px;
 }
-
 .product-text .price {
   font-weight: bold;
   font-size: 15px;
 }
 
-.col-qty,
+.col-qty {
+  width: 100%;
+  padding: 15px 0;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between; /* 수량조절기를 왼쪽, 다른 요소를 오른쪽 */
+}
 .col-price {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  padding-top: 0;
-  height: 40px;
+  margin-top: 10px;
 }
 
 .qty-stepper {
@@ -316,46 +316,82 @@ body {
   .title {
     font-size: 32px;
   }
-  .cart-header div {
+
+  /* 헤더와 아이템의 수직 선을 맞추기 위해 동일한 flex 비율 적용 */
+  .cart-header,
+  .cart-item {
+    display: flex;
+    align-items: center;
+  }
+
+  .cart-header div,
+  .cart-item > div {
     font-size: 16px;
   }
-  .cart-header .col-info {
-    flex: 3;
-  }
-  .cart-header .col-check {
+
+  /* 1. 체크박스 영역 (비율 0.5) */
+  .cart-header .col-check,
+  .cart-item .col-check {
     flex: 0.5;
+    display: flex;
+    justify-content: center;
     padding-left: 0;
   }
 
-  .cart-item {
-    padding: 20px 0;
-  }
+  /* 2. 상품 정보 영역 (비율 3) */
+  .cart-header .col-info,
   .col-info {
     flex: 3;
-    padding-left: 30px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    gap: 20px;
   }
+
   .cart-img {
     width: 140px;
     height: 140px;
+    border-radius: 12px;
+    object-fit: cover;
   }
 
+  /* 3. [빨간색 동그라미] 수량 영역 (비율 1 + 중앙 정렬) */
+  .cart-header .col-qty,
   .col-qty {
     flex: 1;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* 헤더 글자와 수량 버튼 모두 중앙 정렬 */
+    border-top: none;
+    padding: 0;
+  }
+
+  /* 4. [노란색 동그라미] 상품금액 영역 (비율 1.2 + 우측 정렬) */
+  .cart-header .col-price,
+  .col-price {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* 헤더 글자와 금액/버튼 모두 우측 정렬 */
+    padding-right: 30px; /* 우측 끝 여백 확보 */
   }
 
   .col-price {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     gap: 12px;
+    min-width: 150px;
+    padding-bottom: 10px;
+  }
+
+  /* 개별 상품 카드 스타일 */
+  .cart-item {
+    flex-direction: row;
+    padding: 24px;
+    background-color: var(--main-bg-color);
+    border: 1px solid var(--main-border-color);
+    border-radius: 12px;
   }
 
   .item-delete-btn {
+    position: absolute;
     top: 20px;
     right: 20px;
   }
