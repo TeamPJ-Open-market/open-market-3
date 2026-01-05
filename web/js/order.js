@@ -1,3 +1,24 @@
+// const userData = localStorage.getItem("User");
+
+// if (!userData) {
+//   alert("로그인이 필요합니다.");
+//   location.href = "signin.html";
+// }
+
+// const user = JSON.parse(userData);
+
+// // 이름
+// document.getElementById("orderer-name").value = user.name;
+
+// // 전화번호
+// const phoneParts = user.phone.split("-");
+// document.getElementById("order-phone1").value = phoneParts[0];
+// document.getElementById("order-phone2").value = phoneParts[1];
+// document.getElementById("order-phone3").value = phoneParts[2];
+
+// // 이메일
+// document.getElementById("orderer-email").value = user.email;
+
 function getCartData() {
   const cartData = sessionStorage.getItem("orderData");
 
@@ -70,7 +91,6 @@ payBtn.addEventListener("click", () => {
 
   alert("결제되었습니다.");
 
-  // 실제 흐름처럼 처리
   sessionStorage.setItem("paymentComplete", "true");
   sessionStorage.removeItem("orderData");
 });
