@@ -125,6 +125,49 @@
   filter: invert(54%) sepia(45%) saturate(2351%) hue-rotate(106deg)
     brightness(96%) contrast(84%);
 }
+
+/* 검색 폼에 상대 위치 기준 설정 (팀원 CSS에 이미 있을 수도 있음) */
+.search {
+  position: relative;
+}
+
+/* 추천 리스트 스타일 */
+.search-suggestion-list {
+  position: absolute;
+  top: 100%; /* 검색창 바로 아래 */
+  left: 0;
+  right: 0;
+  background-color: var(--main-bg-color);
+  border: 1px solid var(--sub-text-color);
+
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.suggestion-item {
+  padding: 12px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--checkbox-disabled-color);
+  pointer-events: auto;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background-color: var(--disabled-tab-color);
+  color: var(--checkbox-bg-color); /* 프로젝트 포인트 컬러로 변경하세요 */
+}
+
+.is-hidden {
+  display: none;
+}
+
 /* ================================================= */
 /* ================= Header Responsive ============= */
 /* ================================================= */
