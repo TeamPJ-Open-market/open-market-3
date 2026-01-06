@@ -1,4 +1,32 @@
 /* ================================================= */
+/* ============ Sticky Footer (전체 레이아웃) ======= */
+/* ================================================= */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+  min-height: 0;
+}
+
+:where(.main, .page, .content, .wrap, #app, #root) {
+  min-height: 0;
+}
+
+.site-footer {
+  margin-top: auto;
+}
+
+/* ================================================= */
 /* ===================== Footer ==================== */
 /* ================================================= */
 .site-footer {
@@ -19,7 +47,7 @@
   padding: 18px 0;
 }
 
-/* ================= 텍스트 링크 ================= */
+/* 텍스트 링크 */
 .footer-links {
   display: flex;
   flex-wrap: wrap;
@@ -48,7 +76,7 @@
   color: var(--sub-text-color);
 }
 
-/* ================= SNS 아이콘 =================== */
+/* SNS 아이콘 */
 .footer-sns {
   display: grid;
   grid-auto-flow: column;
@@ -67,7 +95,7 @@
   display: block;
 }
 
-/* ================= 하단 회사 정보 ================= */
+/* 하단 회사 정보 */
 .footer-bottom {
   padding: 32px 0;
 }
@@ -92,7 +120,6 @@
     align-items: flex-start;
   }
 
-  /* 모바일에서 SNS 아이콘은 오른쪽 정렬 유지 */
   .footer-sns {
     justify-self: end;
     margin-top: 6px;

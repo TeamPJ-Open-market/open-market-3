@@ -12,7 +12,6 @@ body {
 /* ================================================= */
 /* ================== Main Banner ================== */
 /* ================================================= */
-/* ================== Main Banner ================== */
 .main-banner {
   background: var(--disabled-tab-color);
   width: 100%;
@@ -27,7 +26,6 @@ body {
   overflow: hidden;
 }
 
-/* 트랙/슬라이드가 버튼을 덮지 않게 */
 .banner-track {
   position: relative;
   height: 100%;
@@ -38,7 +36,6 @@ body {
   position: absolute;
   inset: 0;
   display: none;
-  /* 슬라이드가 버튼 클릭을 막지 않게 */
   pointer-events: none;
 }
 
@@ -46,7 +43,7 @@ body {
   display: block;
 }
 
-/* 좌우 버튼 (클릭 가능 + 손가락 커서) */
+/* 좌우 버튼 */
 .banner-btn {
   position: absolute;
   top: 50%;
@@ -64,8 +61,6 @@ body {
 
   padding: 0 16px;
   line-height: 1;
-
-  /* 모바일에서 클릭 잘 되게 */
   pointer-events: auto;
   user-select: none;
 }
@@ -88,7 +83,6 @@ body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-
   display: flex;
   gap: 10px;
 }
@@ -101,7 +95,6 @@ body {
   background: var(--main-bg-color);
   opacity: 0.5;
   cursor: pointer;
-  padding: 0;
 }
 
 .banner-indicator .dot.is-active {
@@ -126,61 +119,58 @@ body {
   margin: 0;
 }
 
-/* 카드 */
 .card {
-  display: grid;
-  gap: 10px;
+  cursor: pointer;
 }
 
-/* 이미지 박스 */
-.card img {
+/* 카드 내부 레이아웃 */
+.product-link {
+  display: grid;
+  gap: 5px;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 이미지 */
+.product-link > img {
+  margin-bottom: 6px;
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 12px;
   display: block;
+  transition: transform 0.2s ease;
 }
-
-/* 상품 상단 설명(연한 텍스트) */
-.product-meta {
-  font-size: 12px;
-  color: var(--sub-text-color);
-  margin: 6px 0 2px;
-}
-
-/* 상품명 (살짝만 강조) */
-.product-name {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.4;
-  margin: 0;
-}
-
-.product-price {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--main-text-color);
-  margin: 0;
-}
-
-.product-link {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-}
-
-.card {
-  cursor: pointer;
-}
-
 
 .card:hover img {
   transform: translateY(-2px);
 }
 
-.card img {
-  transition: transform 0.2s ease;
+/* ================================================= */
+/* ============== 반응형 텍스트 핵심 ================ */
+/* ================================================= */
+
+/* 상품 상단 설명 */
+.product-meta {
+  font-size: clamp(11px, 1.2vw, 12px);
+  color: var(--sub-text-color);
+  margin: 0;
+}
+
+/* 상품명 */
+.product-name {
+  font-size: clamp(14px, 1.6vw, 18px);
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* 가격 */
+.product-price {
+  font-size: clamp(16px, 2vw, 24px);
+  font-weight: 700;
+  color: var(--main-text-color);
+  margin: 0;
 }
 
 /* ================================================= */
@@ -203,11 +193,7 @@ body {
 
   .product-grid {
     grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
-  .card {
-    max-width: 100%;
+    gap: 70px;
   }
 
   .card img {
@@ -215,7 +201,7 @@ body {
   }
 }
 
-/* Mobile Header (깨짐 방지) */
+/* Mobile Header */
 @media (max-width: 640px) {
   .header-inner {
     grid-template-columns: 1fr auto;
