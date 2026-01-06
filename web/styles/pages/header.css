@@ -18,8 +18,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 30px;
+  gap: clamp(10px, 2vw, 30px);
   padding: 22px 0;
+  flex-wrap: nowrap;
 }
 
 /* 로고 */
@@ -33,9 +34,11 @@
   display: block;
 }
 
-/* 검색 */
 .search {
-  flex: 0 0 400px;
+  flex: 1 1 360px;
+  max-width: 400px;
+  min-width: 180px;
+
   display: flex;
   align-items: center;
   gap: 8px;
@@ -44,12 +47,14 @@
   border: 2px solid var(--positive-text-color);
   border-radius: 999px;
   padding: 0.01rem 0.5rem;
+
   margin-left: 0;
   margin-right: auto;
 }
 
 .search-input {
   flex: 1;
+  min-width: 0;
   height: 34px;
   padding: 0 8px;
   border: 0;
@@ -76,18 +81,27 @@
   background: rgba(31, 191, 74, 0.12);
 }
 
+.search-btn .icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
 /* 오른쪽 메뉴 */
 .header-actions {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 26px;
+  gap: clamp(10px, 2vw, 26px);
+  flex-shrink: 0;
 }
 
-.icon {
+/* 우측(장바구니/로그인) */
+.header-actions .icon {
   width: 18px;
   height: 18px;
   display: block;
+  flex-shrink: 0;
 }
 
 .action {
@@ -96,18 +110,19 @@
   gap: 4px;
   text-decoration: none;
   color: var(--main-text-color);
-  min-width: 60px;
+
+  min-width: clamp(44px, 7vw, 60px);
   background-color: var(--main-bg-color);
   border: none;
   cursor: pointer;
 }
 
 .action-text {
-  font-size: 12px;
+  font-size: clamp(10px, 1.8vw, 12px);
   color: var(--join-text-color);
+  white-space: nowrap;
 }
 
-/* 접근성 */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -118,59 +133,33 @@
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
 .header-actions .action.active .action-text {
   color: var(--main-btn-color);
 }
+
 .header-actions .action.active .icon {
   filter: invert(54%) sepia(45%) saturate(2351%) hue-rotate(106deg)
     brightness(96%) contrast(84%);
 }
+
 /* ================================================= */
 /* ================= Header Responsive ============= */
 /* ================================================= */
 
-@media (max-width: 1024px) {
-  .header-inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "brand actions"
-      "search search";
-    row-gap: 12px;
-    padding: 14px 0;
-  }
-
-  /* 영역 매핑 */
-  .brand {
-    grid-area: brand;
-  }
-
-  .header-actions {
-    grid-area: actions;
-    gap: 14px;
-  }
-
-  /* 액션 아이콘: 텍스트 숨기고 아이콘 유지 */
-  .action {
-    min-width: auto;
-    gap: 0;
-  }
-
-  .action-text {
-    display: none;
-  }
-
-  /* 검색창 */
+@media (max-width: 768px) {
   .search {
-    grid-area: search;
-    justify-self: center;
-    width: clamp(260px, 92vw, 400px);
-    flex: none;
-    max-width: 100%;
+    min-width: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-actions .icon {
+    width: 16px;
+    height: 16px;
   }
 
-  /* 500px 이하에서도 아이콘 영역 유지 */
-  .header-left {
-    min-width: 0;
+  .action {
+    gap: 2px;
   }
 }
