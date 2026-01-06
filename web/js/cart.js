@@ -90,7 +90,9 @@ function renderCartList() {
           <input type="checkbox" class="item-check" checked />
           <span class="custom-checkbox"></span>
         </label>
-        <img src="${item.product.image}" class="cart-img" />
+        <img src="${item.product.image}" alt="${
+      item.product.name
+    }" class="cart-img" />
         <div class="product-text">
           <span class="seller">${item.product.seller.store_name}</span>
           <strong class="name">${item.product.name}</strong>
@@ -99,18 +101,20 @@ function renderCartList() {
       </div>
       <div class="col-qty">
         <div class="qty-stepper">
-          <button class="qty-minus">−</button>
+          <button type="button" class="qty-minus" aria-label="수량 감소">−</button>
           <span class="qty-val">${item.quantity}</span>
-          <button class="qty-plus">+</button>
+          <button type="button" class="qty-plus" aria-label="수량 증가">+</button>
         </div>
       </div>
       <div class="col-price">
         <span class="item-total-price">${Utils.formatNumber(
           item.product.price * item.quantity
         )}원</span>
-        <button class="order-item-btn">주문하기</button>
+        <button type="button" class="order-item-btn">주문하기</button>
       </div>
-      <button class="item-delete-btn">&times;</button>
+      <button type="button" class="item-delete-btn" aria-label="${
+        item.product.name
+      } 삭제">&times;</button>
     `;
     itemsEl.appendChild(li);
   });

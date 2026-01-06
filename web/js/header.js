@@ -6,7 +6,14 @@ window.addEventListener("headerRendered", () => {
 function renderHeader() {
   console.log("1. renderHeader 실행");
   const userMenu = document.getElementById("header-user-menu");
+  // 장바구니 페이지 활성화 상태 처리
+  // cart.html 페이지일 때 장바구니 아이콘 활성화
+  const cartLink = document.querySelector('a.action[href="./cart.html"]');
+  const isCartPage = window.location.pathname.includes("cart.html");
 
+  if (cartLink && isCartPage) {
+    cartLink.classList.add("active"); // 활성화 클래스 추가
+  }
   if (!userMenu) return;
 
   const token = localStorage.getItem("access_token");

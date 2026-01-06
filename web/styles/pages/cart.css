@@ -100,7 +100,6 @@ body {
   flex-direction: row; /* 이미지와 텍스트는 가로 */
   align-items: center;
   gap: 20px; /* 간격 확장 */
-  margin-bottom: 20px;
 }
 .cart-img {
   width: 110px; /* 이미지 크기 대폭 확대 */
@@ -122,7 +121,7 @@ body {
 }
 .product-text .price {
   font-weight: bold;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .col-qty {
@@ -137,7 +136,6 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
 }
 
 .qty-stepper {
@@ -169,7 +167,7 @@ body {
   border: none;
   padding: 6px 15px;
   border-radius: 5px;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -277,7 +275,7 @@ body {
 }
 
 /* =========================
-   4. 체크박스 커스텀
+   4. 체크박스 커스텀 (이중 원 스타일)
 ========================= */
 .check-container input {
   display: none;
@@ -287,26 +285,33 @@ body {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px solid var(--checkbox-bg-color);
+  border: 2px solid #e0e0e0; /* 기본 테두리 색상 */
   border-radius: 50%;
   position: relative;
   cursor: pointer;
+  background-color: var(--checkbox-check-color);
+  transition: all 0.2s ease;
 }
 
+/* 체크되었을 때의 바깥 테두리 색상 변화 */
 .check-container input:checked + .custom-checkbox {
-  background-color: var(--checkbox-bg-color);
+  border-color: var(--checkbox-bg-color);
+  background-color: var(
+    --checkbox-check-color
+  ); /* 배경은 흰색 유지 (이중 원 효과) */
 }
 
+/* 안쪽의 꽉 찬 녹색 원 (체크 시 나타남) */
 .check-container input:checked + .custom-checkbox::after {
   content: "";
   position: absolute;
-  left: 6px;
-  top: 2px;
-  width: 5px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* 정확히 중앙 정렬 */
+  width: 10px; /* 내부 원의 크기 */
   height: 10px;
-  border: solid var(--checkbox-check-color);
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+  background-color: var(--checkbox-bg-color); /* 내부 원 색상 */
+  border-radius: 50%;
 }
 
 /* =========================
@@ -317,6 +322,9 @@ body {
     font-size: 32px;
   }
 
+  .cart-header {
+    height: 70px;
+  }
   /* 헤더와 아이템의 수직 선을 맞추기 위해 동일한 flex 비율 적용 */
   .cart-header,
   .cart-item {
@@ -378,7 +386,7 @@ body {
   .col-price {
     gap: 12px;
     min-width: 150px;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
   }
 
   /* 개별 상품 카드 스타일 */

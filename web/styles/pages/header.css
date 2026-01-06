@@ -118,7 +118,13 @@
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
-
+.header-actions .action.active .action-text {
+  color: var(--main-btn-color);
+}
+.header-actions .action.active .icon {
+  filter: invert(54%) sepia(45%) saturate(2351%) hue-rotate(106deg)
+    brightness(96%) contrast(84%);
+}
 /* ================================================= */
 /* ================= Header Responsive ============= */
 /* ================================================= */
@@ -133,7 +139,6 @@
     row-gap: 12px;
     padding: 14px 0;
   }
-
 
   /* 영역 매핑 */
   .brand {
@@ -169,4 +174,3 @@
     min-width: 0;
   }
 }
-
