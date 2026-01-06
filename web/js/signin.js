@@ -48,13 +48,12 @@ passwordInput.addEventListener("input", clearValidationMessage);
 // @param password
 async function handleSignin(event) {
   event.preventDefault();
-  const usernameInput = document.getElementById("username");
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
   const usernameMessage = document.getElementById("username-message");
 
   // 아이디 비밀번호 공백 경고 메세지
-  if (!username && !password) {
+  if (!username || !password) {
     Validation.showMessage(
       usernameInput,
       usernameMessage,
@@ -62,19 +61,12 @@ async function handleSignin(event) {
       "error"
     );
     return;
-  } else if (!username) {
+  }
+  if (!Validation.isValidEmail(username)) {
     Validation.showMessage(
       usernameInput,
       usernameMessage,
-      "아이디를 입력해 주세요.",
-      "error"
-    );
-    return;
-  } else if (!password) {
-    Validation.showMessage(
-      usernameInput,
-      usernameMessage,
-      "비밀번호를 입력해 주세요.",
+      "올바른 이메일 형식이 아닙니다.",
       "error"
     );
     return;

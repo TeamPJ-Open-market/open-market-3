@@ -95,10 +95,16 @@ span.error {
 }
 
 /* 회원가입 링크 */
-a:visited {
-  color: inherit;
+.signup-link {
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
 }
 
-.signup-link {
+.signup-link > a {
   color: var(--join-text-color);
+}
+
+a:visited {
+  color: inherit;
 }

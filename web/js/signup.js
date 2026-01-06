@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function checkUsername() {
   const usernameInput = document.getElementById("username");
-  const username = usernameInput.value;
+  const username = usernameInput.value.trim();
   const usernameMessage = document.getElementById("username-message");
 
   if (!username) {
@@ -106,9 +106,9 @@ async function checkUsername() {
 // 비밀번호 Validation
 function validatePassword() {
   const passwordInput = document.getElementById("password");
-  const password = passwordInput.value;
+  const password = passwordInput.value.trim();
   const passwordConfirmInput = document.getElementById("passwordConfirm");
-  const passwordConfirm = passwordConfirmInput.value;
+  const passwordConfirm = passwordConfirmInput.value.trim();
   const passwordMessage = document.getElementById("passwordMessage");
   const passwordConfirmMessage = document.getElementById(
     "passwordConfirmMessage"
@@ -117,11 +117,11 @@ function validatePassword() {
     Validation.clearMessage(passwordConfirmInput, passwordConfirmMessage);
   }
   if (password === "") {
-    // 비밀번호 길이 체크
     Validation.clearMessage(passwordInput, passwordMessage);
+    Validation.clearMessage(passwordConfirmInput, passwordConfirmMessage);
     return false;
   }
-
+  // 비밀번호 길이 체크
   if (0 < password.length && password.length < 8) {
     Validation.showMessage(
       passwordInput,
@@ -239,9 +239,9 @@ async function handleBuyerSignup(e) {
   }
 
   const formData = {
-    username: document.getElementById("username").value,
-    password: document.getElementById("password").value,
-    name: document.getElementById("name").value,
+    username: document.getElementById("username").value.trim(),
+    password: document.getElementById("password").value.trim(),
+    name: document.getElementById("name").value.trim(),
     phone_number: `${document.getElementById("phone1").value}-${
       document.getElementById("phone2").value
     }-${document.getElementById("phone3").value}`,
