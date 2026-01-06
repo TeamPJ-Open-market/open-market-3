@@ -9,6 +9,13 @@ function getReceiverPhone() {
   return `${p1}${p2}${p3}`;
 }
 
+function getAddress() {
+  return document.getElementById("address").value.trim();
+}
+
+function getAddressMessage() {
+  return document.getElementById("address-message").value.trim();
+}
 function calculateTotal() {
   const totalText = document
     .querySelector(".final-payment .total-price strong")
@@ -124,7 +131,7 @@ payBtn.addEventListener("click", async () => {
   try {
     const res = await requestOrder(requestBody);
 
-    if (res.status === 200) {
+    if (res.ok) {
       alert("🎉 구매가 완료되었습니다!");
 
       sessionStorage.removeItem("orderData");
@@ -221,7 +228,7 @@ function validateOrderForm() {
 }
 async function requestOrder(orderData) {
   console.log("보내는 주문 데이터:", orderData);
-  const res = await fetch(`${API_URL}/orders`, {
+  const res = await fetch(`${API_URL}/order/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -235,23 +242,75 @@ async function requestOrder(orderData) {
 function buildOrderData() {
   const orderItems = getOrderData();
 
-  const orderType =
-    orderItems.length === 1 && orderItems[0].product_id
-      ? "direct_order"
-      : "cart_order";
-
+  // 1. 결제 수단 가져오기
   const paymentMethod = document.querySelector(
     'input[name="payment"]:checked'
   )?.value;
 
-  return {
-    order_type: orderType,
-    payment_method: paymentMethod,
-    receiver_phone: getReceiverPhone(),
-    total_price: calculateTotal(),
-    order_items: orderItems.map((item) => ({
+  // 2. [가장 중요] HTML 입력창에서 "현재 입력된" 값을 직접 변수에 담습니다.
+  // 이 코드가 return 직전에 있어야 사용자가 입력한 최신 값을 가져옵니다.
+  const addressInput = document.getElementById("address");
+  const addressMessageInput = document.getElementById("address-message");
+  const receiverNameInput = document.getElementById("receiver-name");
+
+  // .value를 통해 실제 텍스트를 가져옵니다.
+  const address = addressInput ? addressInput.value.trim() : "";
+  const addressMessage = addressMessageInput
+    ? addressMessageInput.value.trim()
+    : "";
+  const receiverName = receiverNameInput
+    ? receiverNameInput.value.trim()
+    : "이름 없음";
+
+  const receiverPhone = getReceiverPhone();
+
+  // 3. 주문 타입 판별 (sessionStorage 데이터를 기준으로 함)
+  const isDirect =
+    orderItems.length === 1 && orderItems[0].order_type === "direct_order";
+
+  // 4. 서버로 보낼 객체 생성
+  // const orderData = {
+  //   order_type: isDirect ? "direct_order" : "cart_order",
+  //   receiver: receiverName,
+  //   receiver_phone_number: receiverPhone,
+  //   address: address, // 이제 빈 값이 아닌 입력된 값이 들어갑니다.
+  //   address_message: addressMessage,
+  //   total_price: calculateTotal(),
+  //   payment_method: paymentMethod,
+  // };
+  const orderData = {
+    order_type: "direct_order",
+
+    product_id: 2,
+
+    quantity: 2,
+
+    total_price: 30000,
+
+    receiver: "이스트",
+
+    receiver_phone_number: "01012345678",
+
+    address: "서울시 강남구...",
+
+    address_message: "문 앞에 놓아주세요",
+
+    payment_method: "card",
+
+    cart_items: [], //
+  };
+
+  // 5. 타입별 추가 데이터 구성
+  if (isDirect) {
+    orderData.product_id = orderItems[0].product_id;
+    orderData.quantity = orderItems[0].quantity;
+  } else {
+    orderData.cart_items = orderItems.map((item) => ({
       product_id: item.product_id,
       quantity: item.quantity,
-    })),
-  };
+    }));
+  }
+
+  console.log("최종적으로 서버에 보내는 데이터:", orderData);
+  return orderData;
 }

@@ -5,6 +5,8 @@
     <title>코드한입 / ZADU - 오픈 마켓 / 결제 페이지</title>
     <link rel="stylesheet" href="styles/base/reset.css" />
     <link rel="stylesheet" href="styles/base/variables.css" />
+    <link rel="stylesheet" href="./styles/base/typography.css" />
+    <link rel="stylesheet" href="./styles/components/modal.css" />
     <link rel="stylesheet" href="styles/pages/order.css" />
   </head>
   <body>
@@ -62,18 +64,28 @@
           <label>배송주소</label>
           <div class="address-inputs">
             <div class="post-row">
-              <input type="text" id="postcode" class="input-post" />
+              <input type="text" id="postcode" class="input-post" readonly />
               <button type="button" class="btn-post">우편번호 조회</button>
             </div>
-            <input type="text" placeholder="기본주소" class="input-full" />
-            <input type="text" placeholder="상세주소" class="input-full" />
+            <input
+              type="text"
+              id="address"
+              placeholder="기본주소"
+              class="input-full"
+            />
+            <input
+              type="text"
+              id="address-detail"
+              placeholder="상세주소"
+              class="input-full"
+            />
           </div>
         </div>
         <div class="form-row">
           <label for="delivery-message">배송 메시지</label>
           <input
             type="text"
-            id="delivery-message"
+            id="address-message"
             class="input-full"
             placeholder="메시지를 입력해주세요."
           />
@@ -86,13 +98,21 @@
 
             <div class="payment">
               <div class="payment-options">
-                <label
-                  ><input type="radio" name="payment" /> 신용/체크카드</label
-                >
-                <label><input type="radio" name="payment" /> 무통장입금</label>
-                <label><input type="radio" name="payment" /> 휴대폰결제</label>
-                <label><input type="radio" name="payment" /> 네이버페이</label>
-                <label><input type="radio" name="payment" /> 카카오페이</label>
+                <label>
+                  <input type="radio" name="payment" value="card" />
+                  신용/체크카드
+
+                  <input type="radio" name="payment" value="deposit" />
+                  무통장입금
+
+                  <input type="radio" name="payment" value="phone" /> 휴대폰결제
+
+                  <input type="radio" name="payment" value="naverpay" />
+                  네이버페이
+
+                  <input type="radio" name="payment" value="kakaopay" />
+                  카카오페이
+                </label>
               </div>
             </div>
           </section>
