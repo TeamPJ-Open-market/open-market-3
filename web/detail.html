@@ -7,6 +7,7 @@
     <!-- css -->
     <link rel="stylesheet" href="./styles/base/reset.css" />
     <link rel="stylesheet" href="./styles/base/variables.css" />
+    <link rel="stylesheet" href="./styles/base/typography.css" />
     <link rel="stylesheet" href="./styles/components/modal.css" />
     <link rel="stylesheet" href="./styles/pages/detail.css" />
   </head>
@@ -56,10 +57,9 @@
               <input
                 class="quantity-input text-size-md"
                 id="quantity-input"
-                type="text"
+                type="number"
                 value="1"
                 min="1"
-                type="number"
                 aria-label="상품 수량"
               />
               <button
@@ -106,39 +106,102 @@
       </section>
 
       <section class="product-content">
-        <!-- 상품 상세 탭 영역 -->
-        <nav class="product-tab-menu">
+        <!-- 상품 상세 탭 영역 - ARIA 속성으로 접근성 확보 -->
+        <!-- 
+          1. role — “이게 뭐다”
+            tablist : 이 안에는 탭들이 있다.
+            tab : 이 버튼은 탭이다.
+            tabpanel : 이건 탭에 연결된 내용 영역이다.
+
+          2. aria-selected — “지금 선택됐나”
+
+          3. aria-controls — “이 탭이 조종하는 대상”
+
+          4. tabindex는 키보드 포커스 순서를 지정한다.
+            0 : 탭 순서에 포함
+            -1 : 탭 순서에서 제외 (스크립트로 포커스 줄 때만 사용)
+        -->
+        <nav class="tab-menu" role="tablist" aria-label="상품 정보 탭">
           <button
-            class="btn-tab active text-size-md font-medium"
+            class="tab-button active text-size-md font-medium"
+            data-tab="detail"
+            role="tab"
             aria-selected="true"
+            aria-controls="detail-content"
+            tabindex="0"
           >
             상세정보
           </button>
           <button
-            class="btn-tab text-size-md font-medium"
+            class="tab-button text-size-md font-medium"
+            data-tab="review"
+            role="tab"
             aria-selected="false"
+            aria-controls="review-content"
+            tabindex="-1"
           >
             리뷰
           </button>
           <button
-            class="btn-tab text-size-md font-medium"
+            class="tab-button text-size-md font-medium"
+            data-tab="qna"
+            role="tab"
             aria-selected="false"
+            aria-controls="qna-content"
+            tabindex="-1"
           >
             Q&A
           </button>
           <button
-            class="btn-tab text-size-md font-medium"
+            class="tab-button text-size-md font-medium"
+            data-tab="policy"
+            role="tab"
             aria-selected="false"
+            aria-controls="policy-content"
+            tabindex="-1"
           >
             반품/<span>교환정보</span>
           </button>
         </nav>
 
         <!-- 상품 상세 내용 영역 -->
-        <section class="product-description"></section>
-        <section class="product-review"></section>
-        <section class="product-qna"></section>
-        <section class="product-policy"></section>
+        <section class="tab-content-wrapper">
+          <div
+            class="tab-content active"
+            id="detail-content"
+            role="tabpanel"
+            tabindex="0"
+          >
+            상세 정보 내용
+          </div>
+          <div
+            class="tab-content"
+            id="review-content"
+            role="tabpanel"
+            tabindex="0"
+            hidden
+          >
+            리뷰 내용
+          </div>
+          <div
+            class="tab-content"
+            id="qna-content"
+            role="tabpanel"
+            tabindex="0"
+            hidden
+          >
+            Q&A 내용
+          </div>
+          <div
+            class="tab-content"
+            id="policy-content"
+            role="tabpanel"
+            tabindex="0"
+            hidden
+          >
+            반품/교환정보 내용
+          </div>
+        </section>
       </section>
     </main>
 

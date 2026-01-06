@@ -7,22 +7,35 @@ html {
     font-size: 16px;
   }
 }
-/* 14px일 때 - 36px */
+
+/* 36px */
 .text-size-xl {
-  font-size: 2.5rem;
+  font-size: 2.25rem;
 }
-/* 14px일 때 - 18px */
+/* 24px */
+.text-size-lg {
+  font-size: 1.5rem;
+}
+/* 18px */
 .text-size-md {
-  font-size: 1.3rem;
+  font-size: 1.125rem;
 }
-/* 14px일 때 - 16px */
+/* 16px */
 .text-size-base {
-  font-size: 1.14rem;
+  font-size: 1rem;
+}
+/* 14px */
+.text-size-sm {
+  font-size: 0.875rem;
+}
+/* 12px */
+.text-size-xs {
+  font-size: 0.75rem;
 }
 
 /* 폰트 스타일 */
 .font-bold {
-  font-weight: 00;
+  font-weight: 700;
 }
 .font-medium {
   font-weight: 500;
