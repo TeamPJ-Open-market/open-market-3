@@ -140,7 +140,7 @@
 /* 인풋 기본 스타일 공통화 */
 input[type="text"],
 input[type="email"],
-input[type="number"] {
+input[type="tel"] {
   height: 40px;
   border: 1px solid var(--main-border-color);
   padding: 0 12px;

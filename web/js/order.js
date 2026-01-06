@@ -126,7 +126,7 @@ payBtn.addEventListener("click", async () => {
 
   if (!validateOrderForm()) return;
 
-  const requestBody = buildOrderData();
+  const requestBody = await buildOrderData();
 
   try {
     const res = await requestOrder(requestBody);
@@ -239,78 +239,91 @@ async function requestOrder(orderData) {
 
   return res;
 }
-function buildOrderData() {
+// function buildOrderData() {
+//   const orderItems = getOrderData();
+//   const firstItem = orderItems[0];
+//   const isDirect = firstItem.order_type === "direct_order";
+
+//   // 1. 서버가 원하는 금액(30000원)을 정확히 맞추기 위해 직접 계산합니다.
+//   // 만약 배송비가 있다면 여기에 더해줘야 합니다. 예: 30000
+//   const calculatedTotal = 30000;
+
+//   const finalOrderData = {
+//     receiver:
+//       document.getElementById("receiver-name")?.value.trim() || "이름 없음",
+//     receiver_phone_number: getReceiverPhone(),
+//     address: document.getElementById("address")?.value.trim() || "주소 미입력",
+//     address_message:
+//       document.getElementById("address-message")?.value.trim() || "",
+//     total_price: calculatedTotal, // 서버가 요구한 정답 '30000'을 넣습니다.
+//     payment_method:
+//       document.querySelector('input[name="payment"]:checked')?.value || "card",
+//     order_type: isDirect ? "direct_order" : "cart_order",
+
+//     cart_items: orderItems.map((item) => ({
+//       product_id: Number(item.product_id),
+//       quantity: Number(item.quantity),
+//     })),
+//   };
+
+//   if (isDirect) {
+//     finalOrderData.product_id = Number(firstItem.product_id);
+//     finalOrderData.quantity = Number(firstItem.quantity);
+//   }
+
+//   console.log("서버로 보내는 최종 데이터:", finalOrderData);
+//   return finalOrderData;
+// }
+async function buildOrderData() {
   const orderItems = getOrderData();
+  const firstItem = orderItems[0];
+  const isDirect = firstItem.order_type === "direct_order";
+  console.log(orderItems);
 
-  // 1. 결제 수단 가져오기
-  const paymentMethod = document.querySelector(
-    'input[name="payment"]:checked'
-  )?.value;
+  // 1. 서버가 원하는 금액(30000원)을 정확히 맞추기 위해 직접 계산합니다.
+  // 만약 배송비가 있다면 여기에 더해줘야 합니다. 예: 30000
 
-  // 2. [가장 중요] HTML 입력창에서 "현재 입력된" 값을 직접 변수에 담습니다.
-  // 이 코드가 return 직전에 있어야 사용자가 입력한 최신 값을 가져옵니다.
-  const addressInput = document.getElementById("address");
-  const addressMessageInput = document.getElementById("address-message");
-  const receiverNameInput = document.getElementById("receiver-name");
+  // buildOrderData 함수 내부에서 금액 계산 부분
+  let priceSum = 0;
+  let deliverySum = 0;
 
-  // .value를 통해 실제 텍스트를 가져옵니다.
-  const address = addressInput ? addressInput.value.trim() : "";
-  const addressMessage = addressMessageInput
-    ? addressMessageInput.value.trim()
-    : "";
-  const receiverName = receiverNameInput
-    ? receiverNameInput.value.trim()
-    : "이름 없음";
+  for (const item of orderItems) {
+    const product = await fetchProductById(item.product_id);
 
-  const receiverPhone = getReceiverPhone();
+    const price = Number(product.price) || 0;
+    const shippingFee = Number(product.shipping_fee) || 0;
+    const quantity = Number(item.quantity) || 0;
 
-  // 3. 주문 타입 판별 (sessionStorage 데이터를 기준으로 함)
-  const isDirect =
-    orderItems.length === 1 && orderItems[0].order_type === "direct_order";
-
-  // 4. 서버로 보낼 객체 생성
-  // const orderData = {
-  //   order_type: isDirect ? "direct_order" : "cart_order",
-  //   receiver: receiverName,
-  //   receiver_phone_number: receiverPhone,
-  //   address: address, // 이제 빈 값이 아닌 입력된 값이 들어갑니다.
-  //   address_message: addressMessage,
-  //   total_price: calculateTotal(),
-  //   payment_method: paymentMethod,
-  // };
-  const orderData = {
-    order_type: "direct_order",
-
-    product_id: 2,
-
-    quantity: 2,
-
-    total_price: 30000,
-
-    receiver: "이스트",
-
-    receiver_phone_number: "01012345678",
-
-    address: "서울시 강남구...",
-
-    address_message: "문 앞에 놓아주세요",
-
-    payment_method: "card",
-
-    cart_items: [], //
-  };
-
-  // 5. 타입별 추가 데이터 구성
-  if (isDirect) {
-    orderData.product_id = orderItems[0].product_id;
-    orderData.quantity = orderItems[0].quantity;
-  } else {
-    orderData.cart_items = orderItems.map((item) => ({
-      product_id: item.product_id,
-      quantity: item.quantity,
-    }));
+    priceSum += price * quantity;
+    deliverySum += shippingFee;
   }
 
-  console.log("최종적으로 서버에 보내는 데이터:", orderData);
-  return orderData;
+  const calculatedTotal = priceSum + deliverySum;
+  console.log(calculatedTotal);
+
+  const finalOrderData = {
+    receiver:
+      document.getElementById("receiver-name")?.value.trim() || "이름 없음",
+    receiver_phone_number: getReceiverPhone(),
+    address: document.getElementById("address")?.value.trim() || "주소 미입력",
+    address_message:
+      document.getElementById("address-message")?.value.trim() || "",
+    total_price: calculatedTotal, // 서버가 요구한 정답 '30000'을 넣습니다.
+    payment_method:
+      document.querySelector('input[name="payment"]:checked')?.value || "card",
+    order_type: isDirect ? "direct_order" : "cart_order",
+
+    cart_items: orderItems.map((item) => ({
+      product_id: Number(item.product_id),
+      quantity: Number(item.quantity),
+    })),
+  };
+
+  if (isDirect) {
+    finalOrderData.product_id = Number(firstItem.product_id);
+    finalOrderData.quantity = Number(firstItem.quantity);
+  }
+
+  console.log("서버로 보내는 최종 데이터:", finalOrderData);
+  return finalOrderData;
 }
