@@ -3,8 +3,6 @@ console.log("🔥 detail.js 실행됨");
 // ====================
 // 1. 상수 / 환경 설정
 
-// 회사 이름 -> UI 상수 (기획 고정값)
-const BRAND_NAME = "백엔드글로벌";
 // 최대 구매 가능 상품 수량
 const MAX_QUANTITY = 99;
 
@@ -165,8 +163,8 @@ async function loadProduct() {
     // 화면 렌더링
     productImage.src = data.image;
     productImage.alt = data.name;
-    // 회사 이름은 API가 아닌 기획 고정값
-    productBrand.textContent = BRAND_NAME;
+    // info: 기획상 브랜드/회사명 문구로 사용
+    productBrand.textContent = data.info;
     productTitle.textContent = data.name;
     productPrice.textContent = Utils.formatNumber(data.price);
 
@@ -188,16 +186,39 @@ loadProduct();
 // 8. 수량 / 총 금액
 
 // 수량 가져오는 공통 함수 (최소/최대 제한)
-function getQuantity() {
-  const value = Number(quantityInput.value);
+function setQuantity(nextValue) {
+  let value = Number(nextValue);
 
-  if (Number.isNaN(value)) return 1; // 문자 입력 X → 1
-  if (value < 1) return 1; // 음수 X → 1
-  if (value > MAX_QUANTITY) return MAX_QUANTITY; // 99로 고정
+  if (Number.isNaN(value)) value = 1; // 문자 입력 X → 1
+  if (value < 1) value = 1; // 음수 X → 1
+  if (value > MAX_QUANTITY) value = MAX_QUANTITY; // 99로 고정
 
-  return value;
+  quantityInput.value = value;
+  updateOrderSummary();
 }
 
+// “읽기 전용”으로 유지
+function getQuantity() {
+  return Number(quantityInput.value) || 1;
+}
+
+// 8-1. 수량 변경 이벤트 핸들러
+// - 버튼
+quantityDecreaseBtn.addEventListener("click", () => {
+  setQuantity(getQuantity() - 1);
+});
+
+// + 버튼
+quantityIncreaseBtn.addEventListener("click", () => {
+  setQuantity(getQuantity() + 1);
+});
+
+// input 직접 수정 시
+quantityInput.addEventListener("input", () => {
+  setQuantity(quantityInput.value);
+});
+
+// 8-2. 총 수량 / 총 금액 업데이트 함수
 function updateOrderSummary() {
   if (!currentProduct) return;
 
@@ -207,27 +228,6 @@ function updateOrderSummary() {
     currentProduct.price * quantity
   );
 }
-
-// 8-1. 수량 변경 이벤트 핸들러
-// - 버튼
-quantityDecreaseBtn.addEventListener("click", () => {
-  if (getQuantity() > 1) {
-    quantityInput.value = getQuantity() - 1;
-    updateOrderSummary();
-  }
-});
-
-// + 버튼
-quantityIncreaseBtn.addEventListener("click", () => {
-  quantityInput.value = getQuantity() + 1;
-  updateOrderSummary();
-});
-
-// input 직접 수정 시
-quantityInput.addEventListener("input", () => {
-  quantityInput.value = getQuantity();
-  updateOrderSummary();
-});
 
 // ====================
 // 9. 공통 검증
@@ -244,7 +244,9 @@ function validateBeforeAction() {
       confirmText: "로그인",
       cancelText: "취소",
       onConfirm: () => {
-        window.location.href = "signin.html";
+        window.location.href =
+          // 로그인하고 다시 돌아올 때를 위해 productId 포함
+          "signin.html?redirect=detail.html?id=" + productId;
       },
     });
     return false;
