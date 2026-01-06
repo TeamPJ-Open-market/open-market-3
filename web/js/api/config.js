@@ -25,6 +25,16 @@ const STORAGE_KEYS = {
   USER: "user",
 };
 
+const PAGES = {
+  HOME: "index.html",
+  SIGNIN: "signin.html",
+  SIGNUP: "signup.html",
+  CART: "cart.html",
+  ORDER: "order.html",
+  DETAIL: "detail.html",
+  ERROR: "error.html",
+};
+
 const Utils = {
   getUser() {
     const user = localStorage.getItem(STORAGE_KEYS.USER);
@@ -59,7 +69,7 @@ const Utils = {
 
     try {
       //실제로 서버에 요청 보내기
-      const response = await fetch(url, { ...options, headers });
+      let response = await fetch(url, { ...options, headers });
 
       // 401 에러 시 토큰 재발급 로직
       // 응답 코드가 401이면 토큰이 만료 되었다는 것이니까 재발급을 위해 저장해둔 리프레쉬 토큰을 꺼냄
@@ -96,6 +106,18 @@ const Utils = {
           this.logout(); // 아래 logout 함수 활용
         }
       }
+      if (!response.ok) {
+        let message = "서버 요청에 실패했습니다.";
+        try {
+          const errorData = await response.json();
+          // 서버 응답의 detail 또는 message 필드에서 에러 문구 추출
+          message = errorData.detail || errorData.message || message;
+        } catch (e) {
+          /* JSON 파싱 실패 시 기본 메시지 유지 */
+        }
+        // 에러를 던져 호출한 곳의 catch 블록에서 잡히게 함
+        throw new Error(message);
+      }
       //모든 과정이 정상이라면, 재시도한 결과 응담을 반환
       return response;
     } catch (error) {
@@ -104,20 +126,10 @@ const Utils = {
       throw error;
     }
   },
-
   logout() {
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER);
-    window.location.href = "signin.html";
+    window.location.href = "PAGES.SIGNIN";
   },
-};
-const PAGES = {
-  HOME: "index.html",
-  SIGNIN: "signin.html",
-  SIGNUP: "signup.html",
-  CART: "cart.html",
-  ORDER: "order.html",
-  DETAIL: "detail.html",
-  ERROR: "error.html",
 };
