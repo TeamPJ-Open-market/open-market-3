@@ -102,6 +102,13 @@
   height: 18px;
   display: block;
   flex-shrink: 0;
+  color: var(--main-text-color);
+}
+
+
+/* 검색 아이콘은 초록 유지(원하면) */
+.icon-search {
+  color: var(--positive-text-color);
 }
 
 .action {
@@ -139,8 +146,7 @@
 }
 
 .header-actions .action.active .icon {
-  filter: invert(54%) sepia(45%) saturate(2351%) hue-rotate(106deg)
-    brightness(96%) contrast(84%);
+    color: var(--main-btn-color);
 }
 
 /* ================================================= */
