@@ -173,8 +173,13 @@ function bindEvents() {
       // 클릭된 그 줄의 상품 정보만 가져옴
       const singleItem = cartItems[index];
 
-      // 이 상품 하나만 담긴 배열을 만듦
-      sessionStorage.setItem("orderData", JSON.stringify([singleItem]));
+      const orderData = {
+        items: [singleItem],
+        order_kind: "cart_order",
+      };
+
+      // 세션 스토리지에 하나의 키로 저장
+      sessionStorage.setItem("orderData", JSON.stringify(orderData));
       sessionStorage.setItem("order_kind", "cart_order");
 
       location.href = PAGES.ORDER;
@@ -325,25 +330,24 @@ async function onDelete(id) {
  * 7. "주문하기" 클릭 시 실행되는 함수
  */
 function moveToOrder() {
-  // 1. 체크박스가 선택된 상품들만 필터링
+  // 체크박스가 선택된 상품들만 필터링
   const selectedCartItems = cartItems.filter((item, index) => {
     const checkBoxes = itemsEl.querySelectorAll(".item-check");
     return checkBoxes[index] && checkBoxes[index].checked;
   });
 
-  // 2. 선택된 상품이 없는 경우 방어 로직을 실행
+  // 선택된 상품이 없는 경우 방어 로직을 실행
   if (selectedCartItems.length === 0) {
     Modal.open({ message: "주문할 상품을 선택해주세요.", cancelText: "" });
     return;
   }
+  const orderData = {
+    items: selectedCartItems, // 선택된 상품 배열
+    order_kind: "cart_order", // 주문 종류
+  };
 
-  // 3.  서버 호출 없이 선택된 데이터를 세션에 즉시 저장
-  // 이렇게 하면 order.html에서 데이터를 꺼내 화면을 그릴 수 있다.
-  sessionStorage.setItem("orderData", JSON.stringify(selectedCartItems));
+  sessionStorage.setItem("orderData", JSON.stringify(orderData));
 
-  // 4. 주문 종류를 저장하여 order.html에서 참조
-  sessionStorage.setItem("order_kind", "cart_order");
-
-  // 5. 주문서 페이지로 즉시 이동
+  // 주문서 페이지로 즉시 이동
   location.href = PAGES.ORDER;
 }
