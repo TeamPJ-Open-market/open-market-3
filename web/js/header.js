@@ -80,12 +80,12 @@ function bindSearchEvents() {
   searchInput.addEventListener("input", (e) => {
     const keyword = e.target.value.trim();
 
-    // ✅ [수정] 즉시 중단: 클릭으로 채워진 값인지 최우선 확인
+    // 즉시 중단: 클릭으로 채워진 값인지 최우선 확인
     if (keyword === searchInput.dataset.lastSelected) return;
 
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(async () => {
-      // ✅ [추가] 서버 요청 직전, 클릭이 발생했는지 다시 확인
+      // 서버 요청 직전, 클릭이 발생했는지 다시 확인
       if (document.activeElement !== searchInput) {
         return;
       }
@@ -98,7 +98,7 @@ function bindSearchEvents() {
         const data = await res.json();
         const items = data.results || [];
 
-        // ✅ [추가] 서버 응답 직후, 그 사이 클릭이 발생했다면 리스트를 그리지 않음
+        // 서버 응답 직후, 그 사이 클릭이 발생했다면 리스트를 그리지 않음
         if (keyword === searchInput.dataset.lastSelected) return;
 
         if (items.length > 0) {
@@ -126,11 +126,9 @@ function bindSearchEvents() {
     if (li) {
       const selectedKeyword = li.textContent.trim();
 
-      // ✅ [수정] 값을 먼저 넣고 포커스를 줘서 브라우저가 '타이핑'으로 오해하지 않게 함
+      // 값을 먼저 넣고 포커스를 줘서 브라우저가 '타이핑'으로 오해하지 않게 함
       searchInput.dataset.lastSelected = selectedKeyword;
       searchInput.value = selectedKeyword;
-
-      console.log("한 번에 클릭됨:", selectedKeyword);
       suggestionList.classList.add("is-hidden");
       suggestionList.innerHTML = "";
 
@@ -150,21 +148,21 @@ function bindSearchEvents() {
     }
 
     try {
-      // 1. 서버에 이 검색어와 정확히 일치하는 상품이 있는지 먼저 확인해봅니다.
+      // 서버에 이 검색어와 정확히 일치하는 상품이 있는지 먼저 확인
       const res = await Utils.fetchWithAuth(
         `/products/?search=${encodeURIComponent(keyword)}`
       );
       const data = await res.json();
       const products = data.results || [];
 
-      // 2. 검색 결과 중 상품명이 입력한 키워드와 '완전히 일치'하는 상품이 있는지 찾습니다.
+      // 검색 결과 중 상품명이 입력한 키워드와 '완전히 일치'하는 상품이 있는지 .
       const exactMatch = products.find((p) => p.name === keyword);
 
       if (exactMatch) {
-        //  [케이스 A] 정확히 일치하는 상품이 있으면 바로 상세 페이지로!
+        // 정확히 일치하는 상품이 있으면 바로 상세 페이지로!
         location.href = `${PAGES.DETAIL}?id=${exactMatch.id}`;
       } else {
-        //  [케이스 B] 일치하는게 없거나 여러 개면 검색 결과 리스트 페이지로!
+        // 일치하는게 없거나 여러 개면 검색 결과 리스트 페이지로!
         location.href = `${PAGES.HOME}?search=${encodeURIComponent(keyword)}`;
       }
     } catch (err) {
@@ -174,7 +172,7 @@ function bindSearchEvents() {
     }
   };
 
-  // 4. 검색창 바깥 클릭 시 리스트 숨기기
+  // 검색창 바깥 클릭 시 리스트 숨기기
   document.addEventListener("mousedown", (e) => {
     // click 대신 mousedown 사용
     const searchForm = document.querySelector(".search");
