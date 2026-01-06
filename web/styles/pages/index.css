@@ -49,32 +49,23 @@ body {
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-
   border: 0;
   background: transparent;
   cursor: pointer;
-
   font-size: 36px;
   font-weight: 200;
   opacity: 0.7;
   color: var(--main-text-color);
-
   padding: 0 16px;
   line-height: 1;
-  pointer-events: auto;
-  user-select: none;
 }
 
 .banner-btn:hover {
   opacity: 1;
 }
 
-.banner-btn.prev {
-  left: 24px;
-}
-.banner-btn.next {
-  right: 24px;
-}
+.banner-btn.prev { left: 24px; }
+.banner-btn.next { right: 24px; }
 
 /* Indicator */
 .banner-indicator {
@@ -123,12 +114,25 @@ body {
   cursor: pointer;
 }
 
+/* ================================================= */
+/* ============ 🔥 사라락 핵심 레이어 =============== */
+/* ================================================= */
+
+/* 카드 전체 스케일 변수 */
+.product-grid {
+  --card-scale: 1;
+}
+
 /* 카드 내부 레이아웃 */
 .product-link {
   display: grid;
   gap: 5px;
   text-decoration: none;
   color: inherit;
+
+  transform: scale(var(--card-scale));
+  transform-origin: left top;
+  transition: transform 0.25s ease; /* 사라락 */
 }
 
 /* 이미지 */
@@ -147,27 +151,24 @@ body {
 }
 
 /* ================================================= */
-/* ============== 반응형 텍스트 핵심 ================ */
+/* ============== 텍스트 (거의 고정) ================= */
 /* ================================================= */
 
-/* 상품 상단 설명 */
 .product-meta {
-  font-size: clamp(11px, 1.2vw, 12px);
+  font-size: clamp(11px, 0.9vw, 12px);
   color: var(--sub-text-color);
   margin: 0;
 }
 
-/* 상품명 */
 .product-name {
-  font-size: clamp(14px, 1.6vw, 18px);
+  font-size: clamp(15px, 1.2vw, 18px);
   font-weight: 400;
   line-height: 1.4;
   margin: 0;
 }
 
-/* 가격 */
 .product-price {
-  font-size: clamp(16px, 2vw, 24px);
+  font-size: clamp(17px, 1.4vw, 24px);
   font-weight: 700;
   color: var(--main-text-color);
   margin: 0;
@@ -177,15 +178,16 @@ body {
 /* =================== Responsive ================== */
 /* ================================================= */
 
-/* Tablet */
+/* Tablet: 살짝 압축 */
 @media (max-width: 1024px) {
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 32px 28px;
+    --card-scale: 0.97;
   }
 }
 
-/* Mobile */
+/* Mobile: 더 사라락 */
 @media (max-width: 640px) {
   .products {
     padding: 48px 0 80px;
@@ -194,6 +196,7 @@ body {
   .product-grid {
     grid-template-columns: 1fr;
     gap: 70px;
+    --card-scale: 0.94;
   }
 
   .card img {
@@ -201,30 +204,7 @@ body {
   }
 }
 
-/* Mobile Header */
-@media (max-width: 640px) {
-  .header-inner {
-    grid-template-columns: 1fr auto;
-    row-gap: 12px;
-    padding: 14px 0;
-  }
-
-  .brand {
-    grid-column: 1;
-  }
-
-  .search {
-    grid-column: 1 / -1;
-    max-width: 100%;
-  }
-
-  .header-actions {
-    grid-column: 2;
-    justify-self: end;
-    gap: 16px;
-  }
-}
-
+/* 배너 */
 @media (max-width: 640px) {
   .banner-inner {
     height: 320px;
