@@ -4,8 +4,8 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f7f7f7;
-  color: #222;
+  background: var(--main-bg-color);
+  color: var(--main-text-colo);
   min-width: 360px;
 }
 
@@ -98,14 +98,14 @@ body {
   height: 10px;
   border-radius: 50%;
   border: 0;
-  background: #fff;
+  background: var(--main-bg-color);
   opacity: 0.5;
   cursor: pointer;
   padding: 0;
 }
 
 .banner-indicator .dot.is-active {
-  background: #000;
+  background: var(--main-text-color);
   opacity: 1;
 }
 
