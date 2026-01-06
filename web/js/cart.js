@@ -25,25 +25,22 @@ async function loadCart() {
       message:
         "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
       onConfirm: () => {
-        location.href = "signin.html";
+        location.href = PAGES.SIGNIN;
       },
       onCancel: () => {
-        location.href = "index.html";
+        location.href = PAGES.HOME;
       }, // 비로그인 시 장바구니 접근 차단
       confirmText: "로그인",
     });
     return;
   }
   try {
-    const res = await fetch(`${API_URL}/cart/`, {
-      headers: Utils.getAuthHeaders(),
-    });
+    const res = await Utils.fetchWithAuth("/cart/");
+
     const data = await res.json();
 
     // 만약 'cart'가 없으면 이전 구조인 'results'를 확인합니다.
     cartItems = data.cart || data.results || [];
-
-    console.log("📡 서버 최신 데이터 동기화 완료:", cartItems.length, "개");
 
     sessionStorage.setItem("cartData", JSON.stringify(cartItems));
 
@@ -140,7 +137,7 @@ function bindEvents() {
     };
   }
 
-  // [각종 버튼 클릭] 생성된 DOM 요소에서 dataset 값을 읽어와 해당 핸들러 함수로 전달합니다.
+  // [각종 버튼 클릭] 생성된 DOM 요소에서 dataset 값을 읽어와 해당 핸들러 함수로 전달
   itemsEl
     .querySelectorAll(".qty-plus")
     .forEach((btn) => (btn.onclick = onIncrease));
@@ -156,7 +153,7 @@ function bindEvents() {
     };
   });
 
-  // [개별 체크 클릭] 모든 체크박스가 선택되면 전체 선택 버튼도 자동으로 체크합니다.
+  // [개별 체크 클릭] 모든 체크박스가 선택되면 전체 선택 버튼도 자동으로 체크
   itemChecks.forEach((chk) => {
     chk.onchange = () => {
       if (checkAll)
@@ -165,7 +162,7 @@ function bindEvents() {
     };
   });
 
-  // [하단 주문 버튼] 클릭 시 moveToOrder()를 실행하여 주문 데이터를 서버에 전송합니다.
+  // [하단 주문 버튼] 클릭 시 moveToOrder()를 실행하여 주문 데이터를 서버에 전송
   if (orderBtn) orderBtn.onclick = moveToOrder;
 
   // [상품별 개별 주문]
@@ -179,9 +176,8 @@ function bindEvents() {
       // 이 상품 하나만 담긴 배열을 만듦
       sessionStorage.setItem("orderData", JSON.stringify([singleItem]));
       sessionStorage.setItem("order_kind", "cart_order");
-      // 주의: 개별 주문도 서버 API를 거쳐 pending_order_id를 받는 것이 정석이나,
-      // 간단한 구현을 위해 바로 이동 후 order.html에서 처리하게 할 수도 있습니다.
-      location.href = "order.html";
+
+      location.href = PAGES.ORDER;
     };
   });
 }
@@ -191,18 +187,15 @@ function bindEvents() {
    ========================================================== */
 async function updateQuantity(id, newQuantity) {
   try {
-    const response = await fetch(`${API_URL}/cart/${id}/`, {
-      method: "PUT", // 수량 수정은 PUT 방식
-      headers: Utils.getAuthHeaders(), // Authorization: Bearer {token} 필수
+    const response = await Utils.fetchWithAuth(`/cart/${id}/`, {
+      method: "PUT",
       body: JSON.stringify({
-        quantity: newQuantity, // 명세서 요구 필드
+        quantity: newQuantity,
       }),
     });
 
     // 1. 성공 처리 (200 OK)
     if (response.ok) {
-      console.log("✅ 수량 수정 완료");
-
       // 정석: 세션 데이터를 비우고 서버에서 최신 목록을 다시 가져옴
       sessionStorage.removeItem("cartData");
       await loadCart();
@@ -211,14 +204,6 @@ async function updateQuantity(id, newQuantity) {
 
     // 2. HTTP 상태 코드별 상세 오류 처리
     switch (response.status) {
-      case 401: // 인증되지 않은 사용자
-        Modal.open({
-          message: "로그인이 필요합니다.",
-          onConfirm: () => (location.href = "signin.html"),
-          cancelText: "",
-        });
-        break;
-
       case 403: // 접근 권한 없음
         Modal.open({ message: "수정 권한이 없습니다.", cancelText: "" });
         break;
@@ -268,7 +253,9 @@ function updateTotalPrice() {
     // UI 상의 체크 여부를 판단합니다.
     if (li.querySelector(".item-check").checked) {
       // 전역 변수 'cartItems'에서 해당 ID의 실제 가격 정보를 찾아 연산합니다.
-      const item = cartItems.find((i) => i.id == li.dataset.id);
+      const item = cartItems.find(
+        (i) => String(i.id) === String(li.dataset.id)
+      );
       if (item) total += item.product.price * item.quantity;
     }
   });
@@ -288,14 +275,12 @@ async function onDelete(id) {
     message: "상품을 삭제하시겠습니까?",
     onConfirm: async () => {
       try {
-        const response = await fetch(`${API_URL}/cart/${id}/`, {
+        const response = await Utils.fetchWithAuth(`/cart/${id}/`, {
           method: "DELETE",
-          headers: Utils.getAuthHeaders(),
         });
 
         // 1. 성공 처리 (200 OK)
         if (response.ok) {
-          console.log("✅ 서버 삭제 성공");
           sessionStorage.removeItem("cartData");
           await loadCart();
           return;
@@ -303,14 +288,6 @@ async function onDelete(id) {
 
         // 2. HTTP 상태 코드별 상세 오류 처리
         switch (response.status) {
-          case 401: // 인증되지 않은 사용자
-            Modal.open({
-              message: "로그인이 만료되었습니다. 다시 로그인해주세요.",
-              onConfirm: () => (location.href = "signin.html"),
-              cancelText: "",
-            });
-            break;
-
           case 403: // 접근 권한 없음
             Modal.open({
               message: "본인의 장바구니 상품만 삭제할 수 있습니다.",
@@ -368,6 +345,5 @@ function moveToOrder() {
   sessionStorage.setItem("order_kind", "cart_order");
 
   // 5. 주문서 페이지로 즉시 이동
-  console.log("🚚 데이터 저장 완료, 주문서로 이동합니다.");
-  location.href = "order.html";
+  location.href = PAGES.ORDER;
 }
