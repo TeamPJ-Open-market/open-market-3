@@ -20,12 +20,13 @@
   margin: 60px 30px 30px 30px;
 }
 
-/* 탭 전체 디자인 */
+/* 탭 메뉴 위치 */
 .tab-menu {
   display: flex;
   text-align: center;
 }
 
+/* 탭 메뉴 상세 스타일 */
 .tab-link {
   flex: 1;
   padding: 20px 0;
@@ -45,16 +46,18 @@
   margin: -1px 0;
 }
 
-/* 에러 메세지 스타일 */
+/* 에러 빨간 텍스트 */
 .error {
   color: var(--negative-text-color);
 }
 
+/* 에러 빨간 외곽선 색상 */
 input.error {
   color: unset;
   border-color: var(--negative-text-color);
 }
 
+/* 에러 메세지 위치 */
 span.error {
   display: block;
   margin-top: 26px;
@@ -101,10 +104,23 @@ span.error {
   gap: 14px;
 }
 
+/* 회원가입 텍스트 회색  */
 .signup-link > a {
   color: var(--join-text-color);
 }
 
+/* 방문후 색상 변화 없음 */
 a:visited {
   color: inherit;
+}
+
+/* 모바일 환경 크기설정 */
+@media (max-width: 768px) {
+  .login-container {
+    width: 70%;
+  }
+
+  .login-box {
+    padding: 25px 35px 25px 35px;
+  }
 }

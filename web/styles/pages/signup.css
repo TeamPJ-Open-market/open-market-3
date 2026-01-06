@@ -1,4 +1,4 @@
-/* 전체 컨테이너 */
+/* 전체 컨테이너 크기 위치 */
 .container {
   display: flex;
   flex-direction: column;
@@ -13,19 +13,20 @@
   height: 84px;
 }
 
-/* 회원가입 컨테이너 설정 */
+/* 회원가입 컨테이너 크기 */
 .signup-container {
   width: 100%;
   max-width: 550px;
   margin: 60px 30px 30px 30px;
 }
 
-/* 탭 전체 디자인 */
+/* 탭 전체 위치 */
 .tab-menu {
   display: flex;
   text-align: center;
 }
 
+/* 탭 디자인 */
 .tab-link {
   flex: 1;
   padding: 20px 0;
@@ -58,18 +59,20 @@
   gap: 5px;
 }
 
-/* 입력창 스타일 */
+/* ID 입력창 배치 */
 .input-id-group {
   display: flex;
   flex-direction: row;
   gap: 12px;
 }
 
+/* 비밀번호 체크 아이콘 상대위치 선언 */
 .input-pw-group,
 .input-confirm-pw-group {
   position: relative;
 }
 
+/* 비밀번호 체크 아이콘 절대위치 설정 */
 .pw-check-icon,
 .pw-confirm-check-icon {
   position: absolute;
@@ -78,6 +81,7 @@
   color: var(--checkbox-disabled-color);
 }
 
+/* 초록색 중복확인 버튼 */
 .id-check-btn {
   border: none;
   border-radius: 5px;
@@ -89,7 +93,7 @@
   width: 122px;
 }
 
-/* 공통 input */
+/* 공통 입력창 스타일 */
 input,
 .number-select {
   height: 54px;
@@ -100,7 +104,7 @@ input,
   padding-left: 16px;
 }
 
-/* 아이디 입력칸 크기지정 */
+/* 아이디 입력칸 크기채우기 */
 .input-id-group > input {
   flex: 1;
 }
@@ -118,18 +122,16 @@ input,
   gap: 10px;
 }
 
+/* 전화번호 입력칸 */
 .input-phone-number-group > input,
 .number-select {
   width: 100%;
   text-align: center;
 }
 
+/* 전화번호 입력칸 패딩제거 */
 .input-phone-number-group > input {
   padding: 0;
-}
-
-input:focus {
-  outline: none;
 }
 
 /* 폼 내부 텍스트 */
@@ -141,12 +143,12 @@ input:focus {
 
 /* 이용약관 개인정보 처리 방침*/
 .agree-check-container {
-  display: flex;
+  display: inline-flex;
   gap: 10px;
   align-items: center;
-  justify-items: center;
 }
 
+/* 이용약관 스타일 */
 .agree-text {
   color: var(--sub-text-color);
   font-weight: 400;
@@ -179,63 +181,84 @@ input:focus {
   cursor: pointer;
 }
 
+/* 비활성화 회색 버튼*/
 button:disabled {
   background-color: var(--disabled-btn-color);
   cursor: not-allowed;
 }
 
+/* 활성화 초록 버튼 */
 .signup-btn-box > button:not(:disabled) {
   background-color: var(--main-btn-color);
 }
 
+/* input의 숫자 제어 화살표 제거 */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none; /* 스피너 제거 */
   margin: 0; /* 불필요한 여백 제거 */
 }
 
-/* 에러 메세지 스타일 */
+/* 에러 빨간색 */
 .error {
   color: var(--negative-text-color);
   border-color: var(--negative-border-color);
 }
 
+/* input 에러 빨간색 */
 input.error {
   color: unset;
   border-color: var(--negative-text-color);
 }
 
-span.error {
-  display: block;
-  margin: 7px 0;
-}
-
+/* 비밀번호 input이 success일 때 아이콘 초록 */
 .input-pw-group input.success ~ .pw-check-icon {
   color: var(--checkbox-bg-color);
 }
 
-/* 비밀번호 확인 input이 error일 때 아이콘 빨강 */
+/* 비밀번호 확인 input이 success일 때 아이콘 초록 */
 .input-confirm-pw-group input.success ~ .pw-confirm-check-icon {
   color: var(--checkbox-bg-color);
 }
 
-/* 통과 메세지 스타일 */
+/* 통과 초록색 */
 .success {
   color: var(--positive-text-color);
   border-color: var(--positive-border-color);
 }
 
-span.success {
+/* 알림 메세지 위치 */
+span.success,
+span.error {
   display: block;
   margin: 7px 0;
 }
 
+/* input 초록색 */
 input.success {
   color: unset;
-  border-color: var(--positive-text-color);
+  border-color: var(--positive-border-color);
 }
 
+/* 휴대폰 번호 텍스트 색상적용x */
+select.success,
+select.error {
+  color: unset;
+}
+
+/* 비밀번호 체크색상 초록 */
 .input-pw-group.success .pw-check-icon,
 .input-confirm-pw-group.success .pw-confirm-check-icon {
-  color: #4caf50; /* 초록 */
+  color: var(--checkbox-bg-color);
+}
+
+/* 모바일 환경 크기설정 */
+@media (max-width: 768px) {
+  .signup-container {
+    width: 80%;
+  }
+
+  .signup-btn {
+    width: 80%;
+  }
 }
