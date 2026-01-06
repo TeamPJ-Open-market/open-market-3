@@ -8,6 +8,7 @@ html {
   }
 }
 
+/* 유틸리티 클래스 방식 */
 /* 36px */
 .text-size-xl {
   font-size: 2.25rem;
