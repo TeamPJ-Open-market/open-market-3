@@ -1,3 +1,7 @@
+// URL에서 product_id 추출 / detail에서 옴
+const urlParams = new URLSearchParams(window.location.search);
+const redirect = urlParams.get("redirect");
+
 //로그인 유무확인
 window.onload = function () {
   if (Utils.isLoggedIn()) {
@@ -107,6 +111,12 @@ async function handleSignin(event) {
     localStorage.setItem("access_token", data.access);
     localStorage.setItem("refresh_token", data.refresh);
     localStorage.setItem("user", JSON.stringify(data.user));
+
+    // 요청페이지로 이동
+    if (redirect) {
+      window.location.href = redirect;
+      return;
+    }
 
     // 사용자 타입에 따라 페이지 이동
     if (data.user.user_type === "BUYER") {
