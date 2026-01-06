@@ -51,9 +51,7 @@ function handleLogout() {
   Modal.open({
     message: "로그아웃 하시겠습니까?",
     onConfirm: () => {
-      localStorage.clear();
-      sessionStorage.clear();
-      location.href = "index.html";
+      Utils.logout();
     },
   });
 }

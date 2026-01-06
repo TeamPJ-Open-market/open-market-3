@@ -32,7 +32,7 @@ const PAGES = {
   CART: "cart.html",
   ORDER: "order.html",
   DETAIL: "detail.html",
-  ERROR: "error.html",
+  ERROR: "404.html",
 };
 
 const Utils = {
@@ -130,6 +130,6 @@ const Utils = {
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER);
-    window.location.href = "PAGES.SIGNIN";
+    window.location.href = PAGES.SIGNIN;
   },
 };
