@@ -218,6 +218,8 @@ agreeCheck.addEventListener("change", () => {
   submitBtn.disabled = !agreeCheck.checked;
 });
 
+const inputName = document.getElementById("name");
+
 // 구매회원 회원가입 제출
 async function handleBuyerSignup(e) {
   e.preventDefault();
@@ -230,6 +232,11 @@ async function handleBuyerSignup(e) {
 
   if (!validatePassword()) {
     alert("비밀번호를 확인 해주세요.");
+    return;
+  }
+
+  if (inputName.value === "") {
+    alert("이름을 작성해 주세요.");
     return;
   }
 
