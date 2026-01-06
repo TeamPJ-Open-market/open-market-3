@@ -1,6 +1,19 @@
-function getCartData() {
-  const cartData = sessionStorage.getItem("orderData");
-  return cartData ? JSON.parse(cartData) : [];
+function getOrderData() {
+  return JSON.parse(sessionStorage.getItem("orderData")) || [];
+}
+
+function getReceiverPhone() {
+  const p1 = document.getElementById("order-phone1").value;
+  const p2 = document.getElementById("order-phone2").value;
+  const p3 = document.getElementById("order-phone3").value;
+  return `${p1}${p2}${p3}`;
+}
+
+function calculateTotal() {
+  const totalText = document
+    .querySelector(".final-payment .total-price strong")
+    .textContent.replace(/[^\d]/g, "");
+  return Number(totalText);
 }
 
 // 🔹 상품 단건 조회 (바로구매 대응)
@@ -98,30 +111,49 @@ agreeCheckbox.addEventListener("change", () => {
   payBtn.classList.toggle("active", agreeCheckbox.checked);
 });
 
-payBtn.addEventListener("click", () => {
-  if (!agreeCheckbox.checked) return;
+payBtn.addEventListener("click", async () => {
+  if (!agreeCheckbox.checked) {
+    alert("결제 동의가 필요합니다.");
+    return;
+  }
 
-  const order = buildOrderData();
+  if (!validateOrderForm()) return;
 
-  /* 최종 주문 데이터 저장 */
-  sessionStorage.setItem("finalOrder", JSON.stringify(order));
+  const requestBody = buildOrderData();
 
-  /* 🔥 장바구니 & 주문 데이터 비우기 */
-  sessionStorage.removeItem("orderData");
-  sessionStorage.removeItem("cartData");
+  try {
+    const res = await requestOrder(requestBody);
 
-  /* 결제 완료 페이지 이동 */
-  window.location.href = "success.html";
+    if (res.status === 200) {
+      alert("🎉 구매가 완료되었습니다!");
+
+      sessionStorage.removeItem("orderData");
+      if (requestBody.order_type === "cart_order") {
+        sessionStorage.removeItem("cartData");
+      }
+
+      window.location.href = "index.html";
+    } else if (res.status === 400) {
+      alert("입력한 정보를 다시 확인해주세요.");
+    } else if (res.status === 401) {
+      alert("로그인이 필요합니다.");
+    } else {
+      alert("주문 처리 중 오류가 발생했습니다.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("서버 연결에 실패했습니다.");
+  }
 });
 
 /* 우편번호 버튼 */
 document.querySelector(".btn-post").addEventListener("click", () => {
-  alert("우편번호 조회 팝업 자리입니다.");
+  alert("우편번호 조회");
 });
 
 /* 페이지 로드 */
 document.addEventListener("DOMContentLoaded", async () => {
-  const cartData = getCartData();
+  const cartData = getOrderData();
   await renderCart(cartData);
   fillOrdererInfoFromLocal();
 });
@@ -157,4 +189,69 @@ function fillOrdererInfoFromLocal() {
     p2.readOnly = true;
     p3.readOnly = true;
   }
+}
+function validateOrderForm() {
+  const name = document.getElementById("orderer-name").value.trim();
+  const email = document.getElementById("orderer-email").value.trim();
+
+  const p1 = document.getElementById("order-phone1").value.trim();
+  const p2 = document.getElementById("order-phone2").value.trim();
+  const p3 = document.getElementById("order-phone3").value.trim();
+
+  const paymentChecked = document.querySelector(
+    'input[name="payment"]:checked'
+  )?.value;
+
+  if (!name || !email) {
+    alert("주문자 정보를 확인해주세요.");
+    return false;
+  }
+
+  if (p1.length !== 3 || p2.length !== 4 || p3.length !== 4) {
+    alert("휴대폰 번호를 정확히 입력해주세요.");
+    return false;
+  }
+
+  if (!paymentChecked) {
+    alert("결제수단을 선택해주세요.");
+    return false;
+  }
+
+  return true; // ✅ 통과
+}
+async function requestOrder(orderData) {
+  console.log("보내는 주문 데이터:", orderData);
+  const res = await fetch(`${API_URL}/orders`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    },
+    body: JSON.stringify(orderData),
+  });
+
+  return res;
+}
+function buildOrderData() {
+  const orderItems = getOrderData();
+
+  const orderType =
+    orderItems.length === 1 && orderItems[0].product_id
+      ? "direct_order"
+      : "cart_order";
+
+  const paymentMethod = document.querySelector(
+    'input[name="payment"]:checked'
+  )?.value;
+
+  return {
+    order_type: orderType,
+    payment_method: paymentMethod,
+    receiver_phone: getReceiverPhone(),
+    total_price: calculateTotal(),
+    order_items: orderItems.map((item) => ({
+      product_id: item.product_id,
+      quantity: item.quantity,
+    })),
+  };
 }
