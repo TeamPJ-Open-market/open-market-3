@@ -72,14 +72,11 @@ async function checkUsername() {
   }
 
   try {
-    const response = await fetch(
-      "http://localhost:3000/api/accounts/validate-username",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username }),
-      }
-    );
+    const response = await fetch(`${API_URL}/accounts/validate-username`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username }),
+    });
 
     // 아이디 중복 확인 메시지 출력
     const data = await response.json();
@@ -116,8 +113,15 @@ function validatePassword() {
   const passwordConfirmMessage = document.getElementById(
     "passwordConfirmMessage"
   );
+  if (passwordConfirm === "" && password === "") {
+    Validation.clearMessage(passwordConfirmInput, passwordConfirmMessage);
+  }
+  if (password === "") {
+    // 비밀번호 길이 체크
+    Validation.clearMessage(passwordInput, passwordMessage);
+    return false;
+  }
 
-  // 비밀번호 길이 체크
   if (0 < password.length && password.length < 8) {
     Validation.showMessage(
       passwordInput,
@@ -125,9 +129,8 @@ function validatePassword() {
       "비밀번호는 8자 이상이어야 합니다.",
       "error"
     );
-    return false;
   } else {
-    Validation.clearMessage(passwordInput, passwordMessage);
+    Validation.showMessage(passwordInput, passwordMessage, "", "success");
   }
 
   // 비밀번호 일치 확인
@@ -245,14 +248,11 @@ async function handleBuyerSignup(e) {
   };
 
   try {
-    const response = await fetch(
-      "http://localhost:3000/api/accounts/buyer/signup",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      }
-    );
+    const response = await fetch(`${API_URL}/accounts/buyer/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
 
     const data = await response.json();
 
