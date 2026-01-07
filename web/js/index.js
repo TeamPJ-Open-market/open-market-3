@@ -2,26 +2,6 @@ console.log("index.js loaded");
 
 const path = window.location.pathname;
 
-// // ===== 공통 레이아웃 로딩 =====
-// async function loadLayout() {
-//   try {
-//     // const headerRes = await fetch("./header.html");
-//     const headerHtml = await headerRes.text();
-//     document.body.insertAdjacentHTML("afterbegin", headerHtml);
-//   } catch (e) {
-//     console.error("header load failed", e);
-//   }
-
-//   if (!path.includes("login") && !path.includes("signup")) {
-//     try {
-//       // const footerRes = await fetch("./footer.html");
-//       const footerHtml = await footerRes.text();
-//       document.body.insertAdjacentHTML("beforeend", footerHtml);
-//     } catch (e) {
-//       console.error("footer load failed", e);
-//     }
-//   }
-// }
 
 // ===== 상품 목록 불러오기 =====
 async function loadProducts() {
@@ -113,9 +93,9 @@ function initBanner() {
   renderSlide(current);
 }
 
-// ✅ 실행 순서 보장
+// 실행 순서 보장
 document.addEventListener("DOMContentLoaded", async () => {
-  // await loadLayout(); // header/footer 먼저
-  initBanner(); // 배너는 DOM 있어야 함
-  loadProducts(); // 상품 렌더링
+
+  initBanner(); 
+  loadProducts(); 
 });

@@ -1,36 +1,56 @@
-/* =================== Base =================== */
-:root { font-size: 16px; }
+/* ================================================= */
+/* ===================== Base ====================== */
+/* ================================================= */
+:root {
+  font-size: 16px;
+}
 
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-img, video, svg { max-width: 100%; height: auto; display: block; }
+img,
+video,
+svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
 
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: var(--main-bg-color);
   color: var(--main-text-colo);
-  min-width: 22.5rem; /* 360px: 정말 필요할 때만. 가로 스크롤 원인일 수 있음 */
+  min-width: 22.5rem;
 }
-
+/* ============================================= */
 /* ================= Container ================= */
+/* ============================================= */
+
 .container {
-  width: min(75rem, 100%);     /* 1200px */
-  margin-inline: auto;
-  padding-inline: 1.4rem;
+  max-width: 1280px;
+  min-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-/* ================= Main Banner ================= */
+/* ============================================= */
+/* =============== Main Banner ================= */
+/* ============================================= */
+
 .main-banner {
   background: var(--disabled-tab-color);
   width: 100%;
 }
 
-/* 배너는 화면폭을 쓰되, 내부 콘텐츠는 컨테이너에 넣는 것을 권장 */
 .banner-inner {
   width: 100%;
-  max-width: 120rem;                /* 1920px */
-  height: clamp(14rem, 42vw, 31.25rem); /* 224~500px */
+  max-width: 120rem;
+  height: clamp(14rem, 42vw, 31.25rem);
   margin: 0 auto;
   position: relative;
   overflow: hidden;
@@ -49,7 +69,9 @@ body {
   pointer-events: none;
 }
 
-.banner-slide.is-active { display: block; }
+.banner-slide.is-active {
+  display: block;
+}
 
 .banner-slide img {
   width: 100%;
@@ -70,38 +92,43 @@ body {
   background: transparent;
   cursor: pointer;
 
-  font-size: 2.25rem;   /* 36px */
+  font-size: 2.25rem;
   font-weight: 200;
   opacity: 0.7;
   color: var(--main-text-color);
 
-  padding: 0 1rem;      /* 16px */
+  padding: 0 1rem;
   line-height: 1;
 
   pointer-events: auto;
   user-select: none;
 }
 
-.banner-btn:hover { opacity: 1; }
+.banner-btn:hover {
+  opacity: 1;
+}
 
-.banner-btn.prev { left: 1.5rem; }  /* 24px */
-.banner-btn.next { right: 1.5rem; } /* 24px */
+.banner-btn.prev {
+  left: 1.5rem;
+}
+.banner-btn.next {
+  right: 1.5rem;
+}
 
-/* Indicator */
 .banner-indicator {
   position: absolute;
-  bottom: 1.25rem; /* 20px */
+  bottom: 1.25rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
 
   display: flex;
-  gap: 0.625rem;  /* 10px */
+  gap: 0.625rem;
 }
 
 .banner-indicator .dot {
-  width: 0.625rem;   /* 10px */
-  height: 0.625rem;  /* 10px */
+  width: 0.625rem;
+  height: 0.625rem;
   border-radius: 50%;
   border: 0;
   background: var(--main-bg-color);
@@ -115,16 +142,19 @@ body {
   opacity: 1;
 }
 
-/* ================= Product List ================= */
+/* ============================================= */
+/* =============== Product List ================ */
+/* ============================================= */
+
 .products {
-  padding: 5rem 0 7.5rem; /* 80px 0 120px */
+  padding: 5rem 0 7.5rem;
   background: var(--main-bg-color);
 }
 
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 3rem 3.5rem;  /* 48px 56px */
+  gap: 3rem 3.5rem;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -132,11 +162,13 @@ body {
   --card-scale: 1;
 }
 
-.card { cursor: pointer; }
+.card {
+  cursor: pointer;
+}
 
 .product-link {
   display: grid;
-  gap: 0.3125rem; /* 5px */
+  gap: 0.3125rem;
   text-decoration: none;
   color: inherit;
 
@@ -146,18 +178,19 @@ body {
 }
 
 .product-link > img {
-  margin-bottom: 0.375rem; /* 6px */
+  margin-bottom: 0.375rem;
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 0.75rem; /* 12px */
+  border-radius: 0.75rem;
   display: block;
   transition: transform 0.2s ease;
 }
 
-.card:hover img { transform: translateY(-0.125rem); } /* -2px */
+.card:hover img {
+  transform: translateY(-0.125rem);
+}
 
-/* Text */
 .product-meta {
   font-size: clamp(0.6875rem, 0.9vw, 0.75rem);
   color: var(--sub-text-color);
@@ -178,8 +211,11 @@ body {
   margin: 0;
 }
 
-/* ================= Responsive ================= */
-@media (max-width: 64rem) { /* 1024px */
+/* ============================================= */
+/* ================= Responsive ================ */
+/* ============================================= */
+
+@media (max-width: 64rem) {
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem 1.75rem;
@@ -192,7 +228,7 @@ body {
   }
 }
 
-@media (max-width: 40rem) { /* 640px */
+@media (max-width: 40rem) {
   .products {
     padding: 3rem 0 5rem;
   }
@@ -204,11 +240,11 @@ body {
   }
 
   .card img {
-    border-radius: 0.625rem; /* 10px */
+    border-radius: 0.625rem;
   }
 
   .banner-inner {
-    height: 20rem; /* 320px */
+    height: 20rem;
   }
 
   .banner-btn {
@@ -217,6 +253,6 @@ body {
   }
 
   .banner-indicator {
-    bottom: 0.875rem; /* 14px */
+    bottom: 0.875rem;
   }
 }
