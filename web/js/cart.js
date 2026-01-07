@@ -76,7 +76,7 @@ function renderCartList() {
     const li = document.createElement("li");
     li.className = "cart-item";
 
-    // [중요] HTML 요소에 데이터를 숨겨둡니다(dataset).
+    // [중요] HTML 요소에 데이터를 숨겨둡니다
     // 나중에 버튼을 클릭했을 때 이 값을 읽어서 "어떤 상품인지" 서버에 알려줄 수 있습니다.
     li.dataset.id = item.id; // 장바구니 내 고유 PK (삭제/수정용)
     li.dataset.productId = item.product.id; // 실제 상품 고유 ID (수량 수정 시 필수 값)
