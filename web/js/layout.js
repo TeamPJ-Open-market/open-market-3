@@ -18,7 +18,6 @@ async function loadHTMLToBody(url, append) {
       document.body.prepend(...doc.body.children);
     }
 
-    // ⭐ 신호 보내기 (이걸 듣는 파일이 없어도 오류 안 남)
     if (url.includes("header.html")) {
       window.dispatchEvent(new CustomEvent("headerRendered"));
     }

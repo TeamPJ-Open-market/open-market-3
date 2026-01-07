@@ -33,7 +33,13 @@
             class="search-input"
             type="search"
             placeholder="상품을 검색해보세요!"
+            autocomplete="off"
           />
+          <ul
+            id="search-suggestion"
+            class="search-suggestion-list is-hidden"
+          ></ul>
+
           <button class="search-btn" type="submit" aria-label="검색">
             <img src="./assets/icons/search.svg" alt="" class="icon" />
           </button>
