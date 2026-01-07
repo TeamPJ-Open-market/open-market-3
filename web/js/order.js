@@ -16,6 +16,7 @@ function getAddress() {
 function getAddressMessage() {
   return document.getElementById("address-message").value.trim();
 }
+
 function calculateTotal() {
   const totalText = document
     .querySelector(".final-payment .total-price strong")
@@ -25,7 +26,7 @@ function calculateTotal() {
 
 // 🔹 상품 단건 조회 (바로구매 대응)
 async function fetchProductById(productId) {
-  const res = await fetch(`${API_URL}/products/${productId}`);
+  const res = await Utils.fetchWithAuth(`/products/${productId}`);
   if (!res.ok) throw new Error("상품 조회 실패");
   return res.json();
 }
@@ -34,7 +35,6 @@ async function renderCart(cart) {
   const orderList = document.getElementById("order-list");
   const totalPriceEl = document.getElementById("total-price");
 
-  // 🔹 최종결제 정보 영역 (HTML 구조 기준)
   const productAmountEl = document.querySelector(
     ".price-list li:nth-child(1) strong"
   );
@@ -93,10 +93,8 @@ async function renderCart(cart) {
     orderList.appendChild(row);
   }
 
-  /* 왼쪽 총 주문금액 */
   totalPriceEl.textContent = productTotal.toLocaleString() + "원";
 
-  /* ===== 최종결제 정보 계산 ===== */
   const discount = 0; // 추후 쿠폰 가능
   const delivery = 0; // 무료배송
   const finalTotal = productTotal - discount + delivery;
@@ -114,16 +112,19 @@ const payBtn = document.querySelector(".pay-btn");
 payBtn.disabled = true;
 
 agreeCheckbox.addEventListener("change", () => {
+  // 🔹 검증식: 결제 동의 여부 확인
   payBtn.disabled = !agreeCheckbox.checked;
   payBtn.classList.toggle("active", agreeCheckbox.checked);
 });
 
 payBtn.addEventListener("click", async () => {
+  // 🔹 검증식: 결제 동의 체크 확인
   if (!agreeCheckbox.checked) {
     alert("결제 동의가 필요합니다.");
     return;
   }
 
+  // 🔹 검증식: 주문 폼 필수 항목 확인
   if (!validateOrderForm()) return;
 
   const requestBody = await buildOrderData();
@@ -133,13 +134,11 @@ payBtn.addEventListener("click", async () => {
 
     if (res.ok) {
       alert("🎉 구매가 완료되었습니다!");
-
       sessionStorage.removeItem("orderData");
       if (requestBody.order_type === "cart_order") {
         sessionStorage.removeItem("cartData");
       }
-
-      window.location.href = "index.html";
+      window.location.href = PAGES.HOME;
     } else if (res.status === 400) {
       alert("입력한 정보를 다시 확인해주세요.");
     } else if (res.status === 401) {
@@ -164,23 +163,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   await renderCart(cartData);
   fillOrdererInfoFromLocal();
 });
+
 function fillOrdererInfoFromLocal() {
   const userData = localStorage.getItem("user");
   if (!userData) return;
 
   const user = JSON.parse(userData);
 
-  /* 이름 */
   const nameInput = document.getElementById("orderer-name");
   nameInput.value = user.name || "";
   nameInput.readOnly = true;
 
-  /* 이메일 */
   const emailInput = document.getElementById("orderer-email");
   emailInput.value = user.username || "";
   emailInput.readOnly = true;
 
-  /* 휴대폰 */
   if (user.phone_number) {
     const phone = user.phone_number.replace(/-/g, "");
 
@@ -197,93 +194,66 @@ function fillOrdererInfoFromLocal() {
     p3.readOnly = true;
   }
 }
+
 function validateOrderForm() {
-  const name = document.getElementById("orderer-name").value.trim();
-  const email = document.getElementById("orderer-email").value.trim();
+  // 🔹 주문자 정보
+  const name = document.getElementById("orderer-name")?.value.trim();
+  const email = document.getElementById("orderer-email")?.value.trim();
 
-  const p1 = document.getElementById("order-phone1").value.trim();
-  const p2 = document.getElementById("order-phone2").value.trim();
-  const p3 = document.getElementById("order-phone3").value.trim();
+  // 🔹 결제 동의
+  if (!agreeCheckbox.checked) {
+    alert("결제 동의가 필요합니다.");
+    return false;
+  }
 
-  const paymentChecked = document.querySelector(
-    'input[name="payment"]:checked'
-  )?.value;
-
+  // 🔹 이름 / 이메일
   if (!name || !email) {
     alert("주문자 정보를 확인해주세요.");
     return false;
   }
 
-  if (p1.length !== 3 || p2.length !== 4 || p3.length !== 4) {
+  // 🔹 휴대폰 번호 형식
+  if (!/^010\d{8}$/.test(getReceiverPhone())) {
     alert("휴대폰 번호를 정확히 입력해주세요.");
     return false;
   }
+
+  // 🔹 주소
+  if (!getAddress()) {
+    alert("배송 주소를 입력해주세요.");
+    return false;
+  }
+
+  // 🔹 결제 수단
+  const paymentChecked = document.querySelector(
+    'input[name="payment"]:checked'
+  );
 
   if (!paymentChecked) {
     alert("결제수단을 선택해주세요.");
     return false;
   }
 
-  return true; // ✅ 통과
+  return true; // ✅ 모든 검증 통과
 }
+
 async function requestOrder(orderData) {
   console.log("보내는 주문 데이터:", orderData);
-  const res = await fetch(`${API_URL}/order/`, {
+  const res = await Utils.fetchWithAuth(`/order/`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-    },
     body: JSON.stringify(orderData),
   });
 
   return res;
 }
-// function buildOrderData() {
-//   const orderItems = getOrderData();
-//   const firstItem = orderItems[0];
-//   const isDirect = firstItem.order_type === "direct_order";
 
-//   // 1. 서버가 원하는 금액(30000원)을 정확히 맞추기 위해 직접 계산합니다.
-//   // 만약 배송비가 있다면 여기에 더해줘야 합니다. 예: 30000
-//   const calculatedTotal = 30000;
-
-//   const finalOrderData = {
-//     receiver:
-//       document.getElementById("receiver-name")?.value.trim() || "이름 없음",
-//     receiver_phone_number: getReceiverPhone(),
-//     address: document.getElementById("address")?.value.trim() || "주소 미입력",
-//     address_message:
-//       document.getElementById("address-message")?.value.trim() || "",
-//     total_price: calculatedTotal, // 서버가 요구한 정답 '30000'을 넣습니다.
-//     payment_method:
-//       document.querySelector('input[name="payment"]:checked')?.value || "card",
-//     order_type: isDirect ? "direct_order" : "cart_order",
-
-//     cart_items: orderItems.map((item) => ({
-//       product_id: Number(item.product_id),
-//       quantity: Number(item.quantity),
-//     })),
-//   };
-
-//   if (isDirect) {
-//     finalOrderData.product_id = Number(firstItem.product_id);
-//     finalOrderData.quantity = Number(firstItem.quantity);
-//   }
-
-//   console.log("서버로 보내는 최종 데이터:", finalOrderData);
-//   return finalOrderData;
-// }
 async function buildOrderData() {
   const orderItems = getOrderData();
   const firstItem = orderItems[0];
+
+  // 🔹 검증식: 바로구매인지 장바구니 구매인지 확인
   const isDirect = firstItem.order_type === "direct_order";
-  console.log(orderItems);
 
-  // 1. 서버가 원하는 금액(30000원)을 정확히 맞추기 위해 직접 계산합니다.
-  // 만약 배송비가 있다면 여기에 더해줘야 합니다. 예: 30000
-
-  // buildOrderData 함수 내부에서 금액 계산 부분
   let priceSum = 0;
   let deliverySum = 0;
 
@@ -298,6 +268,7 @@ async function buildOrderData() {
     deliverySum += shippingFee;
   }
 
+  // 🔹 검증식(개념): 서버가 요구하는 최종 결제 금액 확인
   const calculatedTotal = priceSum + deliverySum;
   console.log(calculatedTotal);
 
@@ -308,11 +279,10 @@ async function buildOrderData() {
     address: document.getElementById("address")?.value.trim() || "주소 미입력",
     address_message:
       document.getElementById("address-message")?.value.trim() || "",
-    total_price: calculatedTotal, // 서버가 요구한 정답 '30000'을 넣습니다.
+    total_price: calculatedTotal,
     payment_method:
       document.querySelector('input[name="payment"]:checked')?.value || "card",
     order_type: isDirect ? "direct_order" : "cart_order",
-
     cart_items: orderItems.map((item) => ({
       product_id: Number(item.product_id),
       quantity: Number(item.quantity),
