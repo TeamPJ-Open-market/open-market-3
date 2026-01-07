@@ -1,7 +1,14 @@
+/* ==================================================
+   📦 공통 유틸 함수
+   - 화면 / 저장소에서 값 가져오기
+================================================== */
+
+// sessionStorage에 저장된 주문 데이터 가져오기
 function getOrderData() {
   return JSON.parse(sessionStorage.getItem("orderData")) || [];
 }
 
+// 휴대폰 번호 3칸을 하나로 합치기
 function getReceiverPhone() {
   const p1 = document.getElementById("order-phone1").value;
   const p2 = document.getElementById("order-phone2").value;
@@ -9,32 +16,47 @@ function getReceiverPhone() {
   return `${p1}${p2}${p3}`;
 }
 
+// 배송 주소
 function getAddress() {
   return document.getElementById("address").value.trim();
 }
 
+// 배송 메세지
 function getAddressMessage() {
   return document.getElementById("address-message").value.trim();
 }
+
+// 화면에 표시된 최종 결제 금액을 숫자로 가져오기
 function calculateTotal() {
   const totalText = document
     .querySelector(".final-payment .total-price strong")
     .textContent.replace(/[^\d]/g, "");
+
   return Number(totalText);
 }
+/* ==================================================
+   🛒 상품 API
+================================================== */
 
-// 🔹 상품 단건 조회 (바로구매 대응)
+// 상품 단건 조회 (바로구매용)
 async function fetchProductById(productId) {
-  const res = await fetch(`${API_URL}/products/${productId}`);
+  const res = await Utils.fetchWithAuth(`/products/${productId}`);
+
   if (!res.ok) throw new Error("상품 조회 실패");
+
   return res.json();
 }
+/* ==================================================
+   🖥 장바구니 렌더링
+   - 상품 목록 출력
+   - 가격 계산
+================================================== */
 
 async function renderCart(cart) {
+  /* === 화면 요소 가져오기 === */
   const orderList = document.getElementById("order-list");
   const totalPriceEl = document.getElementById("total-price");
 
-  // 🔹 최종결제 정보 영역 (HTML 구조 기준)
   const productAmountEl = document.querySelector(
     ".price-list li:nth-child(1) strong"
   );
@@ -48,19 +70,22 @@ async function renderCart(cart) {
     ".final-payment .total-price strong"
   );
 
+  // 기존 목록 초기화
   orderList.innerHTML = "";
   let productTotal = 0;
 
+  /* === 장바구니 비어있을 때 === */
   if (cart.length === 0) {
     orderList.innerHTML = "<p>장바구니가 비어 있습니다.</p>";
     totalPriceEl.textContent = "0원";
     return;
   }
 
+  /* === 상품 하나씩 출력 === */
   for (const item of cart) {
     let product = item.product;
 
-    // 🔴 바로구매인 경우 (product 없음)
+    // 바로구매인 경우: 서버에서 상품 조회
     if (!product && item.product_id) {
       product = await fetchProductById(item.product_id);
     }
@@ -68,8 +93,10 @@ async function renderCart(cart) {
     const price = Number(product?.price) || 0;
     const quantity = Number(item.quantity) || 0;
     const itemTotal = price * quantity;
+
     productTotal += itemTotal;
 
+    // 상품 한 줄 생성
     const row = document.createElement("div");
     row.className = "order-item";
 
@@ -93,12 +120,11 @@ async function renderCart(cart) {
     orderList.appendChild(row);
   }
 
-  /* 왼쪽 총 주문금액 */
   totalPriceEl.textContent = productTotal.toLocaleString() + "원";
 
-  /* ===== 최종결제 정보 계산 ===== */
-  const discount = 0; // 추후 쿠폰 가능
-  const delivery = 0; // 무료배송
+  /* === 금액 계산 & 표시 === */
+  const discount = 0;
+  const delivery = 0;
   const finalTotal = productTotal - discount + delivery;
 
   productAmountEl.textContent = productTotal.toLocaleString() + "원";
@@ -106,40 +132,46 @@ async function renderCart(cart) {
   deliveryAmountEl.textContent = delivery.toLocaleString() + "원";
   finalAmountEl.textContent = finalTotal.toLocaleString() + "원";
 }
+/* ==================================================
+   💳 결제 동의 & 버튼 제어
+================================================== */
 
-/* ===== 결제 동의 / 버튼 ===== */
 const agreeCheckbox = document.querySelector(".agree input");
 const payBtn = document.querySelector(".pay-btn");
 
 payBtn.disabled = true;
 
+// 동의 체크 시 버튼 활성화
 agreeCheckbox.addEventListener("change", () => {
   payBtn.disabled = !agreeCheckbox.checked;
   payBtn.classList.toggle("active", agreeCheckbox.checked);
 });
-
 payBtn.addEventListener("click", async () => {
+  // 1️⃣ 결제 동의 확인
   if (!agreeCheckbox.checked) {
     alert("결제 동의가 필요합니다.");
     return;
   }
 
+  // 2️⃣ 폼 검증
   if (!validateOrderForm()) return;
 
+  // 3️⃣ 주문 데이터 생성
   const requestBody = await buildOrderData();
 
   try {
+    // 4️⃣ 서버로 주문 요청
     const res = await requestOrder(requestBody);
 
     if (res.ok) {
       alert("🎉 구매가 완료되었습니다!");
-
       sessionStorage.removeItem("orderData");
+
       if (requestBody.order_type === "cart_order") {
         sessionStorage.removeItem("cartData");
       }
 
-      window.location.href = "index.html";
+      window.location.href = PAGES.HOME;
     } else if (res.status === 400) {
       alert("입력한 정보를 다시 확인해주세요.");
     } else if (res.status === 401) {
@@ -152,35 +184,33 @@ payBtn.addEventListener("click", async () => {
     alert("서버 연결에 실패했습니다.");
   }
 });
+/* ==================================================
+   🚀 페이지 초기화
+================================================== */
 
-/* 우편번호 버튼 */
-document.querySelector(".btn-post").addEventListener("click", () => {
-  alert("우편번호 조회");
-});
-
-/* 페이지 로드 */
 document.addEventListener("DOMContentLoaded", async () => {
   const cartData = getOrderData();
   await renderCart(cartData);
   fillOrdererInfoFromLocal();
 });
+/* ==================================================
+   👤 주문자 정보 자동 입력
+================================================== */
+
 function fillOrdererInfoFromLocal() {
   const userData = localStorage.getItem("user");
   if (!userData) return;
 
   const user = JSON.parse(userData);
 
-  /* 이름 */
   const nameInput = document.getElementById("orderer-name");
   nameInput.value = user.name || "";
   nameInput.readOnly = true;
 
-  /* 이메일 */
   const emailInput = document.getElementById("orderer-email");
   emailInput.value = user.username || "";
   emailInput.readOnly = true;
 
-  /* 휴대폰 */
   if (user.phone_number) {
     const phone = user.phone_number.replace(/-/g, "");
 
@@ -197,93 +227,68 @@ function fillOrdererInfoFromLocal() {
     p3.readOnly = true;
   }
 }
+/* ==================================================
+   ✅ 주문 폼 검증
+================================================== */
+
 function validateOrderForm() {
-  const name = document.getElementById("orderer-name").value.trim();
-  const email = document.getElementById("orderer-email").value.trim();
+  const name = document.getElementById("orderer-name")?.value.trim();
+  const email = document.getElementById("orderer-email")?.value.trim();
 
-  const p1 = document.getElementById("order-phone1").value.trim();
-  const p2 = document.getElementById("order-phone2").value.trim();
-  const p3 = document.getElementById("order-phone3").value.trim();
-
-  const paymentChecked = document.querySelector(
-    'input[name="payment"]:checked'
-  )?.value;
+  if (!agreeCheckbox.checked) {
+    alert("결제 동의가 필요합니다.");
+    return false;
+  }
 
   if (!name || !email) {
     alert("주문자 정보를 확인해주세요.");
     return false;
   }
 
-  if (p1.length !== 3 || p2.length !== 4 || p3.length !== 4) {
+  if (!/^010\d{8}$/.test(getReceiverPhone())) {
     alert("휴대폰 번호를 정확히 입력해주세요.");
     return false;
   }
+
+  if (!getAddress()) {
+    alert("배송 주소를 입력해주세요.");
+    return false;
+  }
+
+  const paymentChecked = document.querySelector(
+    'input[name="payment"]:checked'
+  );
 
   if (!paymentChecked) {
     alert("결제수단을 선택해주세요.");
     return false;
   }
 
-  return true; // ✅ 통과
+  return true;
 }
+/* ==================================================
+   📤 주문 요청
+================================================== */
+
 async function requestOrder(orderData) {
   console.log("보내는 주문 데이터:", orderData);
-  const res = await fetch(`${API_URL}/order/`, {
+  const res = await Utils.fetchWithAuth(`/order/`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-    },
     body: JSON.stringify(orderData),
   });
 
   return res;
 }
-// function buildOrderData() {
-//   const orderItems = getOrderData();
-//   const firstItem = orderItems[0];
-//   const isDirect = firstItem.order_type === "direct_order";
 
-//   // 1. 서버가 원하는 금액(30000원)을 정확히 맞추기 위해 직접 계산합니다.
-//   // 만약 배송비가 있다면 여기에 더해줘야 합니다. 예: 30000
-//   const calculatedTotal = 30000;
+/* ==================================================
+   🧾 서버로 보낼 주문 데이터 생성
+================================================== */
 
-//   const finalOrderData = {
-//     receiver:
-//       document.getElementById("receiver-name")?.value.trim() || "이름 없음",
-//     receiver_phone_number: getReceiverPhone(),
-//     address: document.getElementById("address")?.value.trim() || "주소 미입력",
-//     address_message:
-//       document.getElementById("address-message")?.value.trim() || "",
-//     total_price: calculatedTotal, // 서버가 요구한 정답 '30000'을 넣습니다.
-//     payment_method:
-//       document.querySelector('input[name="payment"]:checked')?.value || "card",
-//     order_type: isDirect ? "direct_order" : "cart_order",
-
-//     cart_items: orderItems.map((item) => ({
-//       product_id: Number(item.product_id),
-//       quantity: Number(item.quantity),
-//     })),
-//   };
-
-//   if (isDirect) {
-//     finalOrderData.product_id = Number(firstItem.product_id);
-//     finalOrderData.quantity = Number(firstItem.quantity);
-//   }
-
-//   console.log("서버로 보내는 최종 데이터:", finalOrderData);
-//   return finalOrderData;
-// }
 async function buildOrderData() {
   const orderItems = getOrderData();
   const firstItem = orderItems[0];
   const isDirect = firstItem.order_type === "direct_order";
-  console.log(orderItems);
 
-  // 1. 서버가 원하는 금액(30000원)을 정확히 맞추기 위해 직접 계산합니다.
-  // 만약 배송비가 있다면 여기에 더해줘야 합니다. 예: 30000
-
-  // buildOrderData 함수 내부에서 금액 계산 부분
   let priceSum = 0;
   let deliverySum = 0;
 
@@ -293,14 +298,11 @@ async function buildOrderData() {
     const price = Number(product.price) || 0;
     const shippingFee = Number(product.shipping_fee) || 0;
     const quantity = Number(item.quantity) || 0;
-
     priceSum += price * quantity;
     deliverySum += shippingFee;
   }
-
   const calculatedTotal = priceSum + deliverySum;
   console.log(calculatedTotal);
-
   const finalOrderData = {
     receiver:
       document.getElementById("receiver-name")?.value.trim() || "이름 없음",
@@ -308,17 +310,15 @@ async function buildOrderData() {
     address: document.getElementById("address")?.value.trim() || "주소 미입력",
     address_message:
       document.getElementById("address-message")?.value.trim() || "",
-    total_price: calculatedTotal, // 서버가 요구한 정답 '30000'을 넣습니다.
+    total_price: calculatedTotal,
     payment_method:
       document.querySelector('input[name="payment"]:checked')?.value || "card",
     order_type: isDirect ? "direct_order" : "cart_order",
-
     cart_items: orderItems.map((item) => ({
       product_id: Number(item.product_id),
       quantity: Number(item.quantity),
     })),
   };
-
   if (isDirect) {
     finalOrderData.product_id = Number(firstItem.product_id);
     finalOrderData.quantity = Number(firstItem.quantity);
