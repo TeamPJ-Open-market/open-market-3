@@ -1,7 +1,7 @@
 //로그인 유무확인
 window.onload = function () {
   if (Utils.isLoggedIn()) {
-    location.replace("/index.html");
+    location.replace(PAGES.HOME);
   }
 };
 
@@ -72,9 +72,8 @@ async function checkUsername() {
   }
 
   try {
-    const response = await fetch(`${API_URL}/accounts/validate-username`, {
+    const response = await Utils.fetchWithAuth(`/accounts/validate-username`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username }),
     });
 
@@ -255,9 +254,8 @@ async function handleBuyerSignup(e) {
   };
 
   try {
-    const response = await fetch(`${API_URL}/accounts/buyer/signup`, {
+    const response = await Utils.fetchWithAuth(`/accounts/buyer/signup`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
 
