@@ -9,11 +9,6 @@
   border-bottom: 0.0625rem solid var(--main-bg-color);
 }
 
-.container {
-  width: min(1200px);
-  margin: 0 auto;
-}
-
 .header-inner {
   display: flex;
   align-items: center;

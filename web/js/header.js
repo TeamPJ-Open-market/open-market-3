@@ -1,12 +1,9 @@
-// header.js
-
 // ===== 공통: 검색 API 호출 공통화 =====
 async function fetchProductsByKeyword(keyword) {
   const res = await Utils.fetchWithAuth(
     `/products/?search=${encodeURIComponent(keyword)}`
   );
 
-  // fetchWithAuth가 ok 아닌 경우 throw를 안 해줄 수도 있어서 여기서 안전 처리
   if (!res.ok) {
     throw new Error(`products search fetch failed: ${res.status}`);
   }
