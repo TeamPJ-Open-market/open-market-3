@@ -1,6 +1,8 @@
-/* ==========================================================================
+/* =============================================================================
    1. 공통 레이아웃 및 페이지 타이틀
-   ========================================================================== */
+   ============================================================================= */
+
+/* 페이지 최상단 타이틀 */
 .page-title {
   font-size: 36px;
   font-weight: 700;
@@ -9,17 +11,21 @@
   line-height: 44px;
 }
 
-/* 메인 컨테이너: 중앙 정렬 및 최대 너비 고정 */
+/* 메인 컨테이너
+   - 최대 너비 고정
+   - 중앙 정렬 */
 .form-section {
   width: 1280px;
   margin: 0 auto;
   padding-bottom: 60px;
 }
 
-/* ==========================================================================
+/* =============================================================================
    2. 상품 주문 목록 (Table-like Structure)
-   ========================================================================== */
-/* 헤더(회색 바)와 각 상품 행의 공통 레이아웃 */
+   ============================================================================= */
+
+/* 주문 목록 헤더 & 상품 행 공통 스타일
+   - flex 기반 테이블 구조 */
 .order-header,
 .order-item {
   display: flex;
@@ -30,24 +36,32 @@
   text-align: center;
 }
 
-/* 칸별 너비 비율 설정 (Flex-grow 사용) */
+/* ---------- 컬럼별 너비 비율 ---------- */
+
+/* 상품 정보 영역 */
 .col-info {
   flex: 5;
   text-align: left;
   padding-left: 20px;
-} /* 상품 정보 */
+}
+
+/* 할인 금액 */
 .col-discount {
   flex: 1.5;
-} /* 할인 */
+}
+
+/* 배송비 */
 .col-delivery {
   flex: 1.5;
-} /* 배송비 */
+}
+
+/* 주문 금액 */
 .col-price {
   flex: 2;
   font-weight: bold;
-} /* 주문금액 */
+}
 
-/* 상품 목록 헤더 디자인 */
+/* ---------- 주문 목록 헤더 ---------- */
 .order-header {
   background-color: var(--disabled-tab-color);
   border-radius: 8px;
@@ -55,19 +69,22 @@
   margin-bottom: 8px;
 }
 
-/* 상품 개별 행 디자인 */
+/* ---------- 상품 개별 행 ---------- */
 .order-item {
   padding: 24px 0;
   border-bottom: 1px solid var(--main-border-color);
   align-items: center;
 }
 
-/* 상품 내부 박스 (이미지 + 텍스트) */
+/* ---------- 상품 정보 내부 ---------- */
+
+/* 상품 이미지 + 텍스트 래퍼 */
 .product-box {
   display: flex;
   align-items: center;
 }
 
+/* 상품 이미지 */
 .product-img {
   width: 80px;
   height: 80px;
@@ -76,34 +93,38 @@
   margin-right: 15px;
 }
 
+/* 상품명 */
 .product-text .name {
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 4px;
 }
 
+/* 수량 */
 .product-text .qty {
   font-size: 13px;
   color: var(--sub-text-color);
 }
 
-/* 리스트 하단 총 주문 금액 요약 */
+/* ---------- 주문 총액 ---------- */
 .order-total {
   text-align: right;
   padding: 30px 0;
   font-size: 16px;
 }
 
+/* 총 결제 금액 강조 */
 .order-total strong {
   color: var(--negative-text-color);
   font-size: 24px;
   margin-left: 10px;
 }
 
-/* ==========================================================================
+/* =============================================================================
    3. 배송 정보 입력 폼 (Form Styles)
-   ========================================================================== */
-/* 큰 제목: 배송정보 */
+   ============================================================================= */
+
+/* 섹션 메인 타이틀 (배송정보) */
 .form-section h3 {
   font-size: 24px;
   font-weight: 700;
@@ -112,17 +133,17 @@
   border-bottom: 2px solid var(--main-border-color);
 }
 
-/* 소제목: 주문자 정보 / 배송지 정보 */
+/* 서브 타이틀 (주문자 정보 / 배송지 정보) */
 .form-group-title {
   font-size: 18px;
   font-weight: 500;
   color: var(--join-text-color);
   padding: 12px 0;
   border-bottom: 2px solid var(--main-border-color);
-  margin-top: 40px; /* 위 섹션과의 간격 */
+  margin-top: 40px;
 }
 
-/* 입력창 한 줄 레이아웃 */
+/* 입력 행 기본 레이아웃 */
 .form-row {
   display: flex;
   align-items: center;
@@ -130,6 +151,7 @@
   border-bottom: 1px solid var(--light-border-color);
 }
 
+/* 라벨 영역 */
 .form-row label {
   width: 170px;
   font-size: 16px;
@@ -137,7 +159,7 @@
   flex-shrink: 0;
 }
 
-/* 인풋 기본 스타일 공통화 */
+/* ---------- 인풋 공통 스타일 ---------- */
 input[type="text"],
 input[type="email"],
 input[type="tel"] {
@@ -148,18 +170,20 @@ input[type="tel"] {
   outline: none;
 }
 
-/* 인풋 사이즈 종류 */
+/* ---------- 인풋 크기 ---------- */
 .input-medium {
   width: 334px;
 }
+
 .input-full {
   width: 532px;
 }
+
 .input-post {
   width: 150px;
 }
 
-/* 우편번호 조회 버튼 */
+/* ---------- 우편번호 버튼 ---------- */
 .btn-post {
   height: 40px;
   padding: 0 20px;
@@ -172,33 +196,37 @@ input[type="tel"] {
   white-space: nowrap;
 }
 
-/* 휴대폰 번호 3칸 입력 */
+/* ---------- 휴대폰 번호 ---------- */
 .phone-inputs {
   display: flex;
   align-items: center;
   gap: 10px;
 }
+
 .phone-inputs input {
-  width: 101px;
+  width: 77px;
   text-align: center;
 }
 
-/* 주소 입력 (우편번호 / 기본주소 / 상세주소 쌓기) */
+/* ---------- 주소 입력 ---------- */
 .address-inputs {
   display: flex;
   flex-direction: column;
   gap: 8px;
   flex: 1;
 }
+
 .post-row {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-/* ==========================================================================
-   4. 하단 그리드 (결제수단 + 최종결제 정보)
-   ========================================================================== */
+/* =============================================================================
+   4. 하단 영역 (결제수단 + 최종 결제 정보)
+   ============================================================================= */
+
+/* 하단 2단 그리드 */
 .bottom-grid {
   display: grid;
   grid-template-columns: 1fr 360px;
@@ -207,21 +235,24 @@ input[type="tel"] {
   align-items: start;
 }
 
-/* 결제 수단 선택 영역 */
+/* ---------- 결제 수단 ---------- */
 .payment-method {
   background: var(--white-text-color);
 }
+
 .payment {
   display: flex;
   padding: 12px 0;
   border-bottom: 1px solid var(--light-border-color);
 }
+
 .payment-options {
   display: flex;
   gap: 20px;
   justify-content: center;
   width: 100%;
 }
+
 .payment-options label {
   display: flex;
   align-items: center;
@@ -229,17 +260,19 @@ input[type="tel"] {
   cursor: pointer;
 }
 
-/* 최종 결제 정보 우측 사이드바 */
+/* ---------- 최종 결제 요약 ---------- */
 .final-payment {
   border: 2px solid var(--positive-text-color);
   border-radius: 4px;
   padding: 20px;
 }
 
+/* 가격 리스트 */
 .price-list {
   list-style: none;
   padding: 0;
 }
+
 .price-list li {
   display: flex;
   justify-content: space-between;
@@ -247,6 +280,7 @@ input[type="tel"] {
   font-size: 14px;
 }
 
+/* 최종 결제 금액 */
 .total-price {
   display: flex;
   justify-content: space-between;
@@ -256,7 +290,7 @@ input[type="tel"] {
   color: var(--negative-text-color);
 }
 
-/* 결제하기 버튼 */
+/* 결제 버튼 */
 .pay-btn {
   width: 100%;
   padding: 14px;
@@ -267,15 +301,18 @@ input[type="tel"] {
   font-size: 16px;
   transition: 0.3s;
 }
+
+/* 결제 가능 상태 */
 .pay-btn.active {
   background-color: var(--main-btn-color);
   cursor: pointer;
 }
 
-/* ==========================================================================
+/* =============================================================================
    5. 반응형 디자인 (Responsive)
-   ========================================================================== */
-/* 태블릿 환경 (1024px 이하) */
+   ============================================================================= */
+
+/* ---------- 태블릿 (1024px 이하) ---------- */
 @media (max-width: 1024px) {
   .form-section,
   .order-header,
@@ -283,53 +320,66 @@ input[type="tel"] {
     width: 100%;
     padding: 0 20px;
   }
+
   .bottom-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* 모바일 환경 (768px 이하) */
+/* ---------- 모바일 (768px 이하) ---------- */
 @media (max-width: 768px) {
   .page-title {
     font-size: 24px;
   }
+
+  /* 주문 헤더 숨김 */
   .order-header {
     display: none;
-  } /* 헤더 숨김 */
+  }
 
+  /* 상품 카드 형태로 변경 */
   .order-item {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  /* 불필요한 컬럼 숨김 */
   .col-discount,
   .col-delivery {
     display: none;
   }
+
   .col-price {
     width: 100%;
     text-align: right;
   }
 
+  /* 폼 세로 정렬 */
   .form-row {
     flex-direction: column;
     align-items: flex-start;
   }
+
   .form-row label {
     width: 100%;
   }
+
   .input-medium,
   .input-full {
     width: 100%;
   }
 
+  /* 휴대폰 입력 */
   .phone-inputs {
     width: 100%;
     justify-content: space-between;
   }
+
   .phone-inputs input {
     width: 30%;
   }
 
+  /* 결제 수단 세로 정렬 */
   .payment-options {
     flex-direction: column;
   }
