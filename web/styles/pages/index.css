@@ -1,35 +1,41 @@
-/* ================================================= */
-/* =================== main page =================== */
-/* ================================================= */
+/* =================== Base =================== */
+:root { font-size: 16px; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+img, video, svg { max-width: 100%; height: auto; display: block; }
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: var(--main-bg-color);
   color: var(--main-text-colo);
-  min-width: 22.5rem;
+  min-width: 22.5rem; /* 360px: 정말 필요할 때만. 가로 스크롤 원인일 수 있음 */
 }
 
-/* ================================================= */
-/* ================== Main Banner ================== */
-/* ================================================= */
+/* ================= Container ================= */
+.container {
+  width: min(75rem, 100%);     /* 1200px */
+  margin-inline: auto;
+  padding-inline: 1.4rem;
+}
+
+/* ================= Main Banner ================= */
 .main-banner {
   background: var(--disabled-tab-color);
   width: 100%;
 }
 
+/* 배너는 화면폭을 쓰되, 내부 콘텐츠는 컨테이너에 넣는 것을 권장 */
 .banner-inner {
   width: 100%;
-  max-width: 120rem;
-
-  /* ✅ 사라락: 화면에 따라 부드럽게 높이 변화 */
-  height: clamp(14rem, 42vw, 31.25rem);
-
+  max-width: 120rem;                /* 1920px */
+  height: clamp(14rem, 42vw, 31.25rem); /* 224~500px */
   margin: 0 auto;
   position: relative;
   overflow: hidden;
 }
 
-/* 트랙/슬라이드가 버튼을 덮지 않게 */
 .banner-track {
   position: relative;
   height: 100%;
@@ -43,11 +49,8 @@ body {
   pointer-events: none;
 }
 
-.banner-slide.is-active {
-  display: block;
-}
+.banner-slide.is-active { display: block; }
 
-/* ✅ 배너 이미지 반응형 (크기만 줄고, 기준은 위쪽) */
 .banner-slide img {
   width: 100%;
   height: 100%;
@@ -56,7 +59,7 @@ body {
   object-position: top center;
 }
 
-/* 좌우 버튼 */
+/* 버튼 */
 .banner-btn {
   position: absolute;
   top: 50%;
@@ -67,45 +70,38 @@ body {
   background: transparent;
   cursor: pointer;
 
-  font-size: 2.25rem;
+  font-size: 2.25rem;   /* 36px */
   font-weight: 200;
   opacity: 0.7;
   color: var(--main-text-color);
 
-  padding: 0 1rem;
+  padding: 0 1rem;      /* 16px */
   line-height: 1;
 
-  /* 모바일에서 클릭 잘 되게 */
   pointer-events: auto;
   user-select: none;
 }
 
-.banner-btn:hover {
-  opacity: 1;
-}
+.banner-btn:hover { opacity: 1; }
 
-.banner-btn.prev {
-  left: 1.5rem;
-}
-.banner-btn.next {
-  right: 1.5rem;
-}
+.banner-btn.prev { left: 1.5rem; }  /* 24px */
+.banner-btn.next { right: 1.5rem; } /* 24px */
 
 /* Indicator */
 .banner-indicator {
   position: absolute;
-  bottom: 1.25rem;
+  bottom: 1.25rem; /* 20px */
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
 
   display: flex;
-  gap: 0.625rem;
+  gap: 0.625rem;  /* 10px */
 }
 
 .banner-indicator .dot {
-  width: 0.625rem;
-  height: 0.625rem;
+  width: 0.625rem;   /* 10px */
+  height: 0.625rem;  /* 10px */
   border-radius: 50%;
   border: 0;
   background: var(--main-bg-color);
@@ -119,60 +115,49 @@ body {
   opacity: 1;
 }
 
-/* ================================================= */
-/* ================= Product List ================== */
-/* ================================================= */
+/* ================= Product List ================= */
 .products {
-  padding: 5rem 0 7.5rem;
+  padding: 5rem 0 7.5rem; /* 80px 0 120px */
   background: var(--main-bg-color);
 }
 
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 3rem 3.5rem;
+  gap: 3rem 3.5rem;  /* 48px 56px */
   list-style: none;
   padding: 0;
   margin: 0;
 
-  /* 카드 스케일 변수 */
   --card-scale: 1;
 }
 
-.card {
-  cursor: pointer;
-}
+.card { cursor: pointer; }
 
-/* 카드 내부 레이아웃 */
 .product-link {
   display: grid;
-  gap: 0.3125rem;
+  gap: 0.3125rem; /* 5px */
   text-decoration: none;
   color: inherit;
 
   transform: scale(var(--card-scale));
   transform-origin: left top;
-  transition: transform 0.25s ease; /* 사라락 */
+  transition: transform 0.25s ease;
 }
 
-/* 이미지 */
 .product-link > img {
-  margin-bottom: 0.375rem;
+  margin-bottom: 0.375rem; /* 6px */
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 0.75rem;
+  border-radius: 0.75rem; /* 12px */
   display: block;
   transition: transform 0.2s ease;
 }
 
-.card:hover img {
-  transform: translateY(-0.125rem);
-}
+.card:hover img { transform: translateY(-0.125rem); } /* -2px */
 
-/* ================================================= */
-/* ============== 텍스트 (거의 고정) ================= */
-/* ================================================= */
+/* Text */
 .product-meta {
   font-size: clamp(0.6875rem, 0.9vw, 0.75rem);
   color: var(--sub-text-color);
@@ -193,12 +178,8 @@ body {
   margin: 0;
 }
 
-/* ================================================= */
-/* =================== Responsive ================== */
-/* ================================================= */
-
-/* Tablet */
-@media (max-width: 64rem) {
+/* ================= Responsive ================= */
+@media (max-width: 64rem) { /* 1024px */
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem 1.75rem;
@@ -211,8 +192,7 @@ body {
   }
 }
 
-/* Mobile */
-@media (max-width: 40rem) {
+@media (max-width: 40rem) { /* 640px */
   .products {
     padding: 3rem 0 5rem;
   }
@@ -224,7 +204,11 @@ body {
   }
 
   .card img {
-    border-radius: 0.625rem;
+    border-radius: 0.625rem; /* 10px */
+  }
+
+  .banner-inner {
+    height: 20rem; /* 320px */
   }
 
   .banner-btn {
@@ -233,6 +217,6 @@ body {
   }
 
   .banner-indicator {
-    bottom: 0.875rem;
+    bottom: 0.875rem; /* 14px */
   }
 }
