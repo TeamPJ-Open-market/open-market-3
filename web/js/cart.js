@@ -98,9 +98,17 @@ function renderCartList() {
       </div>
       <div class="col-qty">
         <div class="qty-stepper">
-          <button type="button" class="qty-minus" aria-label="수량 감소">−</button>
+          <button type="button" class="qty-minus" aria-label="수량 감소">
+           <svg width="34" height="34" style="display: block;">
+            <use href="assets/icons/sprite.svg#icon-order-minus"></use>
+           </svg>
+          </button>
           <span class="qty-val">${item.quantity}</span>
-          <button type="button" class="qty-plus" aria-label="수량 증가">+</button>
+          <button type="button" class="qty-plus" aria-label="수량 증가">
+           <svg width="34" height="34" style="display: block;">
+            <use href="assets/icons/sprite.svg#icon-order-plus"></use>
+           </svg>
+          </button>
         </div>
       </div>
       <div class="col-price">
