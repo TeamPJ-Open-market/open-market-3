@@ -1,5 +1,3 @@
-console.log("🔥 detail.js 실행됨");
-
 // ========================================
 // 1. 상수 / 환경 설정
 
@@ -118,14 +116,9 @@ tabButtons.forEach((button, index) => {
 // 상품 정보, 상세 조회 + 화면 렌더링
 
 async function loadProduct() {
-  console.log("🟡 loadProduct 실행");
-
   try {
     const response = await Utils.fetchWithAuth(`/products/${productId}`);
     const data = await response.json();
-
-    console.log("🟢 상품 데이터:", data);
-
     currentProduct = data;
 
     // 화면 렌더링
@@ -139,7 +132,6 @@ async function loadProduct() {
     // 최초 총 수량 / 총 금액 계산
     updateOrderSummary();
   } catch (error) {
-    console.error("🔴 loadProduct 에러:", error);
     Modal.open({
       message: "상품 정보를 불러오는 중 오류가 발생했습니다.",
       cancelText: "",
@@ -206,11 +198,7 @@ function updateOrderSummary() {
 // 버튼 클릭시 로그인 여부 판단 함수 (공통 검증 함수 활용: Utils)
 
 function validateBeforeAction() {
-  console.log("🟡 validateBeforeAction 실행");
-
   if (!Utils.isLoggedIn()) {
-    console.log("🔴 로그인 안 됨");
-
     Modal.open({
       message: "로그인이 필요합니다. 로그인 페이지로 이동할까요?",
       confirmText: "로그인",
@@ -270,8 +258,6 @@ function saveCartDataToSession(product, quantity) {
 // 10. "바로 구매" 클릭 시 로직
 
 function handleDirectOrder() {
-  console.log("🟢 handleDirectOrder 실행");
-
   const orderData = [
     {
       order_type: "direct_order",
@@ -289,25 +275,23 @@ function handleDirectOrder() {
 // 11. "장바구니" 클릭 시 로직
 
 async function handleAddToCart() {
-  console.log("🟢 handleAddToCart 실행");
-
   // 장바구니는 DB 기준이니까
   // 상세 페이지에서 중복 체크 후 PUT/POST 분기가 필요
 
   try {
-    // 1️⃣ DB 장바구니 조회
+    // ① DB 장바구니 조회
     const res = await Utils.fetchWithAuth(`/cart`, {});
 
     const data = await res.json();
     const cartItems = data.results;
 
-    // 2️⃣ 같은 상품 있는지 확인
+    // ② 같은 상품 있는지 확인
     const existItem = cartItems.find(
       (item) => item.product.id === currentProduct.id
     );
 
     // DB 기준 저장
-    // 3️⃣ 있으면 → PUT (수량 증가)
+    // ③ 있으면 → PUT (수량 증가)
     if (existItem) {
       await Utils.fetchWithAuth(`/cart/${existItem.id}/`, {
         method: "PUT",
@@ -316,7 +300,7 @@ async function handleAddToCart() {
         }),
       });
     }
-    // 4️⃣ 없으면 → POST
+    // ④ 없으면 → POST
     else {
       await Utils.fetchWithAuth(`/cart/`, {
         method: "POST",
@@ -327,10 +311,10 @@ async function handleAddToCart() {
       });
     }
 
-    // 5️⃣ sessionStorage 저장 (UI용)
+    // ⑤ sessionStorage 저장 (UI용)
     saveCartDataToSession(currentProduct, getQuantity());
 
-    // 6️⃣ 모달 표시
+    //  모달 표시
     Modal.open({
       message: "장바구니에 담았습니다.",
       confirmText: "장바구니 이동",
@@ -353,16 +337,12 @@ async function handleAddToCart() {
 
 // 바로 구매 버튼
 purchaseButton.addEventListener("click", () => {
-  console.log("👉 바로 구매 버튼 클릭됨");
-
   if (!validateBeforeAction()) return;
   handleDirectOrder();
 });
 
 // 장바구니 버튼
 addCartButton.addEventListener("click", () => {
-  console.log("👉 장바구니 버튼 클릭됨");
-
   if (!validateBeforeAction()) return;
   handleAddToCart();
 });
