@@ -4,15 +4,14 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f7f7f7;
-  color: #222;
+  background: var(--main-bg-color);
+  color: var(--main-text-colo);
   min-width: 360px;
 }
 
 /* ================================================= */
 /* ================== Main Banner ================== */
 /* ================================================= */
-/* ================== Main Banner ================== */
 .main-banner {
   background: var(--disabled-tab-color);
   width: 100%;
@@ -27,7 +26,6 @@ body {
   overflow: hidden;
 }
 
-/* 트랙/슬라이드가 버튼을 덮지 않게 */
 .banner-track {
   position: relative;
   height: 100%;
@@ -38,7 +36,6 @@ body {
   position: absolute;
   inset: 0;
   display: none;
-  /* 슬라이드가 버튼 클릭을 막지 않게 */
   pointer-events: none;
 }
 
@@ -46,40 +43,29 @@ body {
   display: block;
 }
 
-/* 좌우 버튼 (클릭 가능 + 손가락 커서) */
+/* 좌우 버튼 */
 .banner-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-
   border: 0;
   background: transparent;
   cursor: pointer;
-
   font-size: 36px;
   font-weight: 200;
   opacity: 0.7;
   color: var(--main-text-color);
-
   padding: 0 16px;
   line-height: 1;
-
-  /* 모바일에서 클릭 잘 되게 */
-  pointer-events: auto;
-  user-select: none;
 }
 
 .banner-btn:hover {
   opacity: 1;
 }
 
-.banner-btn.prev {
-  left: 24px;
-}
-.banner-btn.next {
-  right: 24px;
-}
+.banner-btn.prev { left: 24px; }
+.banner-btn.next { right: 24px; }
 
 /* Indicator */
 .banner-indicator {
@@ -88,7 +74,6 @@ body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-
   display: flex;
   gap: 10px;
 }
@@ -98,14 +83,13 @@ body {
   height: 10px;
   border-radius: 50%;
   border: 0;
-  background: #fff;
+  background: var(--main-bg-color);
   opacity: 0.5;
   cursor: pointer;
-  padding: 0;
 }
 
 .banner-indicator .dot.is-active {
-  background: #000;
+  background: var(--main-text-color);
   opacity: 1;
 }
 
@@ -126,76 +110,84 @@ body {
   margin: 0;
 }
 
-/* 카드 */
 .card {
-  display: grid;
-  gap: 10px;
+  cursor: pointer;
 }
 
-/* 이미지 박스 */
-.card img {
+/* ================================================= */
+/* ============ 🔥 사라락 핵심 레이어 =============== */
+/* ================================================= */
+
+/* 카드 전체 스케일 변수 */
+.product-grid {
+  --card-scale: 1;
+}
+
+/* 카드 내부 레이아웃 */
+.product-link {
+  display: grid;
+  gap: 5px;
+  text-decoration: none;
+  color: inherit;
+
+  transform: scale(var(--card-scale));
+  transform-origin: left top;
+  transition: transform 0.25s ease; /* 사라락 */
+}
+
+/* 이미지 */
+.product-link > img {
+  margin-bottom: 6px;
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 12px;
   display: block;
+  transition: transform 0.2s ease;
 }
 
-/* 상품 상단 설명(연한 텍스트) */
+.card:hover img {
+  transform: translateY(-2px);
+}
+
+/* ================================================= */
+/* ============== 텍스트 (거의 고정) ================= */
+/* ================================================= */
+
 .product-meta {
-  font-size: 12px;
+  font-size: clamp(11px, 0.9vw, 12px);
   color: var(--sub-text-color);
-  margin: 6px 0 2px;
+  margin: 0;
 }
 
-/* 상품명 (살짝만 강조) */
 .product-name {
-  font-size: 14px;
+  font-size: clamp(15px, 1.2vw, 18px);
   font-weight: 400;
   line-height: 1.4;
   margin: 0;
 }
 
 .product-price {
-  font-size: 14px;
+  font-size: clamp(17px, 1.4vw, 24px);
   font-weight: 700;
   color: var(--main-text-color);
   margin: 0;
-}
-
-.product-link {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-}
-
-.card {
-  cursor: pointer;
-}
-
-
-.card:hover img {
-  transform: translateY(-2px);
-}
-
-.card img {
-  transition: transform 0.2s ease;
 }
 
 /* ================================================= */
 /* =================== Responsive ================== */
 /* ================================================= */
 
-/* Tablet */
+/* Tablet: 살짝 압축 */
 @media (max-width: 1024px) {
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 32px 28px;
+    --card-scale: 0.97;
   }
 }
 
-/* Mobile */
+/* Mobile: 더 사라락 */
 @media (max-width: 640px) {
   .products {
     padding: 48px 0 80px;
@@ -203,11 +195,8 @@ body {
 
   .product-grid {
     grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
-  .card {
-    max-width: 100%;
+    gap: 70px;
+    --card-scale: 0.94;
   }
 
   .card img {
@@ -215,30 +204,7 @@ body {
   }
 }
 
-/* Mobile Header (깨짐 방지) */
-@media (max-width: 640px) {
-  .header-inner {
-    grid-template-columns: 1fr auto;
-    row-gap: 12px;
-    padding: 14px 0;
-  }
-
-  .brand {
-    grid-column: 1;
-  }
-
-  .search {
-    grid-column: 1 / -1;
-    max-width: 100%;
-  }
-
-  .header-actions {
-    grid-column: 2;
-    justify-self: end;
-    gap: 16px;
-  }
-}
-
+/* 배너 */
 @media (max-width: 640px) {
   .banner-inner {
     height: 320px;

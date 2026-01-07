@@ -1,15 +1,43 @@
 /* ================================================= */
+/* ============ Sticky Footer (전체 레이아웃) ======= */
+/* ================================================= */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+  min-height: 0;
+}
+
+:where(.main, .page, .content, .wrap, #app, #root) {
+  min-height: 0;
+}
+
+.site-footer {
+  margin-top: auto;
+}
+
+/* ================================================= */
 /* ===================== Footer ==================== */
 /* ================================================= */
 .site-footer {
   background: var(--disabled-tab-color);
   font-size: 13px;
-  color: #777;
+  color: var(--sub-text-color);
 }
 
 /* 상단 영역 */
 .footer-top {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--checkbox-disabled-color);
 }
 
 .footer-top-inner {
@@ -19,10 +47,10 @@
   padding: 18px 0;
 }
 
-/* ================= 텍스트 링크 ================= */
+/* 텍스트 링크 */
 .footer-links {
   display: flex;
-  flex-wrap: wrap; /* ✅ 줄바꿈 허용 */
+  flex-wrap: wrap;
   gap: 12px;
 }
 
@@ -38,17 +66,17 @@
 
 .footer-links .strong {
   font-weight: 600;
-  color: #222;
+  color: var(--join-text-color);
 }
 
 /* | 구분선 */
 .footer-links li:not(:last-child)::after {
   content: "|";
   margin: 0 12px;
-  color: #aaa;
+  color: var(--sub-text-color);
 }
 
-/* ================= SNS 아이콘 =================== */
+/* SNS 아이콘 */
 .footer-sns {
   display: grid;
   grid-auto-flow: column;
@@ -67,7 +95,7 @@
   display: block;
 }
 
-/* ================= 하단 회사 정보 ================= */
+/* 하단 회사 정보 */
 .footer-bottom {
   padding: 32px 0;
 }
@@ -79,7 +107,7 @@
 
 .footer-inner .company {
   font-weight: 600;
-  color: #666;
+  color: var(--sub-text-color);
 }
 
 /* ================================================= */
@@ -92,7 +120,6 @@
     align-items: flex-start;
   }
 
-  /* 모바일에서 SNS 아이콘은 오른쪽 정렬 유지 */
   .footer-sns {
     justify-self: end;
     margin-top: 6px;
