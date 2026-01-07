@@ -168,18 +168,21 @@
 /*                         미디어쿼리                         */
 /* ========================================================= */
 
-/* mobile 에만 해당 */
+/* mobile 만 해당 */
 @media (min-width: 480px) and (max-width: 767px) {
   .page-inner {
     margin: 5rem 0;
   }
 }
-
-/* tablet 이상 */
-@media (min-width: 768px) {
+/* mobile - tablet 만 해당 */
+@media (min-width: 480px) and (max-width: 1023px) {
   .page-inner {
     margin: 5rem 2rem;
   }
+}
+
+/* tablet 이상 */
+@media (min-width: 768px) {
   /* 상품 이미지 영역 */
   .product-thumbnail {
     width: 90%;
@@ -208,6 +211,9 @@
   /* MAIN */
   .product-detail-page {
     margin: auto;
+  }
+  .page-inner {
+    padding: 0;
   }
   /* 상품 상세 상단 영역*/
   .product-overview {
