@@ -9,9 +9,9 @@ window.onload = function () {
   }
 };
 
-/// 탭 전환 (구매회원/판매회원)
-const buyerTab = document.getElementById("buyer-tab");
-const sellerTab = document.getElementById("seller-tab");
+// 탭 전환 (구매회원/판매회원)
+const buyerTab = document.getElementById("buyer-tab"); // 구매자 탭
+const sellerTab = document.getElementById("seller-tab"); // 판매자 탭
 let userType = "BUYER";
 
 buyerTab.addEventListener("click", () => {
@@ -119,9 +119,9 @@ async function handleSignin(event) {
 
     // 사용자 타입에 따라 페이지 이동
     if (data.user.user_type === "BUYER") {
-      window.location.href = "index.html";
+      window.location.href = PAGES.HOME;
     } else if (data.user.user_type === "SELLER") {
-      window.location.href = "seller-center.html";
+      window.location.href = PAGES.HOME; // 판매자 페이지 미구현이므로 기본 홈페이지로 이동
     }
   } catch (error) {
     console.error("로그인 오류:", error);

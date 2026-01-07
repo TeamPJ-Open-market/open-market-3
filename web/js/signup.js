@@ -1,7 +1,7 @@
 //로그인 유무확인
 window.onload = function () {
   if (Utils.isLoggedIn()) {
-    location.replace("/index.html");
+    location.replace(PAGES.HOME);
   }
 };
 
