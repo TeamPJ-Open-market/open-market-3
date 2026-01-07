@@ -4,7 +4,7 @@
 
 /* 페이지 최상단 타이틀 */
 .page-title {
-  font-size: 36px;
+  font-size: 36 px;
   font-weight: 700;
   text-align: center;
   margin-bottom: 50px;
@@ -45,7 +45,7 @@
 /* 상품 정보 영역 */
 .col-info {
   flex: 5;
-  text-align: left;
+  text-align: center;
   padding: 20px;
 }
 
