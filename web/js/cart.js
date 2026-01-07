@@ -124,11 +124,21 @@ function renderCartList() {
       } 삭제">&times;</button>
     `;
     itemsEl.appendChild(li);
+    const qtyValEl = li.querySelector(".qty-val");
+    if (qtyValEl) {
+      qtyValEl.style.cursor = "pointer";
+      qtyValEl.onclick = (e) => {
+        e.stopPropagation(); // 이벤트 전파 방지
+        const id = li.dataset.id;
+        console.log("숫자 클릭됨! ID:", id); // 이게 찍히는지 확인
+        openQtyEditModal(id);
+      };
+    }
   });
 
-  // HTML이 생성된 '직후'에 버튼들에게 클릭 이벤트를 붙여줍니다.
+  // HTML이 생성된 '직후'에 버튼들에게 클릭 이벤트를 붙임
   bindEvents();
-  // 체크된 상품들의 금액을 합산하여 하단 요약 영역을 갱신합니다.
+  // 체크된 상품들의 금액을 합산하여 하단 요약 영역을 갱신
   updateTotalPrice();
 }
 
@@ -193,69 +203,11 @@ function bindEvents() {
       location.href = PAGES.ORDER;
     };
   });
-  itemsEl.querySelectorAll(".qty-val").forEach((el) => {
-    el.style.cursor = "pointer";
-    el.onclick = (e) => {
-      const li = e.target.closest("li");
-      const id = li.dataset.id;
-      console.log("수량 클릭됨, ID:", id); // 디버깅용 로그
-      openQtyEditModal(id);
-    };
-  });
 }
 
 /* ==========================================================
    5. 수량 변경 및 연산 (Business Logic)
    ========================================================== */
-function openQtyEditModal(itemId) {
-  const item = cartItems.find((i) => String(i.id) === String(itemId));
-  if (!item) return;
-
-  let currentTempQty = item.quantity;
-
-  Modal.open({
-    message: `
-      <div class="modal-qty-container" style="text-align:center; padding: 10px 0;">
-        <p class="modal-product-name" style="margin-bottom:15px; font-weight:bold; color:#333;">${item.product.name}</p>
-        <div class="qty-stepper" style="display:flex; justify-content:center; align-items:center; gap:15px;">
-          <button type="button" id="modal-qty-minus" style="width:34px; height:34px; border:1px solid #ddd; background:#fff; cursor:pointer;">-</button>
-          <span id="modal-qty-val" style="font-size:1.2rem; min-width:30px; font-weight:600;">${currentTempQty}</span>
-          <button type="button" id="modal-qty-plus" style="width:34px; height:34px; border:1px solid #ddd; background:#fff; cursor:pointer;">+</button>
-        </div>
-      </div>
-    `,
-    confirmText: "수정",
-    cancelText: "취소",
-    onConfirm: async () => {
-      // 값이 변했을 때만 서버 통신을 시도하여 효율성 증대
-      if (currentTempQty !== item.quantity) {
-        await updateQuantity(itemId, currentTempQty);
-      }
-    },
-  });
-
-  // 모달 렌더링 후 요소를 찾아 이벤트를 겁니다.
-  setTimeout(() => {
-    const mMinus = document.getElementById("modal-qty-minus");
-    const mPlus = document.getElementById("modal-qty-plus");
-    const mVal = document.getElementById("modal-qty-val");
-
-    if (mMinus && mPlus && mVal) {
-      mMinus.onclick = (e) => {
-        e.preventDefault(); // 기본 동작 방지
-        if (currentTempQty > 1) {
-          currentTempQty--;
-          mVal.textContent = currentTempQty;
-        }
-      };
-      mPlus.onclick = (e) => {
-        e.preventDefault();
-        currentTempQty++;
-        mVal.textContent = currentTempQty;
-      };
-    }
-  }, 50);
-}
 async function updateQuantity(id, newQuantity) {
   try {
     const response = await Utils.fetchWithAuth(`/cart/${id}/`, {
@@ -323,7 +275,7 @@ function updateTotalPrice() {
   itemsEl.querySelectorAll("li").forEach((li) => {
     // UI 상의 체크 여부를 판단합니다.
     if (li.querySelector(".item-check").checked) {
-      // 전역 변수 'cartItems'에서 해당 ID의 실제 가격 정보를 찾아 연산합니다.
+      // 전역 변수 'cartItems'에서 해당 ID의 실제 가격 정보를 찾아 연산
       const item = cartItems.find(
         (i) => String(i.id) === String(li.dataset.id)
       );
@@ -414,6 +366,61 @@ function moveToOrder() {
 
   sessionStorage.setItem("orderData", JSON.stringify(orderData));
 
-  // 주문서 페이지로 즉시 이동
   location.href = PAGES.ORDER;
+}
+
+/* ==========================================================
+    8. 수량 수정 모달 (Quantity Edit Modal)
+    ========================================================== */
+async function openQtyEditModal(itemId) {
+  const item = cartItems.find((i) => String(i.id) === String(itemId));
+  if (!item) return;
+
+  let tempQty = item.quantity;
+
+  Modal.open({
+    message: "로딩 중..",
+    confirmText: "수정",
+    cancelText: "취소",
+    onConfirm: async () => {
+      if (tempQty !== item.quantity) {
+        await updateQuantity(itemId, tempQty);
+      }
+    },
+  });
+
+  setTimeout(() => {
+    // image_cef08b.png에서 확인된 정확한 ID 선택자 사용
+    const modalBody = document.getElementById("modal-text");
+
+    if (modalBody) {
+      modalBody.innerHTML = `
+        <div class="modal-qty-container" style="display: flex; justify-content: center; align-items: center; min-height: 80px; padding: 10px 0;">
+    <div class="qty-stepper" style="display: flex; align-items: center; border: 1px solid #ddd; border-radius: 4px; overflow: hidden;">
+      <button type="button" id="m-minus" style="width: 45px; height: 45px; border: none; background: #fff; cursor: pointer; font-size: 20px; border-right: 1px solid #ddd;">-</button>
+      <span id="m-val" style="width: 50px; height: 45px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; font-weight: 600; background: #fff;">${tempQty}</span>
+      <button type="button" id="m-plus" style="width: 45px; height: 45px; border: none; background: #fff; cursor: pointer; font-size: 20px; border-left: 1px solid #ddd;">+</button>
+    </div>
+  </div>
+      `;
+
+      // 3. 버튼 이벤트 연결
+      const btnMinus = document.getElementById("m-minus");
+      const btnPlus = document.getElementById("m-plus");
+      const valText = document.getElementById("m-val");
+
+      btnMinus.onclick = (e) => {
+        e.preventDefault();
+        if (tempQty > 1) {
+          tempQty--;
+          valText.textContent = tempQty;
+        }
+      };
+      btnPlus.onclick = (e) => {
+        e.preventDefault();
+        tempQty++;
+        valText.textContent = tempQty;
+      };
+    }
+  }, 100);
 }

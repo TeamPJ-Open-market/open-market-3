@@ -130,6 +130,7 @@ const Utils = {
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER);
+    sessionStorage.clear();
     window.location.href = PAGES.SIGNIN;
   },
 };
