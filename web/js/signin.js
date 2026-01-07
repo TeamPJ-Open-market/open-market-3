@@ -1,3 +1,7 @@
+// URL에서 product_id 추출 / detail에서 옴
+const urlParams = new URLSearchParams(window.location.search);
+const redirect = urlParams.get("redirect");
+
 //로그인 유무확인
 window.onload = function () {
   if (Utils.isLoggedIn()) {
@@ -48,13 +52,12 @@ passwordInput.addEventListener("input", clearValidationMessage);
 // @param password
 async function handleSignin(event) {
   event.preventDefault();
-  const usernameInput = document.getElementById("username");
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
   const usernameMessage = document.getElementById("username-message");
 
   // 아이디 비밀번호 공백 경고 메세지
-  if (!username && !password) {
+  if (!username || !password) {
     Validation.showMessage(
       usernameInput,
       usernameMessage,
@@ -62,19 +65,12 @@ async function handleSignin(event) {
       "error"
     );
     return;
-  } else if (!username) {
+  }
+  if (!Validation.isValidEmail(username)) {
     Validation.showMessage(
       usernameInput,
       usernameMessage,
-      "아이디를 입력해 주세요.",
-      "error"
-    );
-    return;
-  } else if (!password) {
-    Validation.showMessage(
-      usernameInput,
-      usernameMessage,
-      "비밀번호를 입력해 주세요.",
+      "올바른 이메일 형식이 아닙니다.",
       "error"
     );
     return;
@@ -115,6 +111,12 @@ async function handleSignin(event) {
     localStorage.setItem("access_token", data.access);
     localStorage.setItem("refresh_token", data.refresh);
     localStorage.setItem("user", JSON.stringify(data.user));
+
+    // 요청페이지로 이동
+    if (redirect) {
+      window.location.href = redirect;
+      return;
+    }
 
     // 사용자 타입에 따라 페이지 이동
     if (data.user.user_type === "BUYER") {
