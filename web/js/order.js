@@ -1,11 +1,41 @@
 /* ==================================================
-   📦 공통 유틸 함수
+     공통 유틸 함수
    - 화면 / 저장소에서 값 가져오기
 ================================================== */
 
 // sessionStorage에 저장된 주문 데이터 가져오기
 function getOrderData() {
-  return JSON.parse(sessionStorage.getItem("orderData")) || [];
+  const raw = JSON.parse(sessionStorage.getItem("orderData"));
+
+  if (!raw) return [];
+
+  // 1️. 장바구니 주문 (cart.js 구조)
+  if (raw.items && Array.isArray(raw.items)) {
+    return raw.items.map((item) => ({
+      order_type: raw.order_kind || "cart_order",
+      product_id: item.product.id,
+      quantity: item.quantity,
+      product: item.product,
+    }));
+  }
+
+  // 2️. 바로구매 (정상 배열)
+  if (Array.isArray(raw)) {
+    return raw;
+  }
+
+  // 3️. 바로구매가 객체로 온 경우 (안전장치)
+  if (raw.product_id && raw.quantity) {
+    return [
+      {
+        order_type: raw.order_type || "direct_order",
+        product_id: raw.product_id,
+        quantity: raw.quantity,
+      },
+    ];
+  }
+
+  return [];
 }
 
 // 휴대폰 번호 3칸을 하나로 합치기
@@ -35,7 +65,7 @@ function calculateTotal() {
   return Number(totalText);
 }
 /* ==================================================
-   🛒 상품 API
+     상품 API
 ================================================== */
 
 // 상품 단건 조회 (바로구매용)
@@ -47,7 +77,7 @@ async function fetchProductById(productId) {
   return res.json();
 }
 /* ==================================================
-   🖥 장바구니 렌더링
+     장바구니 렌더링
    - 상품 목록 출력
    - 가격 계산
 ================================================== */
@@ -55,6 +85,7 @@ async function fetchProductById(productId) {
 async function renderCart(cart) {
   /* === 화면 요소 가져오기 === */
   const orderList = document.getElementById("order-list");
+
   const totalPriceEl = document.getElementById("total-price");
 
   const productAmountEl = document.querySelector(
@@ -133,7 +164,7 @@ async function renderCart(cart) {
   finalAmountEl.textContent = finalTotal.toLocaleString() + "원";
 }
 /* ==================================================
-   💳 결제 동의 & 버튼 제어
+     결제 동의 & 버튼 제어
 ================================================== */
 
 const agreeCheckbox = document.querySelector(".agree input");
@@ -147,29 +178,26 @@ agreeCheckbox.addEventListener("change", () => {
   payBtn.classList.toggle("active", agreeCheckbox.checked);
 });
 payBtn.addEventListener("click", async () => {
-  // 1️⃣ 결제 동의 확인
+  // 1️. 결제 동의 확인
   if (!agreeCheckbox.checked) {
     alert("결제 동의가 필요합니다.");
     return;
   }
 
-  // 2️⃣ 폼 검증
+  // 2️. 폼 검증
   if (!validateOrderForm()) return;
 
-  // 3️⃣ 주문 데이터 생성
+  // 3️. 주문 데이터 생성
   const requestBody = await buildOrderData();
 
   try {
-    // 4️⃣ 서버로 주문 요청
+    // 4️. 서버로 주문 요청
     const res = await requestOrder(requestBody);
 
     if (res.ok) {
-      alert("🎉 구매가 완료되었습니다!");
-      sessionStorage.removeItem("orderData");
+      alert("구매가 완료되었습니다!");
 
-      if (requestBody.order_type === "cart_order") {
-        sessionStorage.removeItem("cartData");
-      }
+      sessionStorage.clear();
 
       window.location.href = PAGES.HOME;
     } else if (res.status === 400) {
@@ -185,7 +213,7 @@ payBtn.addEventListener("click", async () => {
   }
 });
 /* ==================================================
-   🚀 페이지 초기화
+    페이지 초기화
 ================================================== */
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -194,7 +222,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   fillOrdererInfoFromLocal();
 });
 /* ==================================================
-   👤 주문자 정보 자동 입력
+    주문자 정보 자동 입력
 ================================================== */
 
 function fillOrdererInfoFromLocal() {
@@ -228,7 +256,7 @@ function fillOrdererInfoFromLocal() {
   }
 }
 /* ==================================================
-   ✅ 주문 폼 검증
+    주문 폼 검증
 ================================================== */
 
 function validateOrderForm() {
@@ -267,7 +295,7 @@ function validateOrderForm() {
   return true;
 }
 /* ==================================================
-   📤 주문 요청
+    주문 요청
 ================================================== */
 
 async function requestOrder(orderData) {
@@ -281,11 +309,17 @@ async function requestOrder(orderData) {
 }
 
 /* ==================================================
-   🧾 서버로 보낼 주문 데이터 생성
+    서버로 보낼 주문 데이터 생성
 ================================================== */
 
 async function buildOrderData() {
   const orderItems = getOrderData();
+
+  if (orderItems.length === 0) {
+    alert("주문할 상품 정보가 없습니다.");
+    throw new Error("orderItems is empty");
+  }
+
   const firstItem = orderItems[0];
   const isDirect = firstItem.order_type === "direct_order";
 
@@ -301,7 +335,7 @@ async function buildOrderData() {
     priceSum += price * quantity;
     deliverySum += shippingFee;
   }
-  const calculatedTotal = priceSum + deliverySum;
+  const calculatedTotal = priceSum;
   console.log(calculatedTotal);
   const finalOrderData = {
     receiver:
