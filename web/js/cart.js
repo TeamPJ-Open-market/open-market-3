@@ -94,6 +94,8 @@ function renderCartList() {
           <span class="seller">${item.product.seller.store_name}</span>
           <strong class="name">${item.product.name}</strong>
           <span class="price">${Utils.formatNumber(item.product.price)}원</span>
+          <br />
+          <span class="delivery-info">택배배송/ 무료배송</span>
         </div>
       </div>
       <div class="col-qty">
@@ -188,9 +190,16 @@ function bindEvents() {
 
       // 세션 스토리지에 하나의 키로 저장
       sessionStorage.setItem("orderData", JSON.stringify(orderData));
-      sessionStorage.setItem("order_kind", "cart_order");
-
       location.href = PAGES.ORDER;
+    };
+  });
+  itemsEl.querySelectorAll(".qty-val").forEach((el) => {
+    el.style.cursor = "pointer";
+    el.onclick = (e) => {
+      const li = e.target.closest("li");
+      const id = li.dataset.id;
+      console.log("수량 클릭됨, ID:", id); // 디버깅용 로그
+      openQtyEditModal(id);
     };
   });
 }
@@ -198,6 +207,55 @@ function bindEvents() {
 /* ==========================================================
    5. 수량 변경 및 연산 (Business Logic)
    ========================================================== */
+function openQtyEditModal(itemId) {
+  const item = cartItems.find((i) => String(i.id) === String(itemId));
+  if (!item) return;
+
+  let currentTempQty = item.quantity;
+
+  Modal.open({
+    message: `
+      <div class="modal-qty-container" style="text-align:center; padding: 10px 0;">
+        <p class="modal-product-name" style="margin-bottom:15px; font-weight:bold; color:#333;">${item.product.name}</p>
+        <div class="qty-stepper" style="display:flex; justify-content:center; align-items:center; gap:15px;">
+          <button type="button" id="modal-qty-minus" style="width:34px; height:34px; border:1px solid #ddd; background:#fff; cursor:pointer;">-</button>
+          <span id="modal-qty-val" style="font-size:1.2rem; min-width:30px; font-weight:600;">${currentTempQty}</span>
+          <button type="button" id="modal-qty-plus" style="width:34px; height:34px; border:1px solid #ddd; background:#fff; cursor:pointer;">+</button>
+        </div>
+      </div>
+    `,
+    confirmText: "수정",
+    cancelText: "취소",
+    onConfirm: async () => {
+      // 값이 변했을 때만 서버 통신을 시도하여 효율성 증대
+      if (currentTempQty !== item.quantity) {
+        await updateQuantity(itemId, currentTempQty);
+      }
+    },
+  });
+
+  // 모달 렌더링 후 요소를 찾아 이벤트를 겁니다.
+  setTimeout(() => {
+    const mMinus = document.getElementById("modal-qty-minus");
+    const mPlus = document.getElementById("modal-qty-plus");
+    const mVal = document.getElementById("modal-qty-val");
+
+    if (mMinus && mPlus && mVal) {
+      mMinus.onclick = (e) => {
+        e.preventDefault(); // 기본 동작 방지
+        if (currentTempQty > 1) {
+          currentTempQty--;
+          mVal.textContent = currentTempQty;
+        }
+      };
+      mPlus.onclick = (e) => {
+        e.preventDefault();
+        currentTempQty++;
+        mVal.textContent = currentTempQty;
+      };
+    }
+  }, 50);
+}
 async function updateQuantity(id, newQuantity) {
   try {
     const response = await Utils.fetchWithAuth(`/cart/${id}/`, {

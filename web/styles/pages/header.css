@@ -149,7 +149,8 @@
 }
 
 .header-actions .action.active .icon {
-  color: var(--main-btn-color);
+  filter: invert(54%) sepia(45%) saturate(2351%) hue-rotate(106deg)
+    brightness(96%) contrast(84%);
 }
 
 /* ================================================= */
