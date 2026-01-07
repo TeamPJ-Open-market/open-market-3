@@ -234,6 +234,25 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("우편번호 팝업창입니다.");
     });
   }
+  const phone1 = document.getElementById("receiver-phone1");
+  const phone2 = document.getElementById("receiver-phone2");
+  const phone3 = document.getElementById("receiver-phone3");
+
+  // 숫자만 입력되게
+  [phone1, phone2, phone3].forEach((input) => {
+    input.addEventListener("input", () => {
+      input.value = input.value.replace(/\D/g, "");
+    });
+  });
+
+  // 자동 포커스 이동
+  phone1.addEventListener("input", () => {
+    if (phone1.value.length === 3) phone2.focus();
+  });
+
+  phone2.addEventListener("input", () => {
+    if (phone2.value.length === 4) phone3.focus();
+  });
 });
 
 /* ==================================================

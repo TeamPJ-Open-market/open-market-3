@@ -56,11 +56,35 @@
         <div class="form-row">
           <label>휴대폰</label>
           <div class="phone-inputs">
-            <input type="tel" id="receiver-phone1" class="phone" /> -
-            <input type="tel" id="receiver-phone2" class="phone" /> -
-            <input type="tel" id="receiver-phone3" class="phone" />
+            <input
+              type="tel"
+              id="receiver-phone1"
+              class="phone"
+              maxlength="3"
+              inputmode="numeric"
+              placeholder="010"
+            />
+            -
+            <input
+              type="tel"
+              id="receiver-phone2"
+              class="phone"
+              maxlength="4"
+              inputmode="numeric"
+              placeholder="1234"
+            />
+            -
+            <input
+              type="tel"
+              id="receiver-phone3"
+              class="phone"
+              maxlength="4"
+              inputmode="numeric"
+              placeholder="5678"
+            />
           </div>
         </div>
+
         <div class="form-row">
           <label>배송주소</label>
           <!-- 주소 입력 영역 -->
