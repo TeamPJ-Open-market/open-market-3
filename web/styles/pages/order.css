@@ -4,7 +4,7 @@
 
 /* 페이지 최상단 타이틀 */
 .page-title {
-  font-size: 36px;
+  font-size: 2.25rem;
   font-weight: 700;
   text-align: center;
   margin-bottom: 50px;
@@ -45,7 +45,7 @@
 /* 상품 정보 영역 */
 .col-info {
   flex: 5;
-  text-align: left;
+  text-align: center;
   padding: 20px;
 }
 
@@ -84,7 +84,6 @@
 /* ---------- 상품 정보 내부 ---------- */
 .order-list p {
   text-align: center;
-  padding: 2rem 0;
 }
 /* 상품 이미지 + 텍스트 래퍼 */
 .product-box {
@@ -102,16 +101,20 @@
 }
 
 /* 상품명 */
-.product-text .name {
-  font-size: 16px;
-  font-weight: 600;
+.product-text .col-name {
   margin-bottom: 4px;
 }
 
-/* 수량 */
-.product-text .qty {
-  font-size: 13px;
+/* 회사명,수량 */
+.product-text .col-brand,
+.product-text .col-qty {
   color: var(--sub-text-color);
+}
+
+.product-text .col-brand,
+.product-text .col-name,
+.product-text .col-qty {
+  text-align: left;
 }
 
 /* ---------- 주문 총액 ---------- */
@@ -134,7 +137,7 @@
 
 /* 섹션 메인 타이틀 (배송정보) */
 .form-section h3 {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--main-text-color);
   padding-bottom: 18px;
@@ -143,7 +146,7 @@
 
 /* 서브 타이틀 (주문자 정보 / 배송지 정보) */
 .form-group-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 500;
   color: var(--join-text-color);
   padding: 12px 0;
@@ -162,7 +165,7 @@
 /* 라벨 영역 */
 .form-row label {
   width: 170px;
-  font-size: 16px;
+  font-size: 1rem;
   color: var(--main-text-color);
   flex-shrink: 0;
 }
@@ -304,14 +307,14 @@ input[type="tel"] {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 /* 최종 결제 금액 */
 .total-price {
   display: flex;
   justify-content: space-between;
-  font-size: 18px;
+  font-size: 1.5rem;
   font-weight: bold;
   color: var(--negative-text-color);
   margin: 0;

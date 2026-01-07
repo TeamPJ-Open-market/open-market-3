@@ -138,8 +138,13 @@ async function renderCart(cart) {
             product?.image || "./images/product3.png"
           }" class="product-img" />
           <div class="product-text">
-            <p class="name">${product?.name || "상품명 없음"}</p>
-            <span class="qty">수량 : ${quantity}개</span>
+            <p class="col-brand text-size-sm">${
+              product?.info || "회사명 없음"
+            }</p>
+            <p class="col-name text-size-md">${
+              product?.name || "상품명 없음"
+            }</p>
+            <p class="col-qty text-size-sm">수량 : ${quantity}개</p>
           </div>
         </div>
       </div>
