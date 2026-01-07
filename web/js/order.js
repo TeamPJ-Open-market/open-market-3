@@ -217,15 +217,25 @@ payBtn.addEventListener("click", async () => {
     alert("서버 연결에 실패했습니다.");
   }
 });
+
 /* ==================================================
-    페이지 초기화
+    페이지 초기화, 우편번호 조회
 ================================================== */
 
 document.addEventListener("DOMContentLoaded", async () => {
   const cartData = getOrderData();
   await renderCart(cartData);
   fillOrdererInfoFromLocal();
+
+  //  우편번호 버튼 이벤트
+  const postBtn = document.querySelector(".btn-post");
+  if (postBtn) {
+    postBtn.addEventListener("click", () => {
+      alert("우편번호 팝업창입니다.");
+    });
+  }
 });
+
 /* ==================================================
     주문자 정보 자동 입력
 ================================================== */
