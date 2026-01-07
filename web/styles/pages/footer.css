@@ -35,6 +35,12 @@ main {
   color: var(--sub-text-color);
 }
 
+.footer-top-container {
+  max-width: 1280px;
+  min-width: 480px;
+  margin: 0 auto;
+}
+
 /* 상단 영역 */
 .footer-top {
   border-bottom: 0.0625rem solid var(--checkbox-disabled-color);
@@ -96,11 +102,15 @@ main {
 }
 
 /* 하단 회사 정보 */
-.footer-bottom {
+
+.footer-bottom-container {
+  max-width: 1280px;
+  min-width: 480px;
+  margin: 0 auto;
   padding: 2rem 0;
 }
 
-.footer-inner p {
+.footer-bottom-inner p {
   margin-bottom: 0.375rem;
   line-height: 1.7;
 }
@@ -147,7 +157,7 @@ main {
     padding: 1.5rem 0;
   }
 
-  .footer-inner p {
+  .footer-bottom-inner p {
     font-size: 0.75rem;
   }
 
