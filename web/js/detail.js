@@ -1,21 +1,20 @@
 console.log("🔥 detail.js 실행됨");
 
-// ====================
+// ========================================
 // 1. 상수 / 환경 설정
 
-// 회사 이름 -> UI 상수 (기획 고정값)
-const BRAND_NAME = "백엔드글로벌";
 // 최대 구매 가능 상품 수량
 const MAX_QUANTITY = 99;
 
-// ====================
+// ========================================
 // 2. URL 파라미터
 
 // URL에서 product_id 추출 (장바구니에 넣을 상품 = 이 id의 상품)
+
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get("id");
 
-// ====================
+// ========================================
 // 3. DOM 요소
 
 // 상품 정보 표시
@@ -39,48 +38,14 @@ const addCartButton = document.getElementById("btn-add-cart");
 const tabButtons = document.querySelectorAll(".tab-button");
 const tabContents = document.querySelectorAll(".tab-content");
 
-// ====================
+// ========================================
 // 4. 상태 변수
 
 // API에서 한 번 받아온 데이터 저장
 let currentProduct = null;
 
-// ====================
-// 5. 공통 Header 함수
-
-// JSON body를 보내는 요청 전용
-function getJsonAuthHeaders() {
-  return {
-    ...Utils.getAuthHeaders(),
-    "Content-Type": "application/json",
-  };
-}
-
-// ====================
-// 6. fetch 응답 체크 공통 함수
-
-// PUT / POST / GET 모두에서 재사용
-// 응답 실패 시 바로 catch로 떨어지게 함
-
-async function fetchWithCheck(url, options = {}) {
-  const res = await fetch(url, options);
-
-  if (!res.ok) {
-    let message = "서버 요청 실패";
-
-    try {
-      const errorData = await res.json();
-      message = errorData.message || message;
-    } catch (e) {}
-
-    throw new Error(message);
-  }
-
-  return res;
-}
-
-// ====================
-// 6-1. 탭 UI 로직
+// ========================================
+// 5. 탭 UI 로직
 
 // 상품 로직과 완전히 독립
 // 화면 전환 + 접근성만 담당
@@ -147,15 +112,16 @@ tabButtons.forEach((button, index) => {
   });
 });
 
-// ====================
-// 7. 상품 상세 조회
+// ========================================
+// 6. 상품 상세 조회
 
 // 상품 정보, 상세 조회 + 화면 렌더링
+
 async function loadProduct() {
   console.log("🟡 loadProduct 실행");
 
   try {
-    const response = await fetchWithCheck(`${API_URL}/products/${productId}`);
+    const response = await Utils.fetchWithAuth(`/products/${productId}`);
     const data = await response.json();
 
     console.log("🟢 상품 데이터:", data);
@@ -165,8 +131,8 @@ async function loadProduct() {
     // 화면 렌더링
     productImage.src = data.image;
     productImage.alt = data.name;
-    // 회사 이름은 API가 아닌 기획 고정값
-    productBrand.textContent = BRAND_NAME;
+    // info: 기획상 브랜드/회사명 문구로 사용
+    productBrand.textContent = data.info;
     productTitle.textContent = data.name;
     productPrice.textContent = Utils.formatNumber(data.price);
 
@@ -184,19 +150,45 @@ async function loadProduct() {
 // 페이지 진입 시 실행
 loadProduct();
 
-// ====================
-// 8. 수량 / 총 금액
+// ========================================
+// 7. 수량 / 총 금액
 
 // 수량 가져오는 공통 함수 (최소/최대 제한)
-function getQuantity() {
-  const value = Number(quantityInput.value);
 
-  if (Number.isNaN(value)) return 1; // 문자 입력 X → 1
-  if (value < 1) return 1; // 음수 X → 1
-  if (value > MAX_QUANTITY) return MAX_QUANTITY; // 99로 고정
+function setQuantity(nextValue) {
+  let value = Number(nextValue);
 
-  return value;
+  if (Number.isNaN(value)) value = 1; // 문자 입력 X → 1
+  if (value < 1) value = 1; // 음수 X → 1
+  if (value > MAX_QUANTITY) value = MAX_QUANTITY; // 99로 고정
+
+  quantityInput.value = value;
+  updateOrderSummary();
 }
+
+// “읽기 전용”으로 유지
+function getQuantity() {
+  return Number(quantityInput.value) || 1;
+}
+
+// 7-1. 수량 변경 이벤트 핸들러
+
+// - 버튼
+quantityDecreaseBtn.addEventListener("click", () => {
+  setQuantity(getQuantity() - 1);
+});
+
+// + 버튼
+quantityIncreaseBtn.addEventListener("click", () => {
+  setQuantity(getQuantity() + 1);
+});
+
+// input 직접 수정 시
+quantityInput.addEventListener("input", () => {
+  setQuantity(quantityInput.value);
+});
+
+// 7-2. 총 수량 / 총 금액 업데이트 함수
 
 function updateOrderSummary() {
   if (!currentProduct) return;
@@ -208,31 +200,11 @@ function updateOrderSummary() {
   );
 }
 
-// 8-1. 수량 변경 이벤트 핸들러
-// - 버튼
-quantityDecreaseBtn.addEventListener("click", () => {
-  if (getQuantity() > 1) {
-    quantityInput.value = getQuantity() - 1;
-    updateOrderSummary();
-  }
-});
-
-// + 버튼
-quantityIncreaseBtn.addEventListener("click", () => {
-  quantityInput.value = getQuantity() + 1;
-  updateOrderSummary();
-});
-
-// input 직접 수정 시
-quantityInput.addEventListener("input", () => {
-  quantityInput.value = getQuantity();
-  updateOrderSummary();
-});
-
-// ====================
-// 9. 공통 검증
+// ========================================
+// 8. 공통 검증
 
 // 버튼 클릭시 로그인 여부 판단 함수 (공통 검증 함수 활용: Utils)
+
 function validateBeforeAction() {
   console.log("🟡 validateBeforeAction 실행");
 
@@ -244,7 +216,9 @@ function validateBeforeAction() {
       confirmText: "로그인",
       cancelText: "취소",
       onConfirm: () => {
-        window.location.href = "signin.html";
+        window.location.href =
+          // 로그인하고 다시 돌아올 때를 위해 productId 포함
+          "signin.html?redirect=detail.html?id=" + productId;
       },
     });
     return false;
@@ -262,8 +236,8 @@ function validateBeforeAction() {
   return true;
 }
 
-// ====================
-// 10. sessionStorage 저장 함수
+// ========================================
+// 9. sessionStorage 저장 함수
 
 // DB가 source of truth
 // sessionStorage는 화면 표시 / 페이지 이동용만 담당
@@ -292,8 +266,8 @@ function saveCartDataToSession(product, quantity) {
   sessionStorage.setItem(key, JSON.stringify(prev));
 }
 
-// ====================
-// 11. "바로 구매" 클릭 시 로직
+// ========================================
+// 10. "바로 구매" 클릭 시 로직
 
 function handleDirectOrder() {
   console.log("🟢 handleDirectOrder 실행");
@@ -311,23 +285,18 @@ function handleDirectOrder() {
   window.location.href = "order.html";
 }
 
-// TODO List
-// "장바구니" 클릭 시
-// 1. POST /api/cart/ 호출
-// 2. 성공 시 sessionStorage에도 저장
-// 3. 모달 표시 ("장바구니에 담았습니다") 후 cart.html 이동
+// ========================================
+// 11. "장바구니" 클릭 시 로직
 
-// 12. "장바구니" 클릭 시 로직
 async function handleAddToCart() {
   console.log("🟢 handleAddToCart 실행");
 
   // 장바구니는 DB 기준이니까
   // 상세 페이지에서 중복 체크 후 PUT/POST 분기가 필요
+
   try {
     // 1️⃣ DB 장바구니 조회
-    const res = await fetchWithCheck(`${API_URL}/cart`, {
-      headers: Utils.getAuthHeaders(),
-    });
+    const res = await Utils.fetchWithAuth(`/cart`, {});
 
     const data = await res.json();
     const cartItems = data.results;
@@ -340,9 +309,8 @@ async function handleAddToCart() {
     // DB 기준 저장
     // 3️⃣ 있으면 → PUT (수량 증가)
     if (existItem) {
-      await fetchWithCheck(`${API_URL}/cart/${existItem.id}/`, {
+      await Utils.fetchWithAuth(`/cart/${existItem.id}/`, {
         method: "PUT",
-        headers: getJsonAuthHeaders(),
         body: JSON.stringify({
           quantity: existItem.quantity + getQuantity(),
         }),
@@ -350,9 +318,8 @@ async function handleAddToCart() {
     }
     // 4️⃣ 없으면 → POST
     else {
-      await fetchWithCheck(`${API_URL}/cart/`, {
+      await Utils.fetchWithAuth(`/cart/`, {
         method: "POST",
-        headers: getJsonAuthHeaders(),
         body: JSON.stringify({
           product_id: currentProduct.id,
           quantity: getQuantity(),
@@ -381,7 +348,9 @@ async function handleAddToCart() {
   }
 }
 
-// 13. 버튼 이벤트 리스너 등록
+// ========================================
+// 12. 버튼 이벤트 리스너 등록
+
 // 바로 구매 버튼
 purchaseButton.addEventListener("click", () => {
   console.log("👉 바로 구매 버튼 클릭됨");
@@ -398,7 +367,7 @@ addCartButton.addEventListener("click", () => {
   handleAddToCart();
 });
 
-// ====================
+// ========================================
 // 장바구니 추가 시 DB를 먼저 저장을 한 뒤 sessionStorage는 화면/이동용으로만 동기화.
 // 실제 수량의 최종 판단은 cart.html에서 DB 기준으로 다시 맞춘다.
 
@@ -413,10 +382,6 @@ addCartButton.addEventListener("click", () => {
 // - DB 장바구니 조회
 // - sessionStorage 완전 덮어쓰기
 // - 이후 모든 로직은 cartData 기준
-
-// GET → Utils.getAuthHeaders()
-// POST / PUT / PATCH → getJsonAuthHeaders()
-// 500 에러의 80%는 헤더 or body 형식
 
 // 수량 선택
 // → 장바구니 클릭
