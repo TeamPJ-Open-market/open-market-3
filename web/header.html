@@ -25,41 +25,45 @@
         </a>
 
         <!-- 검색 -->
-<form class="search" role="search">
-  <label class="sr-only" for="q">상품을 검색하세요</label>
-  <input
-    id="q"
-    name="q"
-    class="search-input"
-    type="search"
-    placeholder="상품을 검색해보세요!"
-  />
-  <button class="search-btn" type="submit" aria-label="검색">
-    <svg class="icon icon-search" aria-hidden="true">
-      <use href="./assets/icons/sprite.svg#icon-search"></use>
-    </svg>
-  </button>
-</form>
+        <form class="search" role="search">
+          <label class="sr-only" for="q">상품을 검색하세요</label>
+          <input
+            id="q"
+            name="q"
+            class="search-input"
+            type="search"
+            placeholder="상품을 검색해보세요!"
+            autocomplete="off"
+          />
+          <ul
+            id="search-suggestion"
+            class="search-suggestion-list is-hidden"
+          ></ul>
+          <button class="search-btn" type="submit" aria-label="검색">
+            <svg class="icon icon-search" aria-hidden="true">
+              <use href="./assets/icons/sprite.svg#icon-search"></use>
+            </svg>
+          </button>
+        </form>
 
-<!-- 아이콘 메뉴 -->
-<nav class="header-actions" aria-label="유틸 메뉴">
-  <a class="action" href="./cart.html">
-    <svg class="icon" aria-hidden="true">
-      <use href="./assets/icons/sprite.svg#icon-cart"></use>
-    </svg>
-    <span class="action-text">장바구니</span>
-  </a>
+        <!-- 아이콘 메뉴 -->
+        <nav class="header-actions" aria-label="유틸 메뉴">
+          <a class="action" href="./cart.html">
+            <svg class="icon" aria-hidden="true">
+              <use href="./assets/icons/sprite.svg#icon-cart"></use>
+            </svg>
+            <span class="action-text">장바구니</span>
+          </a>
 
-  <div id="header-user-menu">
-    <a class="action" href="./signin.html">
-      <svg class="icon" aria-hidden="true">
-        <use href="./assets/icons/sprite.svg#icon-user"></use>
-      </svg>
-      <span class="action-text">로그인</span>
-    </a>
-  </div>
-</nav>
-
+          <div id="header-user-menu">
+            <a class="action" href="./signin.html">
+              <svg class="icon" aria-hidden="true">
+                <use href="./assets/icons/sprite.svg#icon-user"></use>
+              </svg>
+              <span class="action-text">로그인</span>
+            </a>
+          </div>
+        </nav>
       </div>
     </header>
   </body>
