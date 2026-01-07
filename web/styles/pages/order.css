@@ -169,6 +169,19 @@
   color: var(--main-text-color);
   flex-shrink: 0;
 }
+/* 우편조회 버튼 */
+.btn-post {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-post:hover {
+  background-color: #56ee6a;
+}
+
+.btn-post:active {
+  transform: scale(0.97);
+}
 
 /* ---------- 인풋 공통 스타일 ---------- */
 input[type="text"],
