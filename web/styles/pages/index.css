@@ -6,7 +6,7 @@ body {
   font-family: Arial, sans-serif;
   background: var(--main-bg-color);
   color: var(--main-text-colo);
-  min-width: 360px;
+  min-width: 22.5rem;
 }
 
 /* ================================================= */
@@ -19,13 +19,17 @@ body {
 
 .banner-inner {
   width: 100%;
-  max-width: 1920px;
-  height: 500px;
+  max-width: 120rem;
+
+  /* ✅ 사라락: 화면에 따라 부드럽게 높이 변화 */
+  height: clamp(14rem, 42vw, 31.25rem);
+
   margin: 0 auto;
   position: relative;
   overflow: hidden;
 }
 
+/* 트랙/슬라이드가 버튼을 덮지 않게 */
 .banner-track {
   position: relative;
   height: 100%;
@@ -43,49 +47,71 @@ body {
   display: block;
 }
 
+/* ✅ 배너 이미지 반응형 (크기만 줄고, 기준은 위쪽) */
+.banner-slide img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: top center;
+}
+
 /* 좌우 버튼 */
 .banner-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
+
   border: 0;
   background: transparent;
   cursor: pointer;
-  font-size: 36px;
+
+  font-size: 2.25rem;
   font-weight: 200;
   opacity: 0.7;
   color: var(--main-text-color);
-  padding: 0 16px;
+
+  padding: 0 1rem;
   line-height: 1;
+
+  /* 모바일에서 클릭 잘 되게 */
+  pointer-events: auto;
+  user-select: none;
 }
 
 .banner-btn:hover {
   opacity: 1;
 }
 
-.banner-btn.prev { left: 24px; }
-.banner-btn.next { right: 24px; }
+.banner-btn.prev {
+  left: 1.5rem;
+}
+.banner-btn.next {
+  right: 1.5rem;
+}
 
 /* Indicator */
 .banner-indicator {
   position: absolute;
-  bottom: 20px;
+  bottom: 1.25rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
+
   display: flex;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .banner-indicator .dot {
-  width: 10px;
-  height: 10px;
+  width: 0.625rem;
+  height: 0.625rem;
   border-radius: 50%;
   border: 0;
   background: var(--main-bg-color);
   opacity: 0.5;
   cursor: pointer;
+  padding: 0;
 }
 
 .banner-indicator .dot.is-active {
@@ -97,36 +123,30 @@ body {
 /* ================= Product List ================== */
 /* ================================================= */
 .products {
-  padding: 80px 0 120px;
+  padding: 5rem 0 7.5rem;
   background: var(--main-bg-color);
 }
 
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 48px 56px;
+  gap: 3rem 3.5rem;
   list-style: none;
   padding: 0;
   margin: 0;
+
+  /* 카드 스케일 변수 */
+  --card-scale: 1;
 }
 
 .card {
   cursor: pointer;
 }
 
-/* ================================================= */
-/* ============ 🔥 사라락 핵심 레이어 =============== */
-/* ================================================= */
-
-/* 카드 전체 스케일 변수 */
-.product-grid {
-  --card-scale: 1;
-}
-
 /* 카드 내부 레이아웃 */
 .product-link {
   display: grid;
-  gap: 5px;
+  gap: 0.3125rem;
   text-decoration: none;
   color: inherit;
 
@@ -137,38 +157,37 @@ body {
 
 /* 이미지 */
 .product-link > img {
-  margin-bottom: 6px;
+  margin-bottom: 0.375rem;
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 0.75rem;
   display: block;
   transition: transform 0.2s ease;
 }
 
 .card:hover img {
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
 }
 
 /* ================================================= */
 /* ============== 텍스트 (거의 고정) ================= */
 /* ================================================= */
-
 .product-meta {
-  font-size: clamp(11px, 0.9vw, 12px);
+  font-size: clamp(0.6875rem, 0.9vw, 0.75rem);
   color: var(--sub-text-color);
   margin: 0;
 }
 
 .product-name {
-  font-size: clamp(15px, 1.2vw, 18px);
+  font-size: clamp(0.9375rem, 1.2vw, 1.125rem);
   font-weight: 400;
   line-height: 1.4;
   margin: 0;
 }
 
 .product-price {
-  font-size: clamp(17px, 1.4vw, 24px);
+  font-size: clamp(1.0625rem, 1.4vw, 1.5rem);
   font-weight: 700;
   color: var(--main-text-color);
   margin: 0;
@@ -178,44 +197,42 @@ body {
 /* =================== Responsive ================== */
 /* ================================================= */
 
-/* Tablet: 살짝 압축 */
-@media (max-width: 1024px) {
+/* Tablet */
+@media (max-width: 64rem) {
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 32px 28px;
+    gap: 2rem 1.75rem;
     --card-scale: 0.97;
+  }
+
+  .banner-btn {
+    font-size: 2rem;
+    padding: 0 0.875rem;
   }
 }
 
-/* Mobile: 더 사라락 */
-@media (max-width: 640px) {
+/* Mobile */
+@media (max-width: 40rem) {
   .products {
-    padding: 48px 0 80px;
+    padding: 3rem 0 5rem;
   }
 
   .product-grid {
     grid-template-columns: 1fr;
-    gap: 70px;
+    gap: 4.375rem;
     --card-scale: 0.94;
   }
 
   .card img {
-    border-radius: 10px;
-  }
-}
-
-/* 배너 */
-@media (max-width: 640px) {
-  .banner-inner {
-    height: 320px;
+    border-radius: 0.625rem;
   }
 
   .banner-btn {
-    font-size: 28px;
-    padding: 0 10px;
+    font-size: 1.75rem;
+    padding: 0 0.625rem;
   }
 
   .banner-indicator {
-    bottom: 14px;
+    bottom: 0.875rem;
   }
 }

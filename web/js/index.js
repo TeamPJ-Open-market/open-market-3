@@ -1,7 +1,5 @@
 console.log("index.js loaded");
 
-
-
 const path = window.location.pathname;
 
 // // ===== 공통 레이아웃 로딩 =====
@@ -31,7 +29,9 @@ async function loadProducts() {
   if (!grid) return;
 
   try {
-    const res = await fetch(`${API_URL}/products`);
+    const res = await Utils.fetchWithAuth("/products", {
+      method: "GET",
+    });
     if (!res.ok) throw new Error("products fetch failed");
 
     const data = await res.json();

@@ -1,57 +1,63 @@
 // header.js
-window.addEventListener(
-  "headerRendered",
-  () => {
-    renderHeader();
-    const suggestionList = document.getElementById("search-suggestion");
-    if (suggestionList) {
-      const newSuggestionList = suggestionList.cloneNode(true);
-      suggestionList.parentNode.replaceChild(newSuggestionList, suggestionList);
-    }
 
-    bindSearchEvents();
-  },
-  { once: false }
-); // 상황에 따라 once: true를 고려해볼 수 있습니다.
+// ===== 공통: 검색 API 호출 공통화 =====
+async function fetchProductsByKeyword(keyword) {
+  const res = await Utils.fetchWithAuth(
+    `/products/?search=${encodeURIComponent(keyword)}`
+  );
 
-function renderHeader() {
-  console.log("1. renderHeader 실행");
-  const userMenu = document.getElementById("header-user-menu");
-  // 장바구니 페이지 활성화 상태 처리
-  // cart.html 페이지일 때 장바구니 아이콘 활성화
-  const cartLink = document.querySelector('a.action[href="./cart.html"]');
-  const isCartPage = window.location.pathname.includes("cart.html");
-
-  if (cartLink && isCartPage) {
-    cartLink.classList.add("active"); // 활성화 클래스 추가
+  // fetchWithAuth가 ok 아닌 경우 throw를 안 해줄 수도 있어서 여기서 안전 처리
+  if (!res.ok) {
+    throw new Error(`products search fetch failed: ${res.status}`);
   }
+
+  const data = await res.json();
+  return data.results || [];
+}
+
+// ===== 헤더 렌더 완료 이벤트 =====
+window.addEventListener("headerRendered", () => {
+  renderHeader();
+  bindSearchEventsOnce();
+});
+
+// ===== 헤더 렌더링 (로그인/활성화 처리) =====
+function renderHeader() {
+  const userMenu = document.getElementById("header-user-menu");
   if (!userMenu) return;
 
+  // cart.html 페이지일 때 장바구니 활성화
+  const cartLink = document.querySelector('a.action[href="./cart.html"]');
+  const isCartPage = window.location.pathname.includes("cart.html");
+  if (cartLink) cartLink.classList.toggle("active", isCartPage);
+
   const token = localStorage.getItem("access_token");
-  // 로컬스토리지에서 가져온 문자열을 객체로 변환 (변수 선언 확인!)
   const userData = localStorage.getItem("user");
   const user = userData ? JSON.parse(userData) : null;
 
-  console.log("2. 로그인 상태 확인:", !!token);
-
+  // 로그인 상태일 때: 로그아웃 버튼으로 교체
   if (token && user) {
-    // 로그인 상태일 때: 로그아웃 버튼으로 교체
     userMenu.innerHTML = `
-      <button class="action btn-logout" id="logout-btn">
+      <button class="action btn-logout" id="logout-btn" type="button">
+        <!-- 선택1: 기존 img 유지 -->
         <img src="./assets/icons/icon-user.svg" alt="" class="icon" />
+        
+        <!-- 선택2: sprite로 바꾸려면 위 img 지우고 아래로 교체
+        <svg class="icon" aria-hidden="true">
+          <use href="./assets/icons/sprite.svg#icon-user"></use>
+        </svg>
+        -->
         <span class="action-text">로그아웃</span>
       </button>
     `;
 
     if (user.user_type === "SELLER") {
-      console.warn("판매자 계정 안내 모달 실행");
       Modal.open({
         message: "안녕하세요, 판매자님!\n판매자 센터는 현재 준비 중입니다.",
         cancelText: "",
       });
     }
 
-    // 로그아웃 버튼 이벤트 바인딩
     document
       .getElementById("logout-btn")
       ?.addEventListener("click", handleLogout);
@@ -67,6 +73,15 @@ function handleLogout() {
   });
 }
 
+// ===== 검색 이벤트: 중복 바인딩 방지 =====
+let isSearchBound = false;
+
+function bindSearchEventsOnce() {
+  if (isSearchBound) return;
+  isSearchBound = true;
+  bindSearchEvents();
+}
+
 let debounceTimer;
 
 function bindSearchEvents() {
@@ -74,31 +89,31 @@ function bindSearchEvents() {
   const suggestionList = document.getElementById("search-suggestion");
   const searchForm = document.querySelector(".search");
 
-  if (!searchInput || !suggestionList) return;
+  if (!searchInput || !suggestionList || !searchForm) return;
 
-  // 1. 글자 입력 시 추천 리스트 보여주기 (디바운싱 적용)
+  // 1) 입력 시 추천 리스트 (디바운스)
   searchInput.addEventListener("input", (e) => {
     const keyword = e.target.value.trim();
 
-    // 즉시 중단: 클릭으로 채워진 값인지 최우선 확인
+    // 클릭으로 선택된 값이면 요청하지 않음
     if (keyword === searchInput.dataset.lastSelected) return;
 
     clearTimeout(debounceTimer);
+
     debounceTimer = setTimeout(async () => {
-      // 서버 요청 직전, 클릭이 발생했는지 다시 확인
-      if (document.activeElement !== searchInput) {
+      // 요청 직전: 포커스 유지 확인(클릭으로 빠졌으면 중단)
+      if (document.activeElement !== searchInput) return;
+      if (!keyword) {
+        suggestionList.classList.add("is-hidden");
+        suggestionList.innerHTML = "";
         return;
       }
       if (keyword === searchInput.dataset.lastSelected) return;
 
       try {
-        const res = await Utils.fetchWithAuth(
-          `/products/?search=${encodeURIComponent(keyword)}`
-        );
-        const data = await res.json();
-        const items = data.results || [];
+        const items = await fetchProductsByKeyword(keyword);
 
-        // 서버 응답 직후, 그 사이 클릭이 발생했다면 리스트를 그리지 않음
+        // 응답 후: 그 사이 선택이 발생했다면 그리지 않음
         if (keyword === searchInput.dataset.lastSelected) return;
 
         if (items.length > 0) {
@@ -109,77 +124,65 @@ function bindSearchEvents() {
           suggestionList.classList.remove("is-hidden");
         } else {
           suggestionList.classList.add("is-hidden");
+          suggestionList.innerHTML = "";
         }
       } catch (err) {
         console.error(err);
+        suggestionList.classList.add("is-hidden");
       }
     }, 300);
   });
-  // 2. 추천 리스트 클릭 시 (mousedown)
+
+  // 2) 추천 클릭(mousedown)으로 선택
   suggestionList.addEventListener("mousedown", (e) => {
-    // e.preventDefault();
     e.stopPropagation();
-    // if (document.activeElement !== searchInput) {
-    //   return;
-    // }
+
     const li = e.target.closest(".suggestion-item");
-    if (li) {
-      const selectedKeyword = li.textContent.trim();
+    if (!li) return;
 
-      // 값을 먼저 넣고 포커스를 줘서 브라우저가 '타이핑'으로 오해하지 않게 함
-      searchInput.dataset.lastSelected = selectedKeyword;
-      searchInput.value = selectedKeyword;
-      suggestionList.classList.add("is-hidden");
-      suggestionList.innerHTML = "";
+    const selectedKeyword = li.textContent.trim();
 
-      // 강제로 input 이벤트를 한 번 더 발생시켜 dataset 비교를 유도
-      searchInput.dispatchEvent(new Event("input"));
-    }
+    searchInput.dataset.lastSelected = selectedKeyword;
+    searchInput.value = selectedKeyword;
+
+    suggestionList.classList.add("is-hidden");
+    suggestionList.innerHTML = "";
+
+    // input 이벤트 트리거(기존 로직 유지)
+    searchInput.dispatchEvent(new Event("input"));
   });
 
-  // 3. 폼 제출(돋보기 클릭이나 엔터) 처리
-  searchForm.onsubmit = async (e) => {
+  // 3) 폼 제출(엔터/돋보기)
+  searchForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const keyword = searchInput.value.trim();
 
+    const keyword = searchInput.value.trim();
     if (!keyword) {
       Modal.open({ message: "검색어를 입력해주세요.", cancelText: "" });
       return;
     }
 
     try {
-      // 서버에 이 검색어와 정확히 일치하는 상품이 있는지 먼저 확인
-      const res = await Utils.fetchWithAuth(
-        `/products/?search=${encodeURIComponent(keyword)}`
-      );
-      const data = await res.json();
-      const products = data.results || [];
+      const products = await fetchProductsByKeyword(keyword);
 
-      // 검색 결과 중 상품명이 입력한 키워드와 '완전히 일치'하는 상품이 있는지 .
+      // 정확 일치 상품이면 상세로
       const exactMatch = products.find((p) => p.name === keyword);
 
       if (exactMatch) {
-        // 정확히 일치하는 상품이 있으면 바로 상세 페이지로!
         location.href = `${PAGES.DETAIL}?id=${exactMatch.id}`;
       } else {
-        // 일치하는게 없거나 여러 개면 검색 결과 리스트 페이지로!
         location.href = `${PAGES.HOME}?search=${encodeURIComponent(keyword)}`;
       }
     } catch (err) {
       console.error("검색 처리 중 오류:", err);
-      // 에러 발생 시 안전하게 홈의 검색 결과로 보냅니다.
       location.href = `${PAGES.HOME}?search=${encodeURIComponent(keyword)}`;
     }
-  };
+  });
 
-  // 검색창 바깥 클릭 시 리스트 숨기기
+  // 4) 검색창 바깥 클릭 시 리스트 닫기
   document.addEventListener("mousedown", (e) => {
-    // click 대신 mousedown 사용
-    const searchForm = document.querySelector(".search");
-    const suggestionList = document.getElementById("search-suggestion");
-
-    // 클릭한 대상이 검색창 내부도 아니고, 추천 리스트 아이템도 아닐 때만 닫기
-    if (searchForm && !searchForm.contains(e.target)) {
+    // 검색 영역 밖 클릭이면 닫기
+    if (!searchForm.contains(e.target)) {
       suggestionList.classList.add("is-hidden");
     }
   });
