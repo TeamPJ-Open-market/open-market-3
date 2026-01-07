@@ -15,6 +15,7 @@
 /* MAIN */
 .product-detail-page {
   max-width: 1200px;
+  min-width: 480px;
   margin: 5rem auto;
   padding: 0 1.4rem;
 }
@@ -209,6 +210,11 @@
 
 /* PC */
 @media (min-width: 1090px) {
+  /* 상품 이미지 영역 */
+  .product-thumbnail {
+    width: 600px;
+    height: 600px;
+  }
   /* 상품 상세 상단 영역*/
   .product-overview {
     grid-template-columns: 1fr 1fr;

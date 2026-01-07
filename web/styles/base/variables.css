@@ -1,4 +1,9 @@
 :root {
+  /* 반응형: 브레이크포인트 */
+  --bp-mobile: 320px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1024px;
+
   /* 배경 색상 */
   --main-bg-color: #ffffff;
   --disabled-tab-color: #f2f2f2;
