@@ -5,7 +5,7 @@ const redirect = urlParams.get("redirect");
 //로그인 유무확인
 window.onload = function () {
   if (Utils.isLoggedIn()) {
-    location.replace("/index.html");
+    location.replace(PAGES.HOME);
   }
 };
 
@@ -77,9 +77,8 @@ async function handleSignin(event) {
   }
 
   try {
-    const response = await fetch(`${API_URL}/accounts/signin/`, {
+    const response = await Utils.fetchWithAuth(`/accounts/signin/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         username,
         password,
