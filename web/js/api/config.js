@@ -18,7 +18,11 @@
 // 숫자 데이터를 17,500원처럼 세 자리마다 콤마(,)를 찍어주는 기능을 모든 페이지에서 공통으로 사용합니다.
 
 // 재발급 로직이 포함된 공통 함수
-const API_URL = "http://localhost:3000/api";
+const API_URL =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
+    ? "http://localhost:3000/api" // 로컬 개발
+    : "https://open-market-jade.vercel.app/api"; //배포 url
 const STORAGE_KEYS = {
   ACCESS_TOKEN: "access_token",
   REFRESH_TOKEN: "refresh_token",
