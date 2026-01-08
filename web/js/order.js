@@ -185,8 +185,12 @@ agreeCheckbox.addEventListener("change", () => {
 payBtn.addEventListener("click", async () => {
   // 1️. 결제 동의 확인
   if (!agreeCheckbox.checked) {
-    alert("결제 동의가 필요합니다.");
-    return;
+    Modal.open({
+      message: "결제 동의가 필요합니다.",
+      confirmText: "확인",
+      cancelText: "",
+    });
+    return; // 다음 로직이 실행되지 않도록 차단
   }
 
   // 2️. 폼 검증
@@ -206,15 +210,31 @@ payBtn.addEventListener("click", async () => {
 
       window.location.href = PAGES.HOME;
     } else if (res.status === 400) {
-      alert("입력한 정보를 다시 확인해주세요.");
+      Modal.open({
+        message: "입력한 정보를 다시 확인해주세요.",
+        confirmText: "확인",
+        cancelText: "",
+      });
     } else if (res.status === 401) {
-      alert("로그인이 필요합니다.");
+      Modal.open({
+        message: "로그인이 필요합니다.",
+        confirmText: "확인",
+        cancelText: "",
+      });
     } else {
-      alert("주문 처리 중 오류가 발생했습니다.");
+      Modal.open({
+        message: "주문 처리 중 오류가 발생했습니다.",
+        confirmText: "확인",
+        cancelText: "",
+      });
     }
   } catch (err) {
     console.error(err);
-    alert("서버 연결에 실패했습니다.");
+    Modal.open({
+      message: "서버 연결에 실패했습니다.",
+      confirmText: "확인",
+      cancelText: "",
+    });
   }
 });
 
@@ -231,7 +251,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const postBtn = document.querySelector(".btn-post");
   if (postBtn) {
     postBtn.addEventListener("click", () => {
-      alert("우편번호 팝업창입니다.");
+      Modal.open({
+        message: "우편번호 팝업창입니다.",
+        confirmText: "확인",
+        cancelText: "",
+      });
     });
   }
   const phone1 = document.getElementById("receiver-phone1");
@@ -298,22 +322,38 @@ function validateOrderForm() {
   const email = document.getElementById("orderer-email")?.value.trim();
 
   if (!agreeCheckbox.checked) {
-    alert("결제 동의가 필요합니다.");
+    Modal.open({
+      message: "결제 동의가 필요합니다.",
+      confirmText: "확인",
+      cancelText: "",
+    });
     return false;
   }
 
   if (!name || !email) {
-    alert("주문자 정보를 확인해주세요.");
+    Modal.open({
+      message: "주문자 정보를 확인해주세요.",
+      confirmText: "확인",
+      cancelText: "",
+    });
     return false;
   }
 
   if (!/^010\d{8}$/.test(getReceiverPhone())) {
-    alert("휴대폰 번호를 정확히 입력해주세요.");
+    Modal.open({
+      message: "휴대폰 번호를 정확히 입력해주세요.",
+      confirmText: "확인",
+      cancelText: "",
+    });
     return false;
   }
 
   if (!getAddress()) {
-    alert("배송 주소를 입력해주세요.");
+    Modal.open({
+      message: "배송 주소를 입력해주세요.",
+      confirmText: "확인",
+      cancelText: "",
+    });
     return false;
   }
 
@@ -322,7 +362,11 @@ function validateOrderForm() {
   );
 
   if (!paymentChecked) {
-    alert("결제수단을 선택해주세요.");
+    Modal.open({
+      message: "결제수단을 선택해주세요.",
+      confirmText: "확인",
+      cancelText: "",
+    });
     return false;
   }
 
@@ -350,7 +394,11 @@ async function buildOrderData() {
   const orderItems = getOrderData();
 
   if (orderItems.length === 0) {
-    alert("주문할 상품 정보가 없습니다.");
+    Modal.open({
+      message: "주문할 상품이 없습니다.",
+      confirmText: "확인",
+      cancelText: "",
+    });
     throw new Error("orderItems is empty");
   }
 
