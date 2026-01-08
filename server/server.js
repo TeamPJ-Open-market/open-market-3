@@ -841,6 +841,8 @@ apiRouter.put("/products/:product_id", (req, res) => {
  *         description: 해당 ID의 상품을 찾을 수 없음
  */
 apiRouter.delete("/products/:product_id", checkAuth, (req, res) => {
+  // 삭제 기능은 구현하지 않음(원본)
+
   const productId = parseInt(req.params.product_id, 10);
   const product = router.db.get("products").find({ id: productId }).value();
 
@@ -1218,26 +1220,50 @@ apiRouter.put("/cart/:cart_item_id/", checkAuth, (req, res) => {
  *         description: 접근 권한 없음
  *       '404':
  *         description: 장바구니 상품을 찾을 수 없음
- */
+//  */
+// apiRouter.delete("/cart/:cart_item_id/", checkAuth, (req, res) => {
+//   const cartItemId = parseInt(req.params.cart_item_id, 10);
+//   const db = router.db;
+
+//   const cartItem = db.get("cart").find({ id: cartItemId });
+
+//   if (!cartItem.value()) {
+//     return res.status(404).json({ detail: "찾을 수 없습니다." });
+//   }
+
+//   if (cartItem.value().username !== req.user.userId) {
+//     return res.status(403).json({ detail: "접근권한이 없습니다." });
+//   }
+
+//   cartItem.remove().write();
+
+//   res.status(200).json({ detail: "장바구니에 담긴 상품이 삭제되었습니다." });
+// });
 apiRouter.delete("/cart/:cart_item_id/", checkAuth, (req, res) => {
-  const cartItemId = parseInt(req.params.cart_item_id, 10);
+  const cartItemId = req.params.cart_item_id; // parseInt를 굳이 하지 않아도 됩니다.
   const db = router.db;
 
-  const cartItem = db.get("cart").find({ id: cartItemId });
+  // 문자열로 비교하여 확실하게 찾기
+  const cartItem = db
+    .get("cart")
+    .find((item) => String(item.id) === String(cartItemId));
 
   if (!cartItem.value()) {
     return res.status(404).json({ detail: "찾을 수 없습니다." });
   }
 
+  // 권한 체크 (userId와 username 일치 확인)
   if (cartItem.value().username !== req.user.userId) {
     return res.status(403).json({ detail: "접근권한이 없습니다." });
   }
 
-  cartItem.remove().write();
+  // 삭제 수행 및 파일 쓰기
+  db.get("cart")
+    .remove((item) => String(item.id) === String(cartItemId))
+    .write();
 
   res.status(200).json({ detail: "장바구니에 담긴 상품이 삭제되었습니다." });
 });
-
 /**
  * @swagger
  * /cart/:
@@ -1460,7 +1486,8 @@ function handleDirectOrder(req, res) {
       ],
     });
   }
-  const calculatedPrice = product.price * quantity + product.shipping_fee;
+  // const calculatedPrice = product.price * quantity + product.shipping_fee;
+  const calculatedPrice = product.price * quantity;
   if (calculatedPrice !== total_price) {
     return res.status(400).json({
       non_field_errors: `total_price가 맞지 않습니다. 계산 금액은 ${calculatedPrice}원입니다.(배송비 포함)`,
@@ -1590,7 +1617,8 @@ function handleCartOrder(req, res) {
         ],
       });
     }
-    calculatedPrice += product.price * item.quantity + product.shipping_fee;
+    // calculatedPrice += product.price * item.quantity + product.shipping_fee;
+    calculatedPrice += product.price * item.quantity;
   }
 
   if (calculatedPrice !== total_price) {

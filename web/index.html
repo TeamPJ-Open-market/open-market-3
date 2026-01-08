@@ -3,9 +3,57 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ZADU - 오픈 마켓</title>
+    <title>코드한입 / ZADU - 오픈 마켓 / 메인 페이지</title>
+    <!-- css -->
+    <link rel="stylesheet" href="./styles/base/reset.css" />
+    <link rel="stylesheet" href="./styles/base/variables.css" />
+    <link rel="stylesheet" href="./styles/base/typography.css" />
+    <link rel="stylesheet" href="./styles/components/modal.css" />
+    <link rel="stylesheet" href="./styles/pages/index.css" />
   </head>
+
   <body>
-    오픈 마켓 프로젝트
+    <!-- ===== Main Banner ===== -->
+    <section class="main-banner" aria-label="메인 배너">
+      <div class="banner-inner">
+        <button class="banner-btn prev" type="button" aria-label="이전">
+          &#60;
+        </button>
+
+        <div class="banner-track">
+          <div class="banner-slide is-active"></div>
+          <div class="banner-slide"></div>
+          <div class="banner-slide"></div>
+          <div class="banner-slide"></div>
+          <div class="banner-slide"></div>
+        </div>
+
+        <button class="banner-btn next" type="button" aria-label="다음">
+          &#62;
+        </button>
+        <!-- 인디케이터 -->
+        <div class="banner-indicator" aria-label="배너 인디케이터">
+          <button class="dot is-active" aria-label="1번 배너"></button>
+          <button class="dot" aria-label="2번 배너"></button>
+          <button class="dot" aria-label="3번 배너"></button>
+          <button class="dot" aria-label="4번 배너"></button>
+          <button class="dot" aria-label="5번 배너"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 상품 리스트 -->
+    <section class="products">
+      <div class="main-container">
+        <h2 class="section-title"></h2>
+
+        <ul class="product-grid" id="productGrid"></ul>
+      </div>
+    </section>
+    <script src="js/api/config.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/common/modal.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/index.js"></script>
   </body>
 </html>

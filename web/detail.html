@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>코드한입 / ZADU - 오픈 마켓 / 상품 상세</title>
+    <!-- css -->
+    <link rel="stylesheet" href="./styles/base/reset.css" />
+    <link rel="stylesheet" href="./styles/base/variables.css" />
+    <link rel="stylesheet" href="./styles/base/typography.css" />
+    <link rel="stylesheet" href="./styles/components/modal.css" />
+    <link rel="stylesheet" href="./styles/pages/detail.css" />
+  </head>
+  <body>
+    <main class="product-detail-page">
+      <section class="page-inner">
+        <!-- 상품 상세 상단 영역 -->
+        <section class="product-overview">
+          <!-- 상품 이미지 영역 -->
+          <div class="product-thumbnail">
+            <img class="product-image" id="product-image" src="" alt="" />
+          </div>
+
+          <!-- 상품 정보 영역 -->
+          <article class="product-info-panel">
+            <div class="product-meta">
+              <!-- 회사 이름 -->
+              <span
+                class="product-brand text-size-md"
+                id="product-brand"
+              ></span>
+              <!-- 상품 이름 -->
+              <h2
+                class="product-title text-size-xl font-base"
+                id="product-title"
+              ></h2>
+              <p class="product-price-info">
+                <!-- 상품 가격 -->
+                <strong
+                  class="product-price text-size-xl font-bold"
+                  id="product-price"
+                ></strong>
+                <span class="price-unit text-size-md">원</span>
+              </p>
+            </div>
+
+            <div class="purchase-info">
+              <!-- 택배배송 / 무료배송 -->
+              <p class="delivery-info text-size-base" id="delivery-info">
+                택배배송 / 무료배송
+              </p>
+
+              <!-- 상품 수량 선택 -->
+              <div class="quantity-selector">
+                <button
+                  class="quantity-decrease"
+                  id="quantity-decrease"
+                  type="button"
+                >
+                  <svg width="34" height="34">
+                    <use href="assets/icons/sprite.svg#icon-order-minus"></use>
+                  </svg>
+                </button>
+                <input
+                  class="quantity-input text-size-md"
+                  id="quantity-input"
+                  type="text"
+                  value="1"
+                  min="1"
+                  aria-label="상품 수량"
+                />
+                <button
+                  class="quantity-increase"
+                  id="quantity-increase"
+                  type="button"
+                >
+                  <svg width="34" height="34">
+                    <use href="assets/icons/sprite.svg#icon-order-plus"></use>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- 총 상품 금액 -->
+              <div class="order-summary">
+                <p class="order-summary-title text-size-md font-medium">
+                  총 상품 금액
+                </p>
+                <p class="order-summary-content text-size-md">
+                  총 수량
+                  <strong class="total-quantity font-bold" id="total-quantity">
+                    1
+                  </strong>
+                  개
+                  <span class="order-total-price">
+                    <strong
+                      class="total-price text-size-xl font-bold"
+                      id="total-price"
+                    ></strong>
+                    <span class="price-unit text-size-md">원</span>
+                  </span>
+                </p>
+              </div>
+
+              <!-- 상품 정보 버튼 영역 -->
+              <div class="product-actions">
+                <button class="btn btn-purchase text-size-md" id="btn-purchase">
+                  바로 구매
+                </button>
+                <button class="btn btn-add-cart text-size-md" id="btn-add-cart">
+                  장바구니
+                </button>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="product-content">
+          <!-- 상품 상세 탭 영역 - ARIA 속성으로 접근성 확보 -->
+          <!-- 
+          1. role — “이게 뭐다”
+            tablist : 이 안에는 탭들이 있다.
+            tab : 이 버튼은 탭이다.
+            tabpanel : 이건 탭에 연결된 내용 영역이다.
+
+          2. aria-selected — “지금 선택됐나”
+
+          3. aria-controls — “이 탭이 조종하는 대상”
+
+          4. tabindex는 키보드 포커스 순서를 지정한다.
+            0 : 탭 순서에 포함
+            -1 : 탭 순서에서 제외 (스크립트로 포커스 줄 때만 사용)
+        -->
+          <nav class="tab-menu" role="tablist" aria-label="상품 정보 탭">
+            <button
+              class="tab-button active text-size-md font-medium"
+              data-tab="detail"
+              role="tab"
+              aria-selected="true"
+              aria-controls="detail-content"
+              tabindex="0"
+            >
+              상세정보
+            </button>
+            <button
+              class="tab-button text-size-md font-medium"
+              data-tab="review"
+              role="tab"
+              aria-selected="false"
+              aria-controls="review-content"
+              tabindex="-1"
+            >
+              리뷰
+            </button>
+            <button
+              class="tab-button text-size-md font-medium"
+              data-tab="qna"
+              role="tab"
+              aria-selected="false"
+              aria-controls="qna-content"
+              tabindex="-1"
+            >
+              Q&A
+            </button>
+            <button
+              class="tab-button text-size-md font-medium"
+              data-tab="policy"
+              role="tab"
+              aria-selected="false"
+              aria-controls="policy-content"
+              tabindex="-1"
+            >
+              반품/<span>교환정보</span>
+            </button>
+          </nav>
+
+          <!-- 상품 상세 내용 영역 -->
+          <article class="tab-content-wrapper">
+            <div
+              class="tab-content active"
+              id="detail-content"
+              role="tabpanel"
+              tabindex="0"
+            >
+              상세 정보 내용
+            </div>
+            <div
+              class="tab-content"
+              id="review-content"
+              role="tabpanel"
+              tabindex="0"
+              hidden
+            >
+              리뷰 내용
+            </div>
+            <div
+              class="tab-content"
+              id="qna-content"
+              role="tabpanel"
+              tabindex="0"
+              hidden
+            >
+              Q&A 내용
+            </div>
+            <div
+              class="tab-content"
+              id="policy-content"
+              role="tabpanel"
+              tabindex="0"
+              hidden
+            >
+              반품/교환정보 내용
+            </div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <!-- js -->
+    <script src="./js/api/config.js"></script>
+    <script src="./js/layout.js"></script>
+    <script src="./js/common/modal.js"></script>
+    <script src="./js/header.js"></script>
+    <script src="./js/detail.js"></script>
+  </body>
+</html>

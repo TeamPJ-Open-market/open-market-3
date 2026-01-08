@@ -1,0 +1,167 @@
+/* ================================================= */
+/* ============ Sticky Footer (전체 레이아웃) ======= */
+/* ================================================= */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+  min-height: 0;
+}
+
+:where(.main, .page, .content, .wrap, #app, #root) {
+  min-height: 0;
+}
+
+.site-footer {
+  margin-top: auto;
+}
+
+/* ================================================= */
+/* ===================== Footer ==================== */
+/* ================================================= */
+.site-footer {
+  background: var(--disabled-tab-color);
+  font-size: 0.8125rem;
+  color: var(--sub-text-color);
+}
+
+.footer-top-container {
+  max-width: 1280px;
+  min-width: 480px;
+  margin: 0 auto;
+}
+
+/* 상단 영역 */
+.footer-top {
+  border-bottom: 0.0625rem solid var(--checkbox-disabled-color);
+}
+
+.footer-top-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.125rem 0;
+}
+
+/* 텍스트 링크 */
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: var(--main-text-color);
+  font-size: clamp(0.75rem, 2.5vw, 0.875rem);
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-links .strong {
+  font-weight: 600;
+  color: var(--join-text-color);
+}
+
+/* | 구분선 */
+.footer-links li:not(:last-child)::after {
+  content: "|";
+  margin: 0 0.75rem;
+  color: var(--sub-text-color);
+}
+
+/* SNS 아이콘 */
+.footer-sns {
+  display: grid;
+  grid-auto-flow: column;
+  column-gap: 0.75rem;
+  align-items: center;
+}
+
+.footer-sns a {
+  display: grid;
+  place-items: center;
+}
+
+.footer-sns img {
+  width: 1.75rem;
+  height: 1.75rem;
+  display: block;
+}
+
+/* 하단 회사 정보 */
+
+.footer-bottom-container {
+  max-width: 1280px;
+  min-width: 480px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.footer-bottom-inner p {
+  margin-bottom: 0.375rem;
+  line-height: 1.7;
+}
+
+.footer-inner .company {
+  font-weight: 600;
+  color: var(--sub-text-color);
+}
+
+/* ================================================= */
+/* ================= Footer Responsive ============= */
+/* ================================================= */
+@media (max-width: 1024px) {
+  .footer-top-inner {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+  }
+
+  .footer-sns img {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-top-inner {
+    flex-direction: column;
+    gap: 0.875rem;
+    align-items: flex-start;
+
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .footer-sns {
+    margin-top: 0.375rem;
+  }
+
+  .footer-bottom {
+    padding: 1.5rem 0;
+  }
+
+  .footer-bottom-inner p {
+    font-size: 0.75rem;
+  }
+
+  .footer-links li:not(:last-child)::after {
+    margin: 0 0.375rem;
+  }
+}
