@@ -1,8 +1,8 @@
-loadHTMLToBody("../header.html", false);
-loadHTMLToBody("../footer.html", true);
+loadHTMLToBody("./header.html", false);
+loadHTMLToBody("./footer.html", true);
 
-loadCSS("../styles/pages/header.css");
-loadCSS("../styles/pages/footer.css");
+loadCSS("./styles/pages/header.css");
+loadCSS("./styles/pages/footer.css");
 async function loadHTMLToBody(url, append) {
   try {
     const res = await fetch(url);
