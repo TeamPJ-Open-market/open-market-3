@@ -280,7 +280,7 @@ async function handleAddToCart() {
 
   try {
     // ① DB 장바구니 조회
-    const res = await Utils.fetchWithAuth(`/cart`, {});
+    const res = await Utils.fetchWithAuth(`/cart/`, {});
 
     const data = await res.json();
     const cartItems = data.results;
