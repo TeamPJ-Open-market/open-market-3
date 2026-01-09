@@ -14,7 +14,7 @@
 
   <body>
     <!-- ===== Main Banner ===== -->
-    <section class="main-banner" aria-label="메인 배너">
+    <!-- <section class="main-banner" aria-label="메인 배너">
       <div class="banner-inner">
         <button class="banner-btn prev" type="button" aria-label="이전">
           &#60;
@@ -31,7 +31,7 @@
         <button class="banner-btn next" type="button" aria-label="다음">
           &#62;
         </button>
-        <!-- 인디케이터 -->
+         
         <div class="banner-indicator" aria-label="배너 인디케이터">
           <button class="dot is-active" aria-label="1번 배너"></button>
           <button class="dot" aria-label="2번 배너"></button>
@@ -40,7 +40,32 @@
           <button class="dot" aria-label="5번 배너"></button>
         </div>
       </div>
-    </section>
+    </section> -->
+
+    <!-- 캐러셀  -->
+    <div class="carousel-container">
+      <div class="carousel-track">
+        <div class="slide">1번 콘텐츠</div>
+        <div class="slide">2번 콘텐츠</div>
+        <div class="slide">3번 콘텐츠</div>
+        <div class="slide">4번 콘텐츠</div>
+        <div class="slide">5번 콘텐츠</div>
+      </div>
+      <div class="button-container">
+        <button class="btn prev">
+          <svg width="24" height="24">
+            <use href="assets/icons/sprite.svg#icon-chevron-left"></use>
+          </svg>
+        </button>
+        <button class="btn next">
+          <svg width="24" height="24">
+            <use href="assets/icons/sprite.svg#icon-chevron-right"></use>
+          </svg>
+        </button>
+      </div>
+      <!-- 인디케이터 -->
+      <div class="indicator-container"></div>
+    </div>
 
     <!-- 상품 리스트 -->
     <section class="products">

@@ -256,3 +256,79 @@ body {
     bottom: 0.875rem;
   }
 }
+
+/* ================================================= */
+/* ===================== carousel ==================== */
+/* ================================================= */
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 10rem;
+}
+
+.carousel-track {
+  display: flex;
+  align-items: center;
+  transition: transform 0.5s ease-in-out;
+  height: 30rem;
+}
+
+.slide {
+  display: flex;
+  justify-content: center;
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ================================================= */
+/* ===================== indicator ==================== */
+/* ================================================= */
+.indicator-container {
+  position: absolute;
+  bottom: 20px; /* 바닥에서 20px 띄움 */
+  left: 50%;
+  transform: translateX(-50%); /* 가로 중앙 정렬 */
+  display: flex;
+  gap: 0.5rem;
+  z-index: 10;
+}
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--disabled-btn-color);
+  opacity: 0.5;
+  cursor: pointer;
+}
+.dot.active {
+  background-color: var(--cart-btn-color);
+  opacity: 1;
+}
+
+/* ================================================= */
+/* ===================== button ==================== */
+/* ================================================= */
+.button-container {
+  display: flex;
+  justify-content: space-around;
+}
+.btn {
+  border: none;
+  background-color: var(--main-bg-color);
+  cursor: pointer;
+  position: absolute; /* 부모인 container를 기준으로 자유롭게 이동 */
+  top: 50%; /* 위에서 50% 지점으로 이동 */
+  transform: translateY(-50%);
+  z-index: 10;
+  z-index: 10;
+}
+.prev {
+  left: 20px; /* 왼쪽 벽에서 20px 띄움 */
+}
+
+/* 오른쪽 버튼 위치 */
+.next {
+  right: 20px; /* 오른쪽 벽에서 20px 띄움 */
+}
